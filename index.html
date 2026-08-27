@@ -192,15 +192,16 @@ input[type=search],input[type=text]{
 .stp.sm .v b{font-size:14px}
 
 /* ══ 원료 고르기 오버레이 ════════════════════════════════════════ */
-#picker{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;
-  background:rgba(14,22,30,.45);backdrop-filter:blur(3px)}
-#picker .box{
+.ovl{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;
+  background:rgba(14,22,30,.45);backdrop-filter:blur(3px);animation:ovlin .18s ease}
+@keyframes ovlin{from{opacity:0}to{opacity:1}}
+.ovl .box{
   background:var(--panel);display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
   box-shadow:var(--shadow);
 }
-#picker .phd{display:flex;align-items:center;gap:10px;padding:10px 12px;
+.ovl .phd{display:flex;align-items:center;gap:10px;padding:10px 12px;
   border-bottom:1px solid var(--line);flex:0 0 auto}
-#picker .phd b{font-size:17px;font-weight:700;flex:0 0 auto}
+.ovl .phd b{font-size:17px;font-weight:700;flex:0 0 auto}
 .srch{position:relative;flex:1 1 auto}
 .srch input{padding-left:38px;padding-right:40px}
 .srch .mag{position:absolute;left:13px;top:50%;transform:translateY(-50%);
@@ -396,8 +397,9 @@ h3.sec:first-child{margin-top:0}
   .sheet{border-radius:16px;max-height:84dvh}
   .grab{display:none}
   .toast{bottom:26px}
-  #picker{padding:32px;align-items:center;justify-content:center}
-  #picker .box{max-width:780px;width:100%;max-height:84dvh;border-radius:16px;flex:0 1 auto}
+  .ovl{padding:32px;align-items:center;justify-content:center}
+  .ovl .box{max-width:780px;width:100%;max-height:84dvh;border-radius:16px;flex:0 1 auto}
+  #learn .box{max-width:720px}
   .frow{padding:10px 14px}
   .irow{padding:11px 14px}
 }
@@ -414,6 +416,87 @@ h3.sec:first-child{margin-top:0}
   .topmid{display:flex;gap:8px;align-items:center;min-width:0}
   .topmid select{max-width:170px}
 }
+
+/* ══ 과제 띠 ═════════════════════════════════════════════════════ */
+#misStrip{display:flex;align-items:center;gap:9px;padding:9px 12px;flex:0 0 auto;
+  background:var(--acc-soft);border-bottom:1px solid var(--acc-line)}
+#misStrip .mi{font-size:15px;flex:0 0 auto}
+#misStrip .mt{flex:1 1 auto;min-width:0}
+#misStrip .mt b{display:block;font-size:13.5px;font-weight:700;color:var(--acc);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#misStrip .mt small{font-size:11.5px;color:var(--ink-2)}
+#misStrip button{flex:0 0 auto;min-height:32px;padding:0 10px;border-radius:8px;
+  font-size:12.5px;font-weight:600;color:var(--acc);border:1px solid var(--acc-line);background:var(--panel)}
+
+/* ══ 제조 연출 ═══════════════════════════════════════════════════ */
+#brew{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;
+  background:rgba(10,16,22,.82);backdrop-filter:blur(6px);animation:ovlin .2s ease}
+.brewbox{width:100%;max-width:560px;padding:18px;display:flex;flex-direction:column;gap:14px;
+  max-height:100dvh;overflow:auto}
+.brewtop{display:flex;align-items:center;gap:12px}
+.brewttl{flex:1 1 auto;color:#F3F6F9;font-size:19px;font-weight:700;letter-spacing:-.3px;min-width:0}
+#brewSkip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);color:#F3F6F9}
+#brewSkip:hover{background:rgba(255,255,255,.2)}
+.brewstage{display:flex;align-items:center;justify-content:center;min-height:262px;position:relative}
+.brewbar{height:5px;border-radius:3px;background:rgba(255,255,255,.16);overflow:hidden}
+.brewbar i{display:block;height:100%;width:0;background:var(--acc);border-radius:3px;
+  transition:width .28s linear}
+.brewfoot{color:#DCE4EC;min-height:80px}
+
+.brewreads{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.read{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);
+  border-radius:10px;padding:6px 12px;text-align:center;min-width:78px}
+.read .rk{font-size:10.5px;color:#9FB0BF;font-weight:600}
+.read .rv{font-family:var(--mono);font-size:17px;font-weight:600;color:#F3F6F9;letter-spacing:-.4px}
+.read .rv em{font-style:normal;font-size:10.5px;color:#9FB0BF;margin-left:2px}
+.read.hot .rv{color:#FF9E6B}
+.read.cold .rv{color:#7FC4F0}
+
+.addflow{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:10px;min-height:24px}
+.addflow span{font-size:12px;font-weight:600;padding:3px 10px;border-radius:12px;
+  background:rgba(255,255,255,.14);color:#F3F6F9;animation:drop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes drop{from{opacity:0;transform:translateY(-14px) scale(.9)}to{opacity:1;transform:none}}
+
+/* 결과 공개 */
+.reveal{display:flex;flex-direction:column;align-items:center;gap:14px;
+  animation:pop .5s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+.reveal .rv-verdict{font-size:26px;font-weight:700;letter-spacing:-.6px;text-align:center;line-height:1.3}
+.reveal .rv-sub{font-size:13.5px;color:#A8B6C4;text-align:center;margin-top:-6px}
+.rv-mets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+.rv-met{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  border-radius:11px;padding:9px 6px;text-align:center}
+.rv-met.ok{border-color:rgba(84,196,134,.6);background:rgba(84,196,134,.13)}
+.rv-met.bad{border-color:rgba(238,113,118,.6);background:rgba(238,113,118,.13)}
+.rv-met .k{font-size:10.5px;color:#9FB0BF;font-weight:600}
+.rv-met .v{font-family:var(--mono);font-size:17px;font-weight:600;color:#F3F6F9;letter-spacing:-.5px}
+.rv-met .v em{font-style:normal;font-size:10px;color:#9FB0BF;margin-left:1px}
+@media (max-width:440px){ .rv-mets{grid-template-columns:repeat(2,1fr)} }
+
+/* 탱크 SVG */
+.tank .wall{fill:none;stroke:rgba(255,255,255,.38);stroke-width:2.4}
+.tank .jacket{fill:none;stroke:rgba(255,255,255,.16);stroke-width:9;stroke-linecap:round;
+  transition:stroke .5s}
+.tank .jacket.hot{stroke:rgba(255,138,86,.55)}
+.tank .jacket.cold{stroke:rgba(110,180,240,.5)}
+.tank .liq{transition:y .55s ease, height .55s ease, fill .7s ease, opacity .7s ease}
+.tank .surf{transition:cy .55s ease, fill .7s ease, opacity .7s ease, ry .35s ease}
+.tank .shaft{stroke:rgba(255,255,255,.5);stroke-width:3;stroke-linecap:round}
+.tank .blade{fill:rgba(255,255,255,.62)}
+.tank .spin{transform-box:fill-box;transform-origin:center;animation:blade 1s linear infinite}
+@keyframes blade{
+  0%{transform:scaleX(1)}25%{transform:scaleX(.12)}
+  50%{transform:scaleX(-1)}75%{transform:scaleX(.12)}100%{transform:scaleX(1)}}
+.tank .homoring{fill:none;stroke:rgba(255,255,255,.55);stroke-width:2.5;
+  transform-box:fill-box;transform-origin:center;animation:blade .32s linear infinite}
+.tank .bub{fill:rgba(255,255,255,.55);animation:rise 1.6s linear infinite}
+@keyframes rise{from{transform:translateY(0);opacity:0}
+  18%{opacity:.85}to{transform:translateY(-96px);opacity:0}}
+.tank .steam{fill:none;stroke:rgba(255,255,255,.3);stroke-width:2.6;stroke-linecap:round;
+  animation:steam 2.4s ease-in-out infinite}
+@keyframes steam{0%{opacity:0;transform:translateY(6px)}
+  35%{opacity:.7}100%{opacity:0;transform:translateY(-22px)}}
+.tank .vac{fill:rgba(126,166,240,.22);stroke:rgba(126,166,240,.6);stroke-width:1.6}
 </style>
 
 </head>
@@ -427,14 +510,16 @@ h3.sec:first-child{margin-top:0}
       <button id="btnBatch" class="btn" title="배치 규모">1 kg</button>
     </div>
     <div class="grow"></div>
+    <button id="btnLearn" class="btn wide-only" title="학습 과정">✦ 학습</button>
     <button id="btnRun" class="btn pri">제조</button>
     <button id="btnMenu" class="btn ico" title="설정" aria-label="설정">≡</button>
   </header>
 
   <div id="main">
 
-    <!-- 처방 / 공정 / 학습 -->
+    <!-- 처방 / 공정 -->
     <section class="pane active" id="p-mid" data-col="1">
+      <div id="misStrip" hidden></div>
       <div class="pane-hd">
         <div class="seg wide-only" id="midtabs"></div>
         <h2 id="midTitle" class="narrow-only">처방</h2>
@@ -468,7 +553,7 @@ h3.sec:first-child{margin-top:0}
 </div>
 
 <!-- 원료 고르기 -->
-<div id="picker" hidden>
+<div id="picker" class="ovl" hidden>
   <div class="box">
     <div class="phd">
       <b class="wide-only">원료</b>
@@ -485,6 +570,32 @@ h3.sec:first-child{margin-top:0}
       <span id="icount" style="font-size:12.5px;color:var(--ink-3)"></span>
       <span id="ptotal" style="font-size:12.5px;color:var(--ink-3);margin-left:auto"></span>
     </div>
+  </div>
+</div>
+
+<!-- 학습 -->
+<div id="learn" class="ovl" hidden>
+  <div class="box">
+    <div class="phd">
+      <b>✦ 학습 과정</b>
+      <span id="learnProg" style="font-size:13px;color:var(--ink-3);font-family:var(--mono)"></span>
+      <div style="flex:1"></div>
+      <button class="btn" id="learnDone">닫기</button>
+    </div>
+    <div class="ilist" id="learnBody"></div>
+  </div>
+</div>
+
+<!-- 제조 연출 -->
+<div id="brew" hidden>
+  <div class="brewbox">
+    <div class="brewtop">
+      <div class="brewttl" id="brewTtl">제조 준비</div>
+      <button class="btn sm" id="brewSkip">건너뛰기</button>
+    </div>
+    <div class="brewstage" id="brewStage"></div>
+    <div class="brewbar"><i id="brewFill"></i></div>
+    <div class="brewfoot" id="brewFoot"></div>
   </div>
 </div>
 
@@ -4145,7 +4256,7 @@ function showIng(g) {
 /* =====================================================================
    중간 패널
    ===================================================================== */
-var MIDS = [{ k: 'form', ko: '처방' }, { k: 'proc', ko: '공정' }, { k: 'learn', ko: '학습' }];
+var MIDS = [{ k: 'form', ko: '처방' }, { k: 'proc', ko: '공정' }];
 
 function renderMid() {
   var tabs = clear($('#midtabs'));
@@ -4158,9 +4269,27 @@ function renderMid() {
   $('#midTitle').textContent = (MIDS.filter(function (m) { return m.k === S.mid; })[0] || {}).ko || '';
   clear($('#midTools')); clear($('#midFoot'));
   var body = clear($('#midBody'));
-  if (S.mid === 'form') renderFormula(body);
-  else if (S.mid === 'proc') renderProcess(body);
-  else renderLearn(body);
+  if (S.mid === 'proc') renderProcess(body); else renderFormula(body);
+  renderStrip();
+}
+
+/* ── 진행 중인 과제 띠 ─────────────────────────────────────────── */
+function renderStrip() {
+  var n = $('#misStrip');
+  if (!S.mission) { n.hidden = true; clear(n); return; }
+  var m = S.mission;
+  var done = S.progress[m.id];
+  clear(n); n.hidden = false;
+  n.appendChild(el('div.mi', { text: done ? '✓' : '✦' }));
+  n.appendChild(el('div.mt', null, [
+    el('b', { text: m.ko }),
+    el('small', { text: TYPEKO[m.type] + ' · ' + PROD.get(m.ch).ko +
+      (done ? ' · 통과 ' + done.grade : ' · 필수 ' + m.must.length + '개') })
+  ]));
+  n.appendChild(el('button', { text: '조건', onclick: function () { openMission(m); } }));
+  n.appendChild(el('button', { text: '그만', onclick: function () {
+    S.mission = null; renderAll(); persist(); K.toast('자유 모드로 돌아갔습니다');
+  } }));
 }
 
 /* ── 처방 ──────────────────────────────────────────────────────── */
@@ -4659,10 +4788,20 @@ function gradeColor(g) {
   return g === 'S' ? 'var(--acc)' : g === 'A' ? 'var(--ok)' : g === 'B' ? 'var(--info)' : 'var(--warn)';
 }
 
-function renderLearn(body) {
+function openLearn() {
+  $('#learn').hidden = false;
+  renderLearn();
+}
+function closeLearn() {
+  $('#learn').hidden = true;
+  syncNav();
+}
+
+function renderLearn() {
+  var body = clear($('#learnBody'));
   var tot = MISS.LIST.length;
   var done = MISS.LIST.filter(function (m) { return S.progress[m.id]; }).length;
-  $('#midTools').appendChild(el('span.badge.info', { style: 'padding:5px 11px', text: done + ' / ' + tot }));
+  $('#learnProg').textContent = done + ' / ' + tot;
 
   body.appendChild(el('div', { style: 'padding:12px;background:var(--panel-2);border-bottom:1px solid var(--line)' }, [
     el('div', { style: 'font-size:15px;font-weight:600', text: '17개 제품군 · ' + tot + '개 과제' }),
@@ -4675,7 +4814,7 @@ function renderLearn(body) {
     var open = S.openCh === ch.key;
     var sec = el('div.chapter');
     sec.appendChild(el('button.ch-hd', {
-      onclick: function () { S.openCh = open ? null : ch.key; renderMid(); }
+      onclick: function () { S.openCh = open ? null : ch.key; renderLearn(); }
     }, [
       el('div.ic', { text: ch.icon }),
       el('div.t', null, [
@@ -4750,6 +4889,7 @@ function startMission(m) {
     });
   }
   S.mid = 'form'; S.view = 'form';
+  closeLearn();
   syncTop(); renderAll(); go('form');
   K.toast('과제 시작 — ' + m.ko);
 }
@@ -4810,7 +4950,11 @@ function runBatch(spread) {
     if (window.console) console.error(e);
     return;
   }
-  go('res'); renderResult(); persist();
+  renderResult(); persist();
+  var shown = false;
+  if (!spread && G.BREW && G.BREW.enabled())
+    shown = G.BREW.show(S.result, function () { go('res'); renderResult(); renderStrip(); });
+  if (!shown) { go('res'); renderResult(); }
 }
 
 function syncNav() {
@@ -4818,9 +4962,10 @@ function syncNav() {
 }
 
 function go(v) {
+  if (v === 'learn') { openLearn(); return; }
   S.view = v;
-  if (v === 'form' || v === 'proc' || v === 'learn') S.mid = v;
-  var map = { form: 'p-mid', proc: 'p-mid', learn: 'p-mid', res: 'p-res' };
+  if (v === 'form' || v === 'proc') S.mid = v;
+  var map = { form: 'p-mid', proc: 'p-mid', res: 'p-res' };
   K.$$('.pane').forEach(function (n) { n.classList.toggle('active', n.id === map[v]); });
   syncNav();
   renderMid();
@@ -4831,7 +4976,7 @@ function syncTop() {
   $('#btnBatch').textContent = K.mass(S.batchG);
 }
 
-function renderAll() { syncTop(); renderMid(); renderResult(); }
+function renderAll() { syncTop(); renderMid(); renderResult(); renderStrip(); }
 
 function persist() {
   K.save({
@@ -4844,11 +4989,369 @@ G.UI = {
   renderAll: renderAll, renderMid: renderMid, renderResult: renderResult,
   renderIngList: renderIngList, renderCats: renderCats,
   openPicker: openPicker, closePicker: closePicker,
+  openLearn: openLearn, closeLearn: closeLearn, renderLearn: renderLearn,
+  renderStrip: renderStrip,
   go: go, run: runBatch, syncTop: syncTop, persist: persist,
   showIng: showIng, openMission: openMission, startMission: startMission,
   materialize: materialize, stepper: stepper, pctText: pctText,
   gradeColor: gradeColor, TYPEKO: TYPEKO
 };
+})(window);
+
+/* =====================================================================
+   포뮬라랩 — 제조 연출
+   ---------------------------------------------------------------------
+   공정 스텝을 하나씩 지나가며 탱크 안에서 실제로 벌어지는 일을 보여준다.
+   색과 탁도는 흉내가 아니라, 그 시점까지 투입된 원료로 다시 계산한 값이다.
+   물만 있을 때는 맑고, 유상이 들어가 호모가 돌면 그 자리에서 하얘진다.
+   ===================================================================== */
+(function (G) {
+'use strict';
+
+var K = G.CORE, el = K.el, $ = K.$, clear = K.clear;
+var CHEM = G.CHEM, PROC = G.PROC, PROD = G.PROD, ING = G.ING;
+
+var SVGNS = 'http://www.w3.org/2000/svg';
+function sv(tag, attr) {
+  var n = document.createElementNS(SVGNS, tag);
+  for (var k in (attr || {})) n.setAttribute(k, attr[k]);
+  return n;
+}
+
+/* ── 스텝별 스냅샷 ─────────────────────────────────────────────── */
+function buildFrames(run) {
+  var byId = {};
+  run.items.forEach(function (i) { byId[i.id] = i; });
+
+  var present = {}, out = [];
+  var totalMass = run.weighSum || 1;
+  var totalMin = run.trace.reduce(function (a, b) { return a + b.min; }, 0) || 1;
+  /* 한 번 잘게 쪼개진 액적은 교반을 늦춘다고 다시 커지지 않는다.
+     그래서 지금까지 겪은 최대 전단을 계속 들고 간다. */
+  var maxTip = 0.7;
+
+  run.trace.forEach(function (t) {
+    var added = [];
+    (t.add || []).forEach(function (id) {
+      if (byId[id] && !present[id]) { present[id] = true; added.push(ING.BY[id].ko); }
+    });
+    var ids = Object.keys(present);
+    var mass = 0;
+    ids.forEach(function (id) { mass += byId[id].actual; });
+
+    var hex = '#E3EAF1', ntu = 0.4, eta = 1;
+    if (ids.length) {
+      var rows = ids.map(function (id) { return { id: id, pct: byId[id].actual }; });
+      if (t.homo > 0) maxTip = Math.max(maxTip, PROC.tipSpeed(run.rig.dHomo, t.homo));
+      try {
+        var r = CHEM.evaluate(rows, { tip: maxTip, sec: 240 });
+        hex = r.color.hex; ntu = r.ntu; eta = r.eta;
+      } catch (e) {}
+    }
+    out.push({
+      ko: t.ko, kind: t.t, temp: t.temp, aji: t.aji, homo: t.homo, vac: t.vac,
+      min: t.min, added: added,
+      level: Math.min(1, mass / totalMass),
+      hex: hex, ntu: ntu, eta: eta,
+      ms: Math.min(800, 170 + t.min / totalMin * 2200)
+    });
+  });
+  return out;
+}
+
+/* ── 탱크 ──────────────────────────────────────────────────────── */
+var TOP = 52, BOT = 194;
+
+function buildTank() {
+  var s = sv('svg', { viewBox: '0 0 260 250', width: '260', height: '250', class: 'tank' });
+  s.setAttribute('style', 'max-width:100%;height:auto');
+
+  var defs = sv('defs');
+  var cp = sv('clipPath', { id: 'tankclip' });
+  cp.appendChild(sv('path', { d: 'M64 48 h132 v120 a26 26 0 0 1 -26 26 h-80 a26 26 0 0 1 -26 -26 z' }));
+  defs.appendChild(cp);
+  s.appendChild(defs);
+
+  /* 자켓 */
+  var jacket = sv('path', {
+    class: 'jacket',
+    d: 'M56 62 h-14 v112 h14 M204 62 h14 v112 h-14'
+  });
+  s.appendChild(jacket);
+
+  /* 증기 */
+  var steam = sv('g', { opacity: '0' });
+  [96, 130, 164].forEach(function (x, i) {
+    var p = sv('path', { class: 'steam', d: 'M' + x + ' 34 c 6 -8 -6 -14 0 -22' });
+    p.setAttribute('style', 'animation-delay:' + (i * 0.5) + 's');
+    steam.appendChild(p);
+  });
+  s.appendChild(steam);
+
+  /* 액체 */
+  var g = sv('g', { 'clip-path': 'url(#tankclip)' });
+  var liq = sv('rect', { class: 'liq', x: '64', y: String(BOT), width: '132', height: '0', fill: '#dfe7ee', opacity: '0.2' });
+  var surf = sv('ellipse', { class: 'surf', cx: '130', cy: String(BOT), rx: '66', ry: '4', fill: '#ffffff', opacity: '0.25' });
+  g.appendChild(liq); g.appendChild(surf);
+
+  var bubs = sv('g', { opacity: '0' });
+  [82, 104, 126, 150, 174].forEach(function (x, i) {
+    var c = sv('circle', { class: 'bub', cx: String(x), cy: '176', r: String(2 + (i % 3)) });
+    c.setAttribute('style', 'animation-delay:' + (i * 0.28) + 's');
+    bubs.appendChild(c);
+  });
+  g.appendChild(bubs);
+  s.appendChild(g);
+
+  /* 벽 · 뚜껑 */
+  s.appendChild(sv('path', { class: 'wall',
+    d: 'M64 48 h132 v120 a26 26 0 0 1 -26 26 h-80 a26 26 0 0 1 -26 -26 z' }));
+  s.appendChild(sv('rect', { class: 'wall', x: '58', y: '38', width: '144', height: '12', rx: '5' }));
+
+  /* 교반축 · 임펠러 */
+  s.appendChild(sv('line', { class: 'shaft', x1: '130', y1: '18', x2: '130', y2: '172' }));
+  var blade = sv('g', { class: 'blade' });
+  blade.appendChild(sv('rect', { x: '98', y: '166', width: '64', height: '7', rx: '3' }));
+  blade.appendChild(sv('rect', { x: '112', y: '152', width: '36', height: '6', rx: '3' }));
+  s.appendChild(blade);
+
+  /* 호모 헤드 */
+  var homo = sv('g', { opacity: '0' });
+  homo.appendChild(sv('circle', { class: 'homoring', cx: '130', cy: '140', r: '15' }));
+  homo.appendChild(sv('circle', { class: 'homoring', cx: '130', cy: '140', r: '8' }));
+  s.appendChild(homo);
+
+  /* 진공 표시 */
+  var vac = sv('g', { opacity: '0' });
+  vac.appendChild(sv('rect', { class: 'vac', x: '206', y: '26', width: '44', height: '20', rx: '9' }));
+  var vt = sv('text', { x: '228', y: '40', 'text-anchor': 'middle',
+    'font-size': '11', 'font-weight': '700', fill: '#8FB6EE' });
+  vt.textContent = '진공';
+  vac.appendChild(vt);
+  s.appendChild(vac);
+
+  return { node: s, liq: liq, surf: surf, jacket: jacket, blade: blade,
+           homo: homo, bubs: bubs, steam: steam, vac: vac };
+}
+
+function paint(T, f) {
+  var y = BOT - f.level * (BOT - TOP);
+  T.liq.setAttribute('y', String(y));
+  T.liq.setAttribute('height', String(Math.max(BOT + 6 - y, 0)));
+  T.liq.setAttribute('fill', f.hex);
+  var alpha = 0.16 + 0.84 * Math.min(1, Math.pow(Math.max(f.ntu, 0.5) / 700, 0.55));
+  T.liq.setAttribute('opacity', alpha.toFixed(3));
+  T.surf.setAttribute('cy', String(y));
+  T.surf.setAttribute('fill', f.hex);
+  T.surf.setAttribute('opacity', (Math.min(0.95, alpha + 0.18)).toFixed(3));
+  T.surf.setAttribute('ry', String(f.aji > 200 ? 8 : f.aji > 0 ? 5 : 3.5));
+
+  T.jacket.setAttribute('class', 'jacket' + (f.temp >= 55 ? ' hot' : f.temp <= 32 ? ' cold' : ''));
+
+  var spin = f.aji > 0;
+  T.blade.setAttribute('class', 'blade' + (spin ? ' spin' : ''));
+  if (spin) T.blade.style.animationDuration = Math.max(0.14, 1.6 - f.aji / 260) + 's';
+
+  T.homo.setAttribute('opacity', f.homo > 0 ? '1' : '0');
+  T.bubs.setAttribute('opacity', (f.homo > 0 && !f.vac) ? '1' : '0');
+  T.steam.setAttribute('opacity', (f.temp >= 68 && !f.vac) ? '1' : '0');
+  T.vac.setAttribute('opacity', f.vac ? '1' : '0');
+}
+
+/* ── 계기판 ────────────────────────────────────────────────────── */
+function readout(kk, vv, uu, cls) {
+  return el('div.read' + (cls ? '.' + cls : ''), null, [
+    el('div.rk', { text: kk }),
+    el('div.rv', null, [String(vv), uu ? el('em', { text: uu }) : null])
+  ]);
+}
+
+/* ── 숫자 카운트업 ─────────────────────────────────────────────── */
+function countUp(node, to, fmt, ms) {
+  node.textContent = fmt(to);            /* 먼저 정답을 넣는다 */
+  if (!window.requestAnimationFrame) return;
+  var t0 = 0;
+  function tick(ts) {
+    if (!t0) t0 = ts;
+    var p = Math.min(1, (ts - t0) / (ms || 700));
+    var e = 1 - Math.pow(1 - p, 3);
+    node.textContent = fmt(to * e);
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ── 실행 ──────────────────────────────────────────────────────── */
+var busy = false;
+
+function show(run, onDone) {
+  if (busy) return false;
+  busy = true;
+  var fr = buildFrames(run);
+  var box = $('#brew');
+  box.hidden = false;
+
+  var stage = clear($('#brewStage'));
+  var foot = clear($('#brewFoot'));
+  var T = buildTank();
+  stage.appendChild(T.node);
+
+  var reads = el('div.brewreads');
+  var flow = el('div.addflow');
+  foot.appendChild(reads);
+  foot.appendChild(flow);
+
+  var i = -1, timer = null, elapsed = 0, ended = false;
+
+  function step() {
+    i++;
+    if (i >= fr.length) { finale(); return; }
+    var f = fr[i];
+    elapsed += f.min;
+    paint(T, f);
+    $('#brewTtl').textContent = (i + 1) + '. ' + f.ko;
+    $('#brewFill').style.width = ((i + 1) / fr.length * 100).toFixed(1) + '%';
+
+    clear(reads);
+    reads.appendChild(readout('온도', Math.round(f.temp), '℃',
+      f.temp >= 55 ? 'hot' : f.temp <= 32 ? 'cold' : ''));
+    reads.appendChild(readout('아지', f.aji ? K.n0(f.aji) : '—', f.aji ? 'rpm' : ''));
+    if (f.homo > 0) reads.appendChild(readout('호모', K.n0(f.homo), 'rpm'));
+    reads.appendChild(readout('누적', Math.round(elapsed), '분'));
+
+    clear(flow);
+    f.added.slice(0, 6).forEach(function (ko) { flow.appendChild(el('span', { text: '↓ ' + ko })); });
+    if (f.added.length > 6) flow.appendChild(el('span', { text: '외 ' + (f.added.length - 6) + '종' }));
+
+    timer = setTimeout(step, f.ms);
+  }
+
+  function finale() {
+    if (ended) return;
+    ended = true;
+    clearTimeout(timer);
+
+    var r = run.res, p = PROD.get(K.S.prod), judge = PROD.judge(K.S.prod, r);
+    var st = r.stability;
+    var okAll = judge.ok && st.score >= 62;
+
+    $('#brewTtl').textContent = '완성';
+    $('#brewFill').style.width = '100%';
+    $('#brewSkip').textContent = '닫기';
+
+    var stage2 = clear($('#brewStage'));
+    var wrap = el('div.reveal');
+
+    /* 완성품 */
+    var alpha = 0.16 + 0.84 * Math.min(1, Math.pow(Math.max(r.ntu, 0.5) / 700, 0.55));
+    var lvl = 92 - Math.max(22, Math.min(74, run.yieldPct * 0.72));
+    var dome = Math.min(8, 1.4 + Math.log(Math.max(r.eta, 1)) / Math.LN10 * 1.4);
+    var jd = document.createElement('div');
+    jd.innerHTML =
+      '<svg width="118" height="140" viewBox="0 0 82 98">' +
+      '<defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="0">' +
+      '<stop offset="0" stop-color="#000" stop-opacity=".2"/><stop offset=".28" stop-color="#fff" stop-opacity=".36"/>' +
+      '<stop offset=".62" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".22"/>' +
+      '</linearGradient><clipPath id="bc1">' +
+      '<path d="M13 9 h56 v66 a12 12 0 0 1 -12 12 h-32 a12 12 0 0 1 -12 -12 z"/></clipPath></defs>' +
+      '<path d="M13 9 h56 v66 a12 12 0 0 1 -12 12 h-32 a12 12 0 0 1 -12 -12 z" fill="rgba(255,255,255,.08)"/>' +
+      '<g clip-path="url(#bc1)">' +
+      '<rect x="13" y="' + lvl + '" width="56" height="98" fill="' + r.color.hex + '" opacity="' + alpha.toFixed(3) + '"/>' +
+      '<ellipse cx="41" cy="' + lvl + '" rx="28" ry="' + dome.toFixed(1) + '" fill="' + r.color.hex + '" opacity="' + (alpha * 0.85).toFixed(3) + '"/>' +
+      '<ellipse cx="41" cy="' + lvl + '" rx="28" ry="' + dome.toFixed(1) + '" fill="#fff" opacity=".22"/>' +
+      '<rect x="13" y="0" width="56" height="98" fill="url(#bg1)"/></g>' +
+      '<path d="M13 9 h56 v66 a12 12 0 0 1 -12 12 h-32 a12 12 0 0 1 -12 -12 z" fill="none" stroke="rgba(255,255,255,.42)" stroke-width="1.6"/>' +
+      '<rect x="10" y="3" width="62" height="7" rx="3" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.36)" stroke-width="1.3"/>' +
+      '</svg>';
+    wrap.appendChild(jd.firstChild);
+
+    wrap.appendChild(el('div.rv-verdict', {
+      style: 'color:' + (okAll ? '#63D398' : judge.ok ? '#E7B45C' : '#F58A8E'),
+      text: judge.ok ? (st.score >= 85 ? '규격 통과' : st.score >= 62 ? '규격은 통과, 불안 요소 있음' : '규격은 맞지만 불안정')
+                     : '규격 미달' }));
+    wrap.appendChild(el('div.rv-sub', {
+      text: p.icon + ' ' + p.ko + ' · ' + K.mass(run.yieldG) + ' 생산 · ' +
+            Math.round(run.minutes) + '분 · ' + r.turb.grade }));
+
+    var mets = el('div.rv-mets');
+    function tile(kk, target, unit, fmt, cls) {
+      var v = el('div.v', null, [el('span', { text: '0' }), unit ? el('em', { text: unit }) : null]);
+      mets.appendChild(el('div.rv-met' + (cls ? '.' + cls : ''), null, [el('div.k', { text: kk }), v]));
+      countUp(v.firstChild, target, fmt, 750);
+    }
+    var sv2 = p.spec.visc, sp2 = p.spec.ph, sn2 = p.spec.ntu;
+    tile('점도', r.eta, 'cP', function (x) { return K.eng(x); },
+      sv2 ? (r.eta >= sv2[0] && r.eta <= sv2[1] ? 'ok' : 'bad') : '');
+    tile('pH', r.pH, '', function (x) { return x.toFixed(2); },
+      sp2 ? (r.pH >= sp2[0] && r.pH <= sp2[1] ? 'ok' : 'bad') : '');
+    tile('탁도', r.ntu, 'NTU', function (x) { return K.eng(x); },
+      sn2 ? (r.ntu >= sn2[0] && r.ntu <= sn2[1] ? 'ok' : 'bad') : '');
+    tile('안정도', st.score, '점', function (x) { return String(Math.round(x)); },
+      st.score >= 85 ? 'ok' : st.score < 62 ? 'bad' : '');
+    wrap.appendChild(mets);
+
+    /* 가장 큰 문제 하나만 */
+    var probs = st.items.concat(run.warn).sort(function (a, b) { return b.sev - a.sev; });
+    if (probs.length) {
+      wrap.appendChild(el('div', {
+        style: 'background:rgba(238,113,118,.14);border:1px solid rgba(238,113,118,.4);' +
+               'border-radius:11px;padding:10px 13px;font-size:13px;color:#F0DDDE;line-height:1.6;width:100%',
+        html: '<b style="display:block;color:#FF9BA0;font-size:13px">가장 큰 문제 — ' +
+              K.esc(probs[0].ko) + ' (−' + probs[0].sev + ')</b>' + K.esc(probs[0].msg) +
+              (probs.length > 1 ? '<span style="color:#A8B6C4"> · 외 ' + (probs.length - 1) + '건</span>' : '')
+      }));
+    }
+
+    /* 과제 */
+    if (K.S.mission && G.MISS) {
+      var mg = G.MISS.grade(K.S.mission, run, K.S);
+      wrap.appendChild(el('div', {
+        style: 'background:' + (mg.ok ? 'rgba(84,196,134,.15)' : 'rgba(255,255,255,.08)') +
+               ';border:1px solid ' + (mg.ok ? 'rgba(84,196,134,.45)' : 'rgba(255,255,255,.18)') +
+               ';border-radius:11px;padding:10px 13px;font-size:13px;width:100%;text-align:center;color:#E3EAF1',
+        html: '<b style="font-size:14px;color:' + (mg.ok ? '#63D398' : '#E3EAF1') + '">' +
+              (mg.ok ? '과제 통과 · ' + mg.grade + ' 등급 ' + mg.score + '점' : '과제 미달') +
+              '</b><br><span style="color:#A8B6C4">' + K.esc(K.S.mission.ko) + ' — 필수 ' +
+              mg.must.filter(function (x) { return x.ok; }).length + '/' + mg.must.length + '</span>'
+      }));
+    }
+
+    wrap.appendChild(el('button.btn.pri.wide', {
+      style: 'margin-top:2px', text: '자세히 보기', onclick: close
+    }));
+    stage2.appendChild(wrap);
+  }
+
+  function close() {
+    clearTimeout(timer);
+    box.hidden = true;
+    busy = false;
+    $('#brewSkip').textContent = '건너뛰기';
+    if (onDone) onDone();
+  }
+
+  function skip() {
+    if (ended) { close(); return; }
+    clearTimeout(timer);
+    paint(T, fr[fr.length - 1]);
+    finale();
+  }
+
+  $('#brewSkip').onclick = skip;
+  box.onclick = function (e) { if (e.target === box) skip(); };
+
+  step();
+  return true;
+}
+
+function enabled() {
+  try { return localStorage.getItem('formulab.brew') !== '0'; } catch (e) { return true; }
+}
+function setEnabled(v) {
+  try { localStorage.setItem('formulab.brew', v ? '1' : '0'); } catch (e) {}
+}
+
+G.BREW = { show: show, enabled: enabled, setEnabled: setEnabled };
 })(window);
 
 /* =====================================================================
@@ -4965,6 +5468,17 @@ function openMenu() {
       } }),
       el('button.btn.sm', { text: 'JSON 내려받기', onclick: dumpJson }),
       el('button.btn.sm', { text: 'JSON 불러오기', onclick: loadJson })
+    ]),
+
+    el('h3.sec', { text: '제조 연출' }),
+    el('div', { style: 'display:flex;align-items:center;gap:10px' }, [
+      el('button.btn.sm', { text: G.BREW.enabled() ? '연출 켜짐 — 끄기' : '연출 꺼짐 — 켜기',
+        onclick: function (e) {
+          G.BREW.setEnabled(!G.BREW.enabled());
+          e.target.textContent = G.BREW.enabled() ? '연출 켜짐 — 끄기' : '연출 꺼짐 — 켜기';
+          K.toast(G.BREW.enabled() ? '제조 과정을 보여줍니다' : '결과만 바로 보여줍니다');
+        } }),
+      el('span', { style: 'font-size:12.5px;color:var(--ink-3)', text: '제조 중 탱크 안을 보여줄지' })
     ]),
 
     el('h3.sec', { text: '화면' }),
@@ -5123,6 +5637,9 @@ function boot() {
   q.addEventListener('input', function () { S.q = q.value; UI.renderIngList(); });
   $('#qClear').addEventListener('click', function () { S.q = ''; q.value = ''; q.focus(); UI.renderIngList(); });
   $('#pickDone').addEventListener('click', UI.closePicker);
+  $('#btnLearn').addEventListener('click', UI.openLearn);
+  $('#learnDone').addEventListener('click', UI.closeLearn);
+  $('#learn').addEventListener('click', function (e) { if (e.target.id === 'learn') UI.closeLearn(); });
   $('#picker').addEventListener('click', function (e) { if (e.target.id === 'picker') UI.closePicker(); });
 
   K.$$('#nav button').forEach(function (b) {
@@ -5133,6 +5650,7 @@ function boot() {
     var typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName);
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); UI.run(false); }
     if (e.key === 'Escape' && !$('#picker').hidden) { e.preventDefault(); UI.closePicker(); }
+    else if (e.key === 'Escape' && !$('#learn').hidden) { e.preventDefault(); UI.closeLearn(); }
     if (e.key === '/' && !typing) { e.preventDefault(); UI.openPicker(); }
   });
 

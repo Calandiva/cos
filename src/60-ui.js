@@ -294,7 +294,7 @@ function showIng(g) {
 /* =====================================================================
    중간 패널
    ===================================================================== */
-var MIDS = [{ k: 'form', ko: '처방' }, { k: 'proc', ko: '공정' }, { k: 'learn', ko: '학습' }];
+var MIDS = [{ k: 'form', ko: '처방' }, { k: 'proc', ko: '공정' }];
 
 function renderMid() {
   var tabs = clear($('#midtabs'));
@@ -307,9 +307,27 @@ function renderMid() {
   $('#midTitle').textContent = (MIDS.filter(function (m) { return m.k === S.mid; })[0] || {}).ko || '';
   clear($('#midTools')); clear($('#midFoot'));
   var body = clear($('#midBody'));
-  if (S.mid === 'form') renderFormula(body);
-  else if (S.mid === 'proc') renderProcess(body);
-  else renderLearn(body);
+  if (S.mid === 'proc') renderProcess(body); else renderFormula(body);
+  renderStrip();
+}
+
+/* ── 진행 중인 과제 띠 ─────────────────────────────────────────── */
+function renderStrip() {
+  var n = $('#misStrip');
+  if (!S.mission) { n.hidden = true; clear(n); return; }
+  var m = S.mission;
+  var done = S.progress[m.id];
+  clear(n); n.hidden = false;
+  n.appendChild(el('div.mi', { text: done ? '✓' : '✦' }));
+  n.appendChild(el('div.mt', null, [
+    el('b', { text: m.ko }),
+    el('small', { text: TYPEKO[m.type] + ' · ' + PROD.get(m.ch).ko +
+      (done ? ' · 통과 ' + done.grade : ' · 필수 ' + m.must.length + '개') })
+  ]));
+  n.appendChild(el('button', { text: '조건', onclick: function () { openMission(m); } }));
+  n.appendChild(el('button', { text: '그만', onclick: function () {
+    S.mission = null; renderAll(); persist(); K.toast('자유 모드로 돌아갔습니다');
+  } }));
 }
 
 /* ── 처방 ──────────────────────────────────────────────────────── */
@@ -808,10 +826,20 @@ function gradeColor(g) {
   return g === 'S' ? 'var(--acc)' : g === 'A' ? 'var(--ok)' : g === 'B' ? 'var(--info)' : 'var(--warn)';
 }
 
-function renderLearn(body) {
+function openLearn() {
+  $('#learn').hidden = false;
+  renderLearn();
+}
+function closeLearn() {
+  $('#learn').hidden = true;
+  syncNav();
+}
+
+function renderLearn() {
+  var body = clear($('#learnBody'));
   var tot = MISS.LIST.length;
   var done = MISS.LIST.filter(function (m) { return S.progress[m.id]; }).length;
-  $('#midTools').appendChild(el('span.badge.info', { style: 'padding:5px 11px', text: done + ' / ' + tot }));
+  $('#learnProg').textContent = done + ' / ' + tot;
 
   body.appendChild(el('div', { style: 'padding:12px;background:var(--panel-2);border-bottom:1px solid var(--line)' }, [
     el('div', { style: 'font-size:15px;font-weight:600', text: '17개 제품군 · ' + tot + '개 과제' }),
@@ -824,7 +852,7 @@ function renderLearn(body) {
     var open = S.openCh === ch.key;
     var sec = el('div.chapter');
     sec.appendChild(el('button.ch-hd', {
-      onclick: function () { S.openCh = open ? null : ch.key; renderMid(); }
+      onclick: function () { S.openCh = open ? null : ch.key; renderLearn(); }
     }, [
       el('div.ic', { text: ch.icon }),
       el('div.t', null, [
@@ -899,6 +927,7 @@ function startMission(m) {
     });
   }
   S.mid = 'form'; S.view = 'form';
+  closeLearn();
   syncTop(); renderAll(); go('form');
   K.toast('과제 시작 — ' + m.ko);
 }
@@ -959,7 +988,11 @@ function runBatch(spread) {
     if (window.console) console.error(e);
     return;
   }
-  go('res'); renderResult(); persist();
+  renderResult(); persist();
+  var shown = false;
+  if (!spread && G.BREW && G.BREW.enabled())
+    shown = G.BREW.show(S.result, function () { go('res'); renderResult(); renderStrip(); });
+  if (!shown) { go('res'); renderResult(); }
 }
 
 function syncNav() {
@@ -967,9 +1000,10 @@ function syncNav() {
 }
 
 function go(v) {
+  if (v === 'learn') { openLearn(); return; }
   S.view = v;
-  if (v === 'form' || v === 'proc' || v === 'learn') S.mid = v;
-  var map = { form: 'p-mid', proc: 'p-mid', learn: 'p-mid', res: 'p-res' };
+  if (v === 'form' || v === 'proc') S.mid = v;
+  var map = { form: 'p-mid', proc: 'p-mid', res: 'p-res' };
   K.$$('.pane').forEach(function (n) { n.classList.toggle('active', n.id === map[v]); });
   syncNav();
   renderMid();
@@ -980,7 +1014,7 @@ function syncTop() {
   $('#btnBatch').textContent = K.mass(S.batchG);
 }
 
-function renderAll() { syncTop(); renderMid(); renderResult(); }
+function renderAll() { syncTop(); renderMid(); renderResult(); renderStrip(); }
 
 function persist() {
   K.save({
@@ -993,6 +1027,8 @@ G.UI = {
   renderAll: renderAll, renderMid: renderMid, renderResult: renderResult,
   renderIngList: renderIngList, renderCats: renderCats,
   openPicker: openPicker, closePicker: closePicker,
+  openLearn: openLearn, closeLearn: closeLearn, renderLearn: renderLearn,
+  renderStrip: renderStrip,
   go: go, run: runBatch, syncTop: syncTop, persist: persist,
   showIng: showIng, openMission: openMission, startMission: startMission,
   materialize: materialize, stepper: stepper, pctText: pctText,

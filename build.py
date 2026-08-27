@@ -4,7 +4,8 @@ import io, os
 
 SRC = 'src'
 JS = ['20-ingredients.js', '22-products.js', '24-process.js', '30-core.js',
-      '40-chem.js', '45-sim.js', '50-missions.js', '60-ui.js', '80-app.js', '99-boot.js']
+      '40-chem.js', '45-sim.js', '50-missions.js', '60-ui.js', '65-brew.js',
+      '80-app.js', '99-boot.js']
 
 def rd(n):
     return io.open(os.path.join(SRC, n), encoding='utf-8').read()

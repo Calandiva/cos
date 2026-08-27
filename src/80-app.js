@@ -114,6 +114,17 @@ function openMenu() {
       el('button.btn.sm', { text: 'JSON 불러오기', onclick: loadJson })
     ]),
 
+    el('h3.sec', { text: '제조 연출' }),
+    el('div', { style: 'display:flex;align-items:center;gap:10px' }, [
+      el('button.btn.sm', { text: G.BREW.enabled() ? '연출 켜짐 — 끄기' : '연출 꺼짐 — 켜기',
+        onclick: function (e) {
+          G.BREW.setEnabled(!G.BREW.enabled());
+          e.target.textContent = G.BREW.enabled() ? '연출 켜짐 — 끄기' : '연출 꺼짐 — 켜기';
+          K.toast(G.BREW.enabled() ? '제조 과정을 보여줍니다' : '결과만 바로 보여줍니다');
+        } }),
+      el('span', { style: 'font-size:12.5px;color:var(--ink-3)', text: '제조 중 탱크 안을 보여줄지' })
+    ]),
+
     el('h3.sec', { text: '화면' }),
     el('div.seg', { style: 'width:fit-content' }, [
       el('button', { text: '밝게', onclick: function () { theme('light'); } }),
@@ -270,6 +281,9 @@ function boot() {
   q.addEventListener('input', function () { S.q = q.value; UI.renderIngList(); });
   $('#qClear').addEventListener('click', function () { S.q = ''; q.value = ''; q.focus(); UI.renderIngList(); });
   $('#pickDone').addEventListener('click', UI.closePicker);
+  $('#btnLearn').addEventListener('click', UI.openLearn);
+  $('#learnDone').addEventListener('click', UI.closeLearn);
+  $('#learn').addEventListener('click', function (e) { if (e.target.id === 'learn') UI.closeLearn(); });
   $('#picker').addEventListener('click', function (e) { if (e.target.id === 'picker') UI.closePicker(); });
 
   K.$$('#nav button').forEach(function (b) {
@@ -280,6 +294,7 @@ function boot() {
     var typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName);
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); UI.run(false); }
     if (e.key === 'Escape' && !$('#picker').hidden) { e.preventDefault(); UI.closePicker(); }
+    else if (e.key === 'Escape' && !$('#learn').hidden) { e.preventDefault(); UI.closeLearn(); }
     if (e.key === '/' && !typing) { e.preventDefault(); UI.openPicker(); }
   });
 

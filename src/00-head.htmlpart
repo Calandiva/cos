@@ -185,15 +185,16 @@ input[type=search],input[type=text]{
 .stp.sm .v b{font-size:14px}
 
 /* ══ 원료 고르기 오버레이 ════════════════════════════════════════ */
-#picker{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;
-  background:rgba(14,22,30,.45);backdrop-filter:blur(3px)}
-#picker .box{
+.ovl{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;
+  background:rgba(14,22,30,.45);backdrop-filter:blur(3px);animation:ovlin .18s ease}
+@keyframes ovlin{from{opacity:0}to{opacity:1}}
+.ovl .box{
   background:var(--panel);display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
   box-shadow:var(--shadow);
 }
-#picker .phd{display:flex;align-items:center;gap:10px;padding:10px 12px;
+.ovl .phd{display:flex;align-items:center;gap:10px;padding:10px 12px;
   border-bottom:1px solid var(--line);flex:0 0 auto}
-#picker .phd b{font-size:17px;font-weight:700;flex:0 0 auto}
+.ovl .phd b{font-size:17px;font-weight:700;flex:0 0 auto}
 .srch{position:relative;flex:1 1 auto}
 .srch input{padding-left:38px;padding-right:40px}
 .srch .mag{position:absolute;left:13px;top:50%;transform:translateY(-50%);
@@ -389,8 +390,9 @@ h3.sec:first-child{margin-top:0}
   .sheet{border-radius:16px;max-height:84dvh}
   .grab{display:none}
   .toast{bottom:26px}
-  #picker{padding:32px;align-items:center;justify-content:center}
-  #picker .box{max-width:780px;width:100%;max-height:84dvh;border-radius:16px;flex:0 1 auto}
+  .ovl{padding:32px;align-items:center;justify-content:center}
+  .ovl .box{max-width:780px;width:100%;max-height:84dvh;border-radius:16px;flex:0 1 auto}
+  #learn .box{max-width:720px}
   .frow{padding:10px 14px}
   .irow{padding:11px 14px}
 }
@@ -407,4 +409,85 @@ h3.sec:first-child{margin-top:0}
   .topmid{display:flex;gap:8px;align-items:center;min-width:0}
   .topmid select{max-width:170px}
 }
+
+/* ══ 과제 띠 ═════════════════════════════════════════════════════ */
+#misStrip{display:flex;align-items:center;gap:9px;padding:9px 12px;flex:0 0 auto;
+  background:var(--acc-soft);border-bottom:1px solid var(--acc-line)}
+#misStrip .mi{font-size:15px;flex:0 0 auto}
+#misStrip .mt{flex:1 1 auto;min-width:0}
+#misStrip .mt b{display:block;font-size:13.5px;font-weight:700;color:var(--acc);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#misStrip .mt small{font-size:11.5px;color:var(--ink-2)}
+#misStrip button{flex:0 0 auto;min-height:32px;padding:0 10px;border-radius:8px;
+  font-size:12.5px;font-weight:600;color:var(--acc);border:1px solid var(--acc-line);background:var(--panel)}
+
+/* ══ 제조 연출 ═══════════════════════════════════════════════════ */
+#brew{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;
+  background:rgba(10,16,22,.82);backdrop-filter:blur(6px);animation:ovlin .2s ease}
+.brewbox{width:100%;max-width:560px;padding:18px;display:flex;flex-direction:column;gap:14px;
+  max-height:100dvh;overflow:auto}
+.brewtop{display:flex;align-items:center;gap:12px}
+.brewttl{flex:1 1 auto;color:#F3F6F9;font-size:19px;font-weight:700;letter-spacing:-.3px;min-width:0}
+#brewSkip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);color:#F3F6F9}
+#brewSkip:hover{background:rgba(255,255,255,.2)}
+.brewstage{display:flex;align-items:center;justify-content:center;min-height:262px;position:relative}
+.brewbar{height:5px;border-radius:3px;background:rgba(255,255,255,.16);overflow:hidden}
+.brewbar i{display:block;height:100%;width:0;background:var(--acc);border-radius:3px;
+  transition:width .28s linear}
+.brewfoot{color:#DCE4EC;min-height:80px}
+
+.brewreads{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.read{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);
+  border-radius:10px;padding:6px 12px;text-align:center;min-width:78px}
+.read .rk{font-size:10.5px;color:#9FB0BF;font-weight:600}
+.read .rv{font-family:var(--mono);font-size:17px;font-weight:600;color:#F3F6F9;letter-spacing:-.4px}
+.read .rv em{font-style:normal;font-size:10.5px;color:#9FB0BF;margin-left:2px}
+.read.hot .rv{color:#FF9E6B}
+.read.cold .rv{color:#7FC4F0}
+
+.addflow{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:10px;min-height:24px}
+.addflow span{font-size:12px;font-weight:600;padding:3px 10px;border-radius:12px;
+  background:rgba(255,255,255,.14);color:#F3F6F9;animation:drop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes drop{from{opacity:0;transform:translateY(-14px) scale(.9)}to{opacity:1;transform:none}}
+
+/* 결과 공개 */
+.reveal{display:flex;flex-direction:column;align-items:center;gap:14px;
+  animation:pop .5s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+.reveal .rv-verdict{font-size:26px;font-weight:700;letter-spacing:-.6px;text-align:center;line-height:1.3}
+.reveal .rv-sub{font-size:13.5px;color:#A8B6C4;text-align:center;margin-top:-6px}
+.rv-mets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+.rv-met{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  border-radius:11px;padding:9px 6px;text-align:center}
+.rv-met.ok{border-color:rgba(84,196,134,.6);background:rgba(84,196,134,.13)}
+.rv-met.bad{border-color:rgba(238,113,118,.6);background:rgba(238,113,118,.13)}
+.rv-met .k{font-size:10.5px;color:#9FB0BF;font-weight:600}
+.rv-met .v{font-family:var(--mono);font-size:17px;font-weight:600;color:#F3F6F9;letter-spacing:-.5px}
+.rv-met .v em{font-style:normal;font-size:10px;color:#9FB0BF;margin-left:1px}
+@media (max-width:440px){ .rv-mets{grid-template-columns:repeat(2,1fr)} }
+
+/* 탱크 SVG */
+.tank .wall{fill:none;stroke:rgba(255,255,255,.38);stroke-width:2.4}
+.tank .jacket{fill:none;stroke:rgba(255,255,255,.16);stroke-width:9;stroke-linecap:round;
+  transition:stroke .5s}
+.tank .jacket.hot{stroke:rgba(255,138,86,.55)}
+.tank .jacket.cold{stroke:rgba(110,180,240,.5)}
+.tank .liq{transition:y .55s ease, height .55s ease, fill .7s ease, opacity .7s ease}
+.tank .surf{transition:cy .55s ease, fill .7s ease, opacity .7s ease, ry .35s ease}
+.tank .shaft{stroke:rgba(255,255,255,.5);stroke-width:3;stroke-linecap:round}
+.tank .blade{fill:rgba(255,255,255,.62)}
+.tank .spin{transform-box:fill-box;transform-origin:center;animation:blade 1s linear infinite}
+@keyframes blade{
+  0%{transform:scaleX(1)}25%{transform:scaleX(.12)}
+  50%{transform:scaleX(-1)}75%{transform:scaleX(.12)}100%{transform:scaleX(1)}}
+.tank .homoring{fill:none;stroke:rgba(255,255,255,.55);stroke-width:2.5;
+  transform-box:fill-box;transform-origin:center;animation:blade .32s linear infinite}
+.tank .bub{fill:rgba(255,255,255,.55);animation:rise 1.6s linear infinite}
+@keyframes rise{from{transform:translateY(0);opacity:0}
+  18%{opacity:.85}to{transform:translateY(-96px);opacity:0}}
+.tank .steam{fill:none;stroke:rgba(255,255,255,.3);stroke-width:2.6;stroke-linecap:round;
+  animation:steam 2.4s ease-in-out infinite}
+@keyframes steam{0%{opacity:0;transform:translateY(6px)}
+  35%{opacity:.7}100%{opacity:0;transform:translateY(-22px)}}
+.tank .vac{fill:rgba(126,166,240,.22);stroke:rgba(126,166,240,.6);stroke-width:1.6}
 </style>

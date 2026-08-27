@@ -7,14 +7,16 @@
       <button id="btnBatch" class="btn" title="배치 규모">1 kg</button>
     </div>
     <div class="grow"></div>
+    <button id="btnLearn" class="btn wide-only" title="학습 과정">✦ 학습</button>
     <button id="btnRun" class="btn pri">제조</button>
     <button id="btnMenu" class="btn ico" title="설정" aria-label="설정">≡</button>
   </header>
 
   <div id="main">
 
-    <!-- 처방 / 공정 / 학습 -->
+    <!-- 처방 / 공정 -->
     <section class="pane active" id="p-mid" data-col="1">
+      <div id="misStrip" hidden></div>
       <div class="pane-hd">
         <div class="seg wide-only" id="midtabs"></div>
         <h2 id="midTitle" class="narrow-only">처방</h2>
@@ -48,7 +50,7 @@
 </div>
 
 <!-- 원료 고르기 -->
-<div id="picker" hidden>
+<div id="picker" class="ovl" hidden>
   <div class="box">
     <div class="phd">
       <b class="wide-only">원료</b>
@@ -65,5 +67,31 @@
       <span id="icount" style="font-size:12.5px;color:var(--ink-3)"></span>
       <span id="ptotal" style="font-size:12.5px;color:var(--ink-3);margin-left:auto"></span>
     </div>
+  </div>
+</div>
+
+<!-- 학습 -->
+<div id="learn" class="ovl" hidden>
+  <div class="box">
+    <div class="phd">
+      <b>✦ 학습 과정</b>
+      <span id="learnProg" style="font-size:13px;color:var(--ink-3);font-family:var(--mono)"></span>
+      <div style="flex:1"></div>
+      <button class="btn" id="learnDone">닫기</button>
+    </div>
+    <div class="ilist" id="learnBody"></div>
+  </div>
+</div>
+
+<!-- 제조 연출 -->
+<div id="brew" hidden>
+  <div class="brewbox">
+    <div class="brewtop">
+      <div class="brewttl" id="brewTtl">제조 준비</div>
+      <button class="btn sm" id="brewSkip">건너뛰기</button>
+    </div>
+    <div class="brewstage" id="brewStage"></div>
+    <div class="brewbar"><i id="brewFill"></i></div>
+    <div class="brewfoot" id="brewFoot"></div>
   </div>
 </div>
