@@ -72,7 +72,7 @@ function composition(rows) {
     total: 0, water: 0, polyol: 0, oil: 0, wax: 0, powder: 0,
     emul: 0, emulHi: 0, emulLo: 0, surf: 0, surfActive: 0, cond: 0,
     lam: 0, salt: 0, saltAdd: 0, etoh: 0, nacl: 0, thickGel: 0,
-    uvOrg: 0, uvInorg: 0, spfRaw: 0, pfaRaw: 0, foamRaw: 0, hardRaw: 0,
+    uvOrg: 0, uvInorg: 0, spfRaw: 0, pfaRaw: 0, foamRaw: 0, hardRaw: 0, oxIdx: 0, antiox: 0,
     extract: 0, filmer: 0, pigment: 0,
     oilVol: 0, watVol: 0, pwdVol: 0, totVol: 0,
     riOil: 0, riWat: 0, cost: 0, rhSum: 0, rhW: 0, hlbSum: 0, hlbW: 0,
@@ -147,6 +147,9 @@ function composition(rows) {
     if (['isododec', 'undectri', 'c1315', 'd5', 'dce', 'dime5', 'dime350', 'dimecop',
          'hpstarch', 'ps15', 'bos', 'inn'].indexOf(g.id) >= 0) a.filmer += c;
     if (g.tint > 20) a.pigment += c;
+    a.oxIdx += (g.ox || 0) * c;
+    if (g.id === 'tocoph' || g.id === 'tocotri') a.antiox += c;
+    if (g.id === 'bht') a.antiox += c * 6;
     if (g.th) a.thickers.push({ g: g, c: c });
     if (g.tint > 0.05) a.colors.push({ g: g, c: c });
   });
@@ -369,8 +372,9 @@ function viscosity(a, env) {
   var nIdx = cl(1 - 0.78 * frac, 0.16, 1);
 
   /* (8) 항복응력 (Pa) — 파우더·액적 부유 판정 */
-  var yieldS = gel > 20 ? 0.06 * Math.pow(gel, 0.72) : 0;
-  if (lamV > 500) yieldS += 0.04 * Math.pow(lamV, 0.72);   /* 라멜라가 액적을 붙든다 */
+  /* 항복응력 (Pa) — 0.45% 카보머 겔 ≈ 60, 크림 ≈ 20, 로션 ≈ 3 에 맞춘 곡선 */
+  var yieldS = gel > 20 ? 3.2e-4 * Math.pow(gel, 1.216) : 0;
+  if (lamV > 500) yieldS += 1.49e-5 * Math.pow(lamV, 1.332);   /* 라멜라가 액적을 붙든다 */
   if (a.thickers.some(function (t) { return t.g.id === 'xanthan' || t.g.id === 'gellan'; })) yieldS *= 2.2;
 
   return { eta: eta, gel: gel, lam: lamV, surfV: surfV, KD: KD, n: nIdx,
@@ -568,6 +572,35 @@ function stability(a, env) {
     if (a.phi > 0.70) bad(20, '상 반전 위험', '내상 부피분율 ' + (a.phi * 100).toFixed(0) + '%. 74%를 넘으면 O/W가 W/O로 뒤집힌다.');
   }
 
+  /* ── 제형이 성립하는가 ─────────────────────────────────────────
+     점도도 유화도 세정력도 없는 것은 "묽은 무엇" 이지 제품이 아니다.     */
+  var structure = v.gel + v.lam + v.surfV;
+  var oilTot = a.oil + a.wax;
+  var nRows = a.rows.length;
+
+  /* 이 제품이 "되기" 를 가져야 하는가. 규격 점도 하한이 알려 준다. */
+  var wantsBody = env.expectVisc ? env.expectVisc[0] >= 400 : true;
+
+  if (wantsBody && a.water > 60 && structure < 25 && oilTot < 1 && a.surfActive < 1 && a.powder < 1) {
+    bad(30, '제형이 없다',
+      '물에 몇 가지를 녹여 놓았을 뿐이다. 점증제도 유화제도 세정 계면활성제도 없어 ' +
+      '통에 담으면 그냥 물처럼 흐른다. 무엇을 만들려는지에 따라 ' +
+      '점증제(젤·에센스) · 유화제와 오일(로션·크림) · 계면활성제(세정) 중 하나는 반드시 있어야 한다.');
+  } else if (a.water > 40 && structure < 25 && oilTot >= 1 && a.emul < 0.05) {
+    bad(28, '섞이지 않는 조합',
+      '오일 ' + oilTot.toFixed(1) + '% 를 물에 넣었는데 유화제가 없다. ' +
+      '섞는 순간부터 갈라지기 시작해 통에 담기도 전에 두 층이 된다.');
+  }
+
+  if (nRows <= 3 && a.water > 50)
+    bad(12, '처방이라 하기 어렵다',
+      '원료가 ' + nRows + '종뿐이다. 실제 제품은 보습·점증·유화·방부·pH 조절이 각자의 역할로 들어간다.');
+
+  if (a.water > 30 && (a.byCat.humect || 0) < 0.5 && !a.anhydrous)
+    bad(6, '보습제 없음',
+      '보습제가 없다. 바르고 나면 물만 증발하고 남는 것이 없어 오히려 당긴다. ' +
+      '글리세린·부틸렌글라이콜을 5% 안팎으로 넣는다.');
+
   /* 전해질 vs 카보머 */
   var carb = a.thickers.filter(function (t) { return t.g.id === 'carb940' || t.g.id === 'pemulen'; });
   if (carb.length && a.salt > 0.5)
@@ -665,7 +698,7 @@ function evaluate(rows, env) {
   var uv = uvProtect(a, { d32: d32, uvUndissolved: env.uvUndissolved });
 
   var senv = {
-    drop: dp, visc: v, pH: p, alpha: alpha,
+    drop: dp, visc: v, pH: p, alpha: alpha, expectVisc: env.expectVisc,
     precipNotes: (env.precipNotes || []).concat(uv ? uv.notes : []),
     lossNotes: env.lossNotes
   };
@@ -682,12 +715,60 @@ function evaluate(rows, env) {
   };
 }
 
+/* =====================================================================
+   9. 경시 변화 — 보관하면 무슨 일이 생기는가
+   ---------------------------------------------------------------------
+   days  보관 일수     hot  45℃ 가속 여부(가속 4주 ≈ 상온 1년)
+   ===================================================================== */
+function age(res, days, hot) {
+  var a = res.agg, accel = hot ? 13 : 1;
+  var d = days * accel;
+  var notes = [];
+
+  /* 층 분리 — 크리밍 속도 × 시간. 항복응력이 붙들면 0 */
+  var sepMm = Math.min(45, (res.cream || 0) * d);
+  if (sepMm > 0.6) notes.push({
+    lv: sepMm > 12 ? 3 : sepMm > 4 ? 2 : 1, ko: '층 분리',
+    msg: sepMm > 12 ? '위쪽에 뚜렷한 크림층이 생겼다. 흔들어도 완전히 돌아오지 않는다.'
+       : sepMm > 4  ? '위층이 눈에 띄게 진해졌다. 흔들면 섞이지만 다시 뜬다.'
+                    : '자세히 보면 위쪽이 조금 진하다.' });
+
+  /* 갈변 — 산화 지수 × 시간 */
+  var protect = 1 - Math.min(0.55, a.antiox * 0.5);
+  var brown = 0.018 * d * a.oxIdx / 10 * protect;
+  if (brown > 1.2) notes.push({
+    lv: brown > 10 ? 3 : brown > 4 ? 2 : 1, ko: '변색',
+    msg: brown > 10 ? '누렇다 못해 갈색으로 변했다.'
+       : brown > 4  ? '뚜렷하게 누레졌다.'
+                    : '처음보다 살짝 노란기가 돈다.' });
+
+  /* 액적 성장 — 유화제가 모자라면 합일이 계속된다 */
+  var dp = res.drop, dNew = res.d32;
+  if (dp && !dp.minor && res.d32) {
+    var rate = dp.starved ? 0.006 : 0.0012;
+    dNew = res.d32 * (1 + rate * d);
+    if (dNew > res.d32 * 1.6) notes.push({
+      lv: dNew > res.d32 * 3 ? 3 : 2, ko: '액적 성장',
+      msg: '액적이 ' + res.d32.toFixed(2) + ' → ' + dNew.toFixed(2) + ' µm 로 굵어졌다. ' +
+           '탁도가 변하고 사용감이 거칠어진다.' });
+  }
+
+  /* 점도 변화 — 고온에서 겔이 풀린다 */
+  var etaNew = res.eta * (hot ? Math.max(0.72, 1 - 0.0016 * d) : Math.max(0.88, 1 - 0.0004 * d));
+
+  /* 색 다시 계산 */
+  var c2 = color(a, { ntu: res.ntu, browning: (res.color.browning || 0) + brown });
+
+  return { days: days, hot: hot, sepMm: sepMm, brown: brown,
+           d32: dNew, eta: etaNew, color: c2, notes: notes };
+}
+
 G.CHEM = {
   composition: composition, pH: pH, neutralDegree: neutralDegree,
   neutralizerNeeded: neutralizerNeeded, dropletSize: dropletSize,
   viscosity: viscosity, apparent: apparent, turbidity: turbidity,
   color: color, stability: stability, evaluate: evaluate,
-  uvProtect: uvProtect, foaming: foaming, hardness: hardness,
+  uvProtect: uvProtect, foaming: foaming, hardness: hardness, age: age,
   labToRgb: labToRgb, grade: grade, surfActivity: surfActivity, AB: AB, OILV: OILV,
   cl: cl, smooth: smooth
 };

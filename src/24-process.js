@@ -263,6 +263,35 @@ function buildTemplate(rows, kind, rig) {
       add: A.concat(B).concat(E).concat(C).concat(D) }));
     st.push(S('discharge', { ko: '배출', temp: 25, aji: 60, min: 10 }));
   }
+  return prune(st, B.length > 0);
+}
+
+/* 실제로 투입할 것이 없는 스텝은 지운다.
+   방부제를 하나도 안 넣었는데 "방부 투입" 스텝이 남아 있으면 안 된다. */
+function prune(st, hasOil) {
+  var needAdd = { add: 1, neutralize: 1, hydrate: 1, melt: 1, grind: 1 };
+  st = st.filter(function (s) {
+    if (needAdd[s.t] && (!s.add || !s.add.length)) return false;
+    if (!hasOil && (s.t === 'emulsify' || s.t === 'melt' || s.t === 'grind')) return false;
+    return true;
+  });
+  /* 남은 첨가 스텝의 이름을 실제 내용에 맞춘다 */
+  st.forEach(function (s) {
+    if (s.t !== 'add' || !s.add.length) return;
+    var seen = {}, part = [];
+    s.add.forEach(function (id) {
+      var g = ING.BY[id]; if (!g) return;
+      var ko = g.cat === 'presv' ? '방부'
+             : g.cat === 'active' ? '활성'
+             : g.cat === 'humect' || g.cat === 'water' ? '보습'
+             : g.id === 'parfum' || g.id === 'menthol' ? '향'
+             : g.cat === 'cond' ? '컨디셔닝'
+             : g.cat === 'misc' ? '첨가'
+             : g.cat === 'oil' || g.cat === 'sili' ? '오일' : '첨가';
+      if (!seen[ko]) { seen[ko] = 1; part.push(ko); }
+    });
+    if (part.length) s.ko = '냉각 첨가 (' + part.slice(0, 3).join('·') + ')';
+  });
   return st;
 }
 

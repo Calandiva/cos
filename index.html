@@ -523,6 +523,50 @@ h3.sec:first-child{margin-top:0}
 .tip div{font-size:13.5px;color:var(--ink-2);line-height:1.7}
 .wlist{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2);line-height:1.75}
 .wlist li{margin:5px 0}
+
+/* ══ 육안 분석 ═══════════════════════════════════════════════════ */
+.visbody{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:auto}
+.visleft{flex:0 0 auto;padding:14px 14px 6px;display:flex;flex-direction:column;
+  align-items:center;gap:12px;background:var(--panel-2);border-bottom:1px solid var(--line)}
+#visStage{display:flex;justify-content:center;width:100%}
+#visStage svg{filter:drop-shadow(0 6px 18px rgba(0,0,0,.18))}
+#visCtl{width:100%;display:flex;flex-direction:column;gap:7px;max-width:460px}
+.vctl{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.vlab{font-size:12px;font-weight:700;color:var(--ink-3);min-width:38px}
+.vctl .chip{min-height:32px;padding:0 11px;font-size:12.5px}
+.vctl input[type=range]{-webkit-appearance:none;appearance:none;height:26px;background:none}
+.vctl input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--panel-3)}
+.vctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;
+  border-radius:50%;background:var(--acc);margin-top:-8.5px;border:2px solid var(--panel);
+  box-shadow:var(--shadow-sm)}
+.vctl input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:var(--panel-3)}
+.vctl input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;
+  background:var(--acc);border:2px solid var(--panel)}
+
+.visright{flex:1 1 auto;padding:12px 14px 18px;min-height:0}
+.vrow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.vrow .vk{width:64px;flex:0 0 auto;font-size:12.5px;font-weight:700;color:var(--ink-3);padding-top:2px}
+.vrow .vv{flex:1 1 auto;min-width:0}
+.vrow .vv b{font-size:14.5px;font-weight:600;display:inline}
+.vrow .vv small{display:block;font-size:12px;color:var(--ink-3);font-family:var(--mono);margin-top:2px}
+.vsw{display:inline-block;width:16px;height:16px;border-radius:5px;margin-right:7px;
+  border:1px solid var(--line-2);vertical-align:-3px}
+.vsec{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.05em;margin:16px 0 8px}
+.vnote{font-size:13.5px;line-height:1.7;padding:10px 12px;border-radius:var(--r-sm);
+  margin-bottom:7px;border:1px solid transparent}
+.vnote b{display:block;font-size:13.5px;margin-bottom:2px}
+.vnote.ok{background:var(--ok-soft);border-color:var(--ok)}
+.vnote.l1{background:var(--info-soft);border-color:var(--info)}
+.vnote.l2{background:var(--warn-soft);border-color:var(--warn)}
+.vnote.l3{background:var(--bad-soft);border-color:var(--bad)}
+
+@media (min-width:820px){
+  .visbody{flex-direction:row;overflow:hidden}
+  .visleft{flex:0 0 320px;border-bottom:0;border-right:1px solid var(--line);
+    justify-content:flex-start;overflow:auto}
+  .visright{overflow:auto}
+}
+@media (min-width:980px){ #vis .box{max-width:900px} }
 </style>
 
 </head>
@@ -609,6 +653,25 @@ h3.sec:first-child{margin-top:0}
       <button class="btn" id="learnDone">닫기</button>
     </div>
     <div class="ilist" id="learnBody"></div>
+  </div>
+</div>
+
+<!-- 육안 분석 -->
+<div id="vis" class="ovl" hidden>
+  <div class="box">
+    <div class="phd">
+      <b>🔍 육안 분석</b>
+      <span style="font-size:12.5px;color:var(--ink-3)">기울여 보고 · 글자에 대보고 · 두고 본다</span>
+      <div style="flex:1"></div>
+      <button class="btn" id="visDone">닫기</button>
+    </div>
+    <div class="visbody">
+      <div class="visleft">
+        <div id="visStage"></div>
+        <div id="visCtl"></div>
+      </div>
+      <div class="visright" id="visNotes"></div>
+    </div>
   </div>
 </div>
 
@@ -1845,7 +1908,7 @@ var P = [
 { key: 'toner', ko: '스킨 · 토너', icon: '💧', kind: 'solubilize',
   tag: '수용액 · 가용화',
   spec: { visc: [1, 20], ph: [4.2, 6.0], ntu: [0, 10] },
-  req: [R.preserve(0.75), R.stab(80)],
+  req: [R.preserve(0.75), R.stab(80), R.cat('humect', 3)],
   n: '가장 단순해 보이지만 가장 어렵다. 오일과 향을 물에 "투명하게" 녹여야 하기 때문이다. ' +
      '가용화제를 향의 4~8배로 잡고, 오일과 가용화제를 먼저 섞은 뒤 물에 천천히 넣어야 미셀이 작게 잡힌다. ' +
      '비율이 모자라면 그 즉시 뿌옇게 흐려진다.',
@@ -1857,7 +1920,7 @@ var P = [
 { key: 'mist', ko: '미스트', icon: '🌫️', kind: 'solubilize',
   tag: '초저점도 · 분무',
   spec: { visc: [1, 8], ph: [4.5, 6.5], ntu: [0, 5] },
-  req: [R.preserve(0.75), R.stab(80)],
+  req: [R.preserve(0.75), R.stab(80), R.cat('humect', 3)],
   n: '점도가 조금만 있어도 노즐이 막히고 입자가 굵어진다. 점증제는 쓰지 않는다. ' +
      '전해질이 많으면 분사 후 얼룩이 남는다.',
   key3: ['점증제 금지 — 분무 입자가 굵어진다', '가용화 실패는 노즐 막힘으로 직결', '잔여물이 남지 않게 고형분을 낮게'],
@@ -1867,7 +1930,7 @@ var P = [
 { key: 'essence', ko: '에센스', icon: '✨', kind: 'coldgel',
   tag: '냉공정 겔',
   spec: { visc: [800, 10000], ph: [4.5, 6.5], ntu: [0, 400] },
-  req: [R.preserve(0.75), R.stab(82)],
+  req: [R.preserve(0.75), R.stab(82), R.cat('humect', 3)],
   n: '가열하지 않고 만드는 제형. 열에 약한 활성 성분을 그대로 살릴 수 있고 에너지·시간이 절약된다. ' +
      '중화가 필요 없는 냉공정 점증제(아리스토플렉스·세피노브·시뮬젤)가 주역이다.',
   key3: ['가열이 없으니 열 손실도 없다', '점증제 수화 시간이 곧 품질', '고분자는 반드시 분산 후 투입'],
@@ -1878,7 +1941,7 @@ var P = [
 { key: 'serum', ko: '세럼 · 앰플', icon: '🧪', kind: 'gel',
   tag: '투명 겔 · 고농도 활성',
   spec: { visc: [1500, 12000], ph: [4.5, 6.8], ntu: [0, 150] },
-  req: [R.preserve(0.75), R.stab(78)],
+  req: [R.preserve(0.75), R.stab(78), R.cat('humect', 3)],
   n: '활성 성분을 높은 농도로 넣는 만큼 전해질 부하가 커진다. ' +
      '카보머 겔은 그 전해질에 가장 약하므로, 투명도와 점도를 동시에 지키는 것이 이 제형의 승부처다.',
   key3: ['활성 농도 ↑ = 전해질 ↑ = 카보머 점도 ↓', '중화도가 점도를 지배한다', '킬레이트제로 변색을 막는다'],
@@ -1889,7 +1952,7 @@ var P = [
 { key: 'gel', ko: '수분 젤', icon: '🫧', kind: 'gel',
   tag: '카보머 투명 겔',
   spec: { visc: [10000, 60000], ph: [5.0, 7.0], ntu: [0, 60] },
-  req: [R.preserve(0.75), R.stab(82)],
+  req: [R.preserve(0.75), R.stab(82), R.cat('humect', 3)],
   n: '카보머를 물에 완전히 수화시킨 뒤 중화해 만드는 투명 겔. ' +
      '중화제를 한 번에 부으면 그 자리만 겔이 되어 덩어리가 지고 전체 점도는 오히려 떨어진다. 천천히, 교반하면서.',
   key3: ['수화 → 중화 순서를 절대 바꾸지 않는다', '중화제는 적하하듯 천천히', '기포가 들어가면 빠지지 않는다 — 진공 탈포'],
@@ -1900,7 +1963,7 @@ var P = [
 { key: 'lotion', ko: '로션', icon: '🥛', kind: 'emulsion',
   tag: 'O/W 유화 · 저점도',
   spec: { visc: [2000, 9000], ph: [4.5, 6.5], ntu: [600, 1e6] },
-  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4)],
+  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4), R.cat('humect', 3)],
   n: '수중유형 유화의 기본형. 지방알코올과 유화제가 만드는 라멜라 겔망이 되기를 결정하고, ' +
      '호모믹서가 만드는 액적 크기가 안정성과 백탁을 결정한다.',
   key3: ['요구 HLB 와 유화제 HLB 를 맞춘다', '라멜라 겔망 = 세테아릴알코올 × 유화제', '냉각 속도가 점도를 바꾼다'],
@@ -1911,7 +1974,7 @@ var P = [
 { key: 'cream', ko: '크림', icon: '🍦', kind: 'emulsion',
   tag: 'O/W 유화 · 고점도',
   spec: { visc: [15000, 60000], ph: [4.5, 6.5], ntu: [800, 1e6] },
-  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4)],
+  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4), R.cat('humect', 3)],
   n: '로션과 같은 원리지만 지방알코올과 오일이 늘어 라멜라 구조가 훨씬 두꺼워진다. ' +
      '내상 부피분율이 커질수록 점도는 급격히 오르고, 74%를 넘기면 상이 뒤집힌다.',
   key3: ['내상 부피분율이 점도를 지수적으로 올린다', '세라마이드·고융점 왁스는 완전 용해가 필수', '대량 생산에서 가장 묽어지기 쉬운 제형'],
@@ -1923,7 +1986,7 @@ var P = [
 { key: 'sun', ko: '선크림', icon: '☀️', kind: 'sun',
   tag: '자외선차단 · 하이브리드',
   spec: { visc: [4000, 30000], ph: [5.5, 7.5], ntu: [3000, 1e6] },
-  req: [R.preserve(0.75), R.stab(78), R.spf(30), R.pa(8)],
+  req: [R.preserve(0.75), R.stab(78), R.spf(30), R.pa(8), R.cat('humect', 2)],
   n: '유기 차단제는 완전히 녹여야 하고, 무기 차단제는 완전히 흩어야 한다. ' +
      '둘 중 하나라도 실패하면 표시 SPF 가 나오지 않는다. 도포막의 균일성이 곧 차단력이다.',
   key3: ['유기 차단제는 80℃ 이상에서 완전 용해', '무기 분산은 전단 시간이 곧 차단력', '징크옥사이드는 pH 를 올리고 카보머를 죽인다'],
@@ -1995,7 +2058,7 @@ var P = [
 { key: 'bodylotion', ko: '바디로션', icon: '🧴', kind: 'emulsion',
   tag: 'O/W · 대용량',
   spec: { visc: [2500, 20000], ph: [4.5, 6.5], ntu: [600, 1e6] },
-  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4)],
+  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4), R.cat('humect', 3)],
   n: '한 번에 많은 양을 쓰는 만큼 원가와 펌핑성이 중요하다. ' +
      '값싼 오일로 사용감을 내고, 점도는 라멜라로 잡는 것이 정석.',
   key3: ['원가가 곧 경쟁력 — 미네랄오일·해바라기유', '펌프가 밀어낼 수 있는 점도까지만', '대용량 배치라 열이력이 길다'],
@@ -2019,7 +2082,7 @@ var P = [
 { key: 'foundation', ko: '파운데이션', icon: '🎨', kind: 'pigment',
   tag: 'O/W · 안료 분산',
   spec: { visc: [5000, 25000], ph: [5.5, 7.5], ntu: [3000, 1e6] },
-  req: [R.preserve(0.75), R.stab(80), R.emul(), R.pigment(0.3)],
+  req: [R.preserve(0.75), R.stab(80), R.emul(), R.pigment(0.3), R.cat('humect', 2)],
   n: '색을 맞추는 제형. 흑색산화철은 0.01% 차이로 톤이 달라지므로 계량 오차가 그대로 색차가 된다. ' +
      '안료가 덜 풀리면 줄무늬가 생기고 커버력이 떨어진다.',
   key3: ['안료는 별도 분산 후 투입 — 뭉치면 색이 안 난다', '흑색산화철은 계량 오차에 가장 민감', '파우더가 가라앉지 않게 항복응력을 준다'],
@@ -2365,6 +2428,35 @@ function buildTemplate(rows, kind, rig) {
       add: A.concat(B).concat(E).concat(C).concat(D) }));
     st.push(S('discharge', { ko: '배출', temp: 25, aji: 60, min: 10 }));
   }
+  return prune(st, B.length > 0);
+}
+
+/* 실제로 투입할 것이 없는 스텝은 지운다.
+   방부제를 하나도 안 넣었는데 "방부 투입" 스텝이 남아 있으면 안 된다. */
+function prune(st, hasOil) {
+  var needAdd = { add: 1, neutralize: 1, hydrate: 1, melt: 1, grind: 1 };
+  st = st.filter(function (s) {
+    if (needAdd[s.t] && (!s.add || !s.add.length)) return false;
+    if (!hasOil && (s.t === 'emulsify' || s.t === 'melt' || s.t === 'grind')) return false;
+    return true;
+  });
+  /* 남은 첨가 스텝의 이름을 실제 내용에 맞춘다 */
+  st.forEach(function (s) {
+    if (s.t !== 'add' || !s.add.length) return;
+    var seen = {}, part = [];
+    s.add.forEach(function (id) {
+      var g = ING.BY[id]; if (!g) return;
+      var ko = g.cat === 'presv' ? '방부'
+             : g.cat === 'active' ? '활성'
+             : g.cat === 'humect' || g.cat === 'water' ? '보습'
+             : g.id === 'parfum' || g.id === 'menthol' ? '향'
+             : g.cat === 'cond' ? '컨디셔닝'
+             : g.cat === 'misc' ? '첨가'
+             : g.cat === 'oil' || g.cat === 'sili' ? '오일' : '첨가';
+      if (!seen[ko]) { seen[ko] = 1; part.push(ko); }
+    });
+    if (part.length) s.ko = '냉각 첨가 (' + part.slice(0, 3).join('·') + ')';
+  });
   return st;
 }
 
@@ -2985,7 +3077,7 @@ function composition(rows) {
     total: 0, water: 0, polyol: 0, oil: 0, wax: 0, powder: 0,
     emul: 0, emulHi: 0, emulLo: 0, surf: 0, surfActive: 0, cond: 0,
     lam: 0, salt: 0, saltAdd: 0, etoh: 0, nacl: 0, thickGel: 0,
-    uvOrg: 0, uvInorg: 0, spfRaw: 0, pfaRaw: 0, foamRaw: 0, hardRaw: 0,
+    uvOrg: 0, uvInorg: 0, spfRaw: 0, pfaRaw: 0, foamRaw: 0, hardRaw: 0, oxIdx: 0, antiox: 0,
     extract: 0, filmer: 0, pigment: 0,
     oilVol: 0, watVol: 0, pwdVol: 0, totVol: 0,
     riOil: 0, riWat: 0, cost: 0, rhSum: 0, rhW: 0, hlbSum: 0, hlbW: 0,
@@ -3060,6 +3152,9 @@ function composition(rows) {
     if (['isododec', 'undectri', 'c1315', 'd5', 'dce', 'dime5', 'dime350', 'dimecop',
          'hpstarch', 'ps15', 'bos', 'inn'].indexOf(g.id) >= 0) a.filmer += c;
     if (g.tint > 20) a.pigment += c;
+    a.oxIdx += (g.ox || 0) * c;
+    if (g.id === 'tocoph' || g.id === 'tocotri') a.antiox += c;
+    if (g.id === 'bht') a.antiox += c * 6;
     if (g.th) a.thickers.push({ g: g, c: c });
     if (g.tint > 0.05) a.colors.push({ g: g, c: c });
   });
@@ -3282,8 +3377,9 @@ function viscosity(a, env) {
   var nIdx = cl(1 - 0.78 * frac, 0.16, 1);
 
   /* (8) 항복응력 (Pa) — 파우더·액적 부유 판정 */
-  var yieldS = gel > 20 ? 0.06 * Math.pow(gel, 0.72) : 0;
-  if (lamV > 500) yieldS += 0.04 * Math.pow(lamV, 0.72);   /* 라멜라가 액적을 붙든다 */
+  /* 항복응력 (Pa) — 0.45% 카보머 겔 ≈ 60, 크림 ≈ 20, 로션 ≈ 3 에 맞춘 곡선 */
+  var yieldS = gel > 20 ? 3.2e-4 * Math.pow(gel, 1.216) : 0;
+  if (lamV > 500) yieldS += 1.49e-5 * Math.pow(lamV, 1.332);   /* 라멜라가 액적을 붙든다 */
   if (a.thickers.some(function (t) { return t.g.id === 'xanthan' || t.g.id === 'gellan'; })) yieldS *= 2.2;
 
   return { eta: eta, gel: gel, lam: lamV, surfV: surfV, KD: KD, n: nIdx,
@@ -3481,6 +3577,35 @@ function stability(a, env) {
     if (a.phi > 0.70) bad(20, '상 반전 위험', '내상 부피분율 ' + (a.phi * 100).toFixed(0) + '%. 74%를 넘으면 O/W가 W/O로 뒤집힌다.');
   }
 
+  /* ── 제형이 성립하는가 ─────────────────────────────────────────
+     점도도 유화도 세정력도 없는 것은 "묽은 무엇" 이지 제품이 아니다.     */
+  var structure = v.gel + v.lam + v.surfV;
+  var oilTot = a.oil + a.wax;
+  var nRows = a.rows.length;
+
+  /* 이 제품이 "되기" 를 가져야 하는가. 규격 점도 하한이 알려 준다. */
+  var wantsBody = env.expectVisc ? env.expectVisc[0] >= 400 : true;
+
+  if (wantsBody && a.water > 60 && structure < 25 && oilTot < 1 && a.surfActive < 1 && a.powder < 1) {
+    bad(30, '제형이 없다',
+      '물에 몇 가지를 녹여 놓았을 뿐이다. 점증제도 유화제도 세정 계면활성제도 없어 ' +
+      '통에 담으면 그냥 물처럼 흐른다. 무엇을 만들려는지에 따라 ' +
+      '점증제(젤·에센스) · 유화제와 오일(로션·크림) · 계면활성제(세정) 중 하나는 반드시 있어야 한다.');
+  } else if (a.water > 40 && structure < 25 && oilTot >= 1 && a.emul < 0.05) {
+    bad(28, '섞이지 않는 조합',
+      '오일 ' + oilTot.toFixed(1) + '% 를 물에 넣었는데 유화제가 없다. ' +
+      '섞는 순간부터 갈라지기 시작해 통에 담기도 전에 두 층이 된다.');
+  }
+
+  if (nRows <= 3 && a.water > 50)
+    bad(12, '처방이라 하기 어렵다',
+      '원료가 ' + nRows + '종뿐이다. 실제 제품은 보습·점증·유화·방부·pH 조절이 각자의 역할로 들어간다.');
+
+  if (a.water > 30 && (a.byCat.humect || 0) < 0.5 && !a.anhydrous)
+    bad(6, '보습제 없음',
+      '보습제가 없다. 바르고 나면 물만 증발하고 남는 것이 없어 오히려 당긴다. ' +
+      '글리세린·부틸렌글라이콜을 5% 안팎으로 넣는다.');
+
   /* 전해질 vs 카보머 */
   var carb = a.thickers.filter(function (t) { return t.g.id === 'carb940' || t.g.id === 'pemulen'; });
   if (carb.length && a.salt > 0.5)
@@ -3578,7 +3703,7 @@ function evaluate(rows, env) {
   var uv = uvProtect(a, { d32: d32, uvUndissolved: env.uvUndissolved });
 
   var senv = {
-    drop: dp, visc: v, pH: p, alpha: alpha,
+    drop: dp, visc: v, pH: p, alpha: alpha, expectVisc: env.expectVisc,
     precipNotes: (env.precipNotes || []).concat(uv ? uv.notes : []),
     lossNotes: env.lossNotes
   };
@@ -3595,12 +3720,60 @@ function evaluate(rows, env) {
   };
 }
 
+/* =====================================================================
+   9. 경시 변화 — 보관하면 무슨 일이 생기는가
+   ---------------------------------------------------------------------
+   days  보관 일수     hot  45℃ 가속 여부(가속 4주 ≈ 상온 1년)
+   ===================================================================== */
+function age(res, days, hot) {
+  var a = res.agg, accel = hot ? 13 : 1;
+  var d = days * accel;
+  var notes = [];
+
+  /* 층 분리 — 크리밍 속도 × 시간. 항복응력이 붙들면 0 */
+  var sepMm = Math.min(45, (res.cream || 0) * d);
+  if (sepMm > 0.6) notes.push({
+    lv: sepMm > 12 ? 3 : sepMm > 4 ? 2 : 1, ko: '층 분리',
+    msg: sepMm > 12 ? '위쪽에 뚜렷한 크림층이 생겼다. 흔들어도 완전히 돌아오지 않는다.'
+       : sepMm > 4  ? '위층이 눈에 띄게 진해졌다. 흔들면 섞이지만 다시 뜬다.'
+                    : '자세히 보면 위쪽이 조금 진하다.' });
+
+  /* 갈변 — 산화 지수 × 시간 */
+  var protect = 1 - Math.min(0.55, a.antiox * 0.5);
+  var brown = 0.018 * d * a.oxIdx / 10 * protect;
+  if (brown > 1.2) notes.push({
+    lv: brown > 10 ? 3 : brown > 4 ? 2 : 1, ko: '변색',
+    msg: brown > 10 ? '누렇다 못해 갈색으로 변했다.'
+       : brown > 4  ? '뚜렷하게 누레졌다.'
+                    : '처음보다 살짝 노란기가 돈다.' });
+
+  /* 액적 성장 — 유화제가 모자라면 합일이 계속된다 */
+  var dp = res.drop, dNew = res.d32;
+  if (dp && !dp.minor && res.d32) {
+    var rate = dp.starved ? 0.006 : 0.0012;
+    dNew = res.d32 * (1 + rate * d);
+    if (dNew > res.d32 * 1.6) notes.push({
+      lv: dNew > res.d32 * 3 ? 3 : 2, ko: '액적 성장',
+      msg: '액적이 ' + res.d32.toFixed(2) + ' → ' + dNew.toFixed(2) + ' µm 로 굵어졌다. ' +
+           '탁도가 변하고 사용감이 거칠어진다.' });
+  }
+
+  /* 점도 변화 — 고온에서 겔이 풀린다 */
+  var etaNew = res.eta * (hot ? Math.max(0.72, 1 - 0.0016 * d) : Math.max(0.88, 1 - 0.0004 * d));
+
+  /* 색 다시 계산 */
+  var c2 = color(a, { ntu: res.ntu, browning: (res.color.browning || 0) + brown });
+
+  return { days: days, hot: hot, sepMm: sepMm, brown: brown,
+           d32: dNew, eta: etaNew, color: c2, notes: notes };
+}
+
 G.CHEM = {
   composition: composition, pH: pH, neutralDegree: neutralDegree,
   neutralizerNeeded: neutralizerNeeded, dropletSize: dropletSize,
   viscosity: viscosity, apparent: apparent, turbidity: turbidity,
   color: color, stability: stability, evaluate: evaluate,
-  uvProtect: uvProtect, foaming: foaming, hardness: hardness,
+  uvProtect: uvProtect, foaming: foaming, hardness: hardness, age: age,
   labToRgb: labToRgb, grade: grade, surfActivity: surfActivity, AB: AB, OILV: OILV,
   cl: cl, smooth: smooth
 };
@@ -3710,7 +3883,8 @@ function run(rows, opt) {
   var vacFrac = 0, vacMin = 0, totalStirMin = 0;
   var etaGuess = 200;
 
-  var pre = CHEM.evaluate(rows, { tip: 6.3, sec: 300 });
+  var expectVisc = opt.spec && opt.spec.visc ? opt.spec.visc : null;
+  var pre = CHEM.evaluate(rows, { tip: 6.3, sec: 300, expectVisc: expectVisc });
   etaGuess = Math.max(pre.eta, 10);
 
   var dt = 20;                                     /* 적분 간격 s */
@@ -3968,6 +4142,7 @@ function run(rows, opt) {
   var lastTip = maxTip, lastSec = Math.max(homoSec, 60);
   var uvUndis = (byId['bemt'] && maxT < 80) || (byId['eht'] && maxT < 82);
   var res = CHEM.evaluate(finalRows, {
+    expectVisc: expectVisc,
     uvUndissolved: uvUndis,
     tip: lastTip, sec: lastSec,
     coolFactor: coolFactor, browning: browning,
@@ -3976,7 +4151,7 @@ function run(rows, opt) {
   });
 
   /* 이론값(오차 없는 처방·이상 공정)과의 비교 */
-  var ideal = CHEM.evaluate(rows, { tip: 6.3, sec: 300, coolFactor: 1 });
+  var ideal = CHEM.evaluate(rows, { tip: 6.3, sec: 300, coolFactor: 1, expectVisc: expectVisc });
 
   return {
     rows: finalRows, items: items, ideal: ideal, res: res,
@@ -5918,7 +6093,7 @@ function renderResult() {
   }
 
   var run = S.result;
-  var r = run ? run.res : CHEM.evaluate(S.rows, { tip: 6.3, sec: 300 });
+  var r = run ? run.res : CHEM.evaluate(S.rows, { tip: 6.3, sec: 300, expectVisc: PROD.get(S.prod).spec.visc });
   var p = PROD.get(S.prod);
   var judge = PROD.judge(S.prod, r);
   var wrap = el('div.res');
@@ -5987,7 +6162,28 @@ function renderResult() {
   if (run) run.warn.forEach(function (w) {
     if (!probs.some(function (x) { return x.ko === w.ko && x.msg === w.msg; })) probs.push(w);
   });
+  /* 규격·필수 요건 미달도 여기에 함께 올린다.
+     "지적 사항 없음" 인데 규격은 미달인 상태가 나오면 안 된다. */
+  judge.items.forEach(function (i) {
+    if (i.ok) return;
+    var lowSide = i.val < i.range[0];
+    probs.push({ sev: 20, ko: '규격 미달 — ' + i.ko,
+      msg: i.ko + ' 가 ' + (i.fmt ? i.val.toFixed(i.fmt) : K.n0(i.val)) + (i.unit ? ' ' + i.unit : '') +
+           ' 로, 규격 ' + fnum(i.range[0], i.fmt) +
+           (i.range[1] >= 1e6 ? ' 이상' : ' ~ ' + fnum(i.range[1], i.fmt)) +
+           ' 을 ' + (lowSide ? '밑돈다.' : '넘는다.') });
+  });
+  (judge.req || []).forEach(function (i) {
+    if (i.ok) return;
+    probs.push({ sev: 24, ko: '필수 요건 미달 — ' + i.ko,
+      msg: i.why + ' 지금 값은 ' + i.txt + ' 다.' });
+  });
   probs.sort(function (a, b) { return b.sev - a.sev; });
+
+  wrap.appendChild(el('button.btn.wide', {
+    style: 'margin-bottom:12px', text: '🔍 육안 분석 — 기울여 보기',
+    onclick: function () { if (G.VIS) G.VIS.open(r, p); }
+  }));
 
   wrap.appendChild(acc(probs.length ? '무엇이 문제인가' : '문제 없음',
     probs.length, probs.length ? (probs[0].sev >= 14 ? 'bad' : '') : 'ok',
@@ -6404,7 +6600,7 @@ function runBatch(spread) {
   var t = K.total();
   if (Math.abs(t - 100) > 0.02) K.toast('합계가 ' + t.toFixed(2) + '% 입니다 — 비율대로 환산해 제조합니다');
   var p = PROD.get(S.prod);
-  var opt = { batchG: S.batchG, rig: K.rig(), steps: K.steps(), kind: p.kind, seed: S.seed };
+  var opt = { batchG: S.batchG, rig: K.rig(), steps: K.steps(), kind: p.kind, spec: p.spec, seed: S.seed };
   try {
     S.result = SIM.run(S.rows, opt);
     S.spread = spread ? SIM.repeat(S.rows, opt, 5) : null;
@@ -6780,9 +6976,13 @@ function show(run, onDone) {
       }));
     }
 
-    wrap.appendChild(el('button.btn.pri.wide', {
-      style: 'margin-top:2px', text: '자세히 보기', onclick: close
-    }));
+    wrap.appendChild(el('div', { style: 'display:flex;gap:8px;width:100%;margin-top:2px' }, [
+      el('button.btn', { style: 'flex:1;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);color:#F3F6F9',
+        text: '🔍 육안 분석', onclick: function () {
+          if (G.VIS) G.VIS.open(run.res, PROD.get(K.S.prod));
+        } }),
+      el('button.btn.pri', { style: 'flex:1', text: '자세히 보기', onclick: close })
+    ]));
     stage2.appendChild(wrap);
   }
 
@@ -6816,6 +7016,468 @@ function setEnabled(v) {
 }
 
 G.BREW = { show: show, enabled: enabled, setEnabled: setEnabled };
+})(window);
+
+/* =====================================================================
+   포뮬라랩 — 육안 분석
+   ---------------------------------------------------------------------
+   실험실에서 시제품을 처음 받으면 하는 일을 그대로 옮겼다.
+     기울여 본다      점도와 항복응력이 흐름으로 드러난다
+     글자 위에 댄다   탁도를 눈으로 잰다
+     빛에 비춘다      색과 투명도
+     며칠 두고 본다   크리밍 · 변색 · 액적 성장
+   액체 표면은 화면 기준으로 수평이 되려 하지만, 되직할수록 천천히 눕고
+   항복응력이 크면 아예 눕지 않는다. 그래서 기울이면 점도가 보인다.
+   ===================================================================== */
+(function (G) {
+'use strict';
+
+var K = G.CORE, el = K.el, $ = K.$, clear = K.clear;
+var CHEM = G.CHEM, PROD = G.PROD, ING = G.ING;
+
+var NS = 'http://www.w3.org/2000/svg';
+function sv(t, a) {
+  var n = document.createElementNS(NS, t);
+  for (var k in (a || {})) n.setAttribute(k, a[k]);
+  return n;
+}
+function cl(v, a, b) { return v < a ? a : v > b ? b : v; }
+
+/* ── 다각형 반평면 자르기 (부피 보존용) ────────────────────────── */
+function clipHalf(poly, gx, gy, d) {
+  var out = [];
+  for (var i = 0; i < poly.length; i++) {
+    var A = poly[i], B = poly[(i + 1) % poly.length];
+    var da = A[0] * gx + A[1] * gy - d, db = B[0] * gx + B[1] * gy - d;
+    if (da >= 0) out.push(A);
+    if ((da >= 0) !== (db >= 0)) {
+      var t = da / (da - db);
+      out.push([A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t]);
+    }
+  }
+  return out;
+}
+function areaOf(p) {
+  var s = 0;
+  for (var i = 0; i < p.length; i++) {
+    var a = p[i], b = p[(i + 1) % p.length];
+    s += a[0] * b[1] - b[0] * a[1];
+  }
+  return Math.abs(s) / 2;
+}
+/* 넓이가 target 이 되도록 반평면 위치를 찾는다 */
+function levelPoly(rect, gx, gy, target) {
+  var lo = -1e4, hi = 1e4, mid, p;
+  for (var i = 0; i < 26; i++) {
+    mid = (lo + hi) / 2;
+    p = clipHalf(rect, gx, gy, mid);
+    if (areaOf(p) > target) lo = mid; else hi = mid;
+  }
+  return clipHalf(rect, gx, gy, lo);
+}
+function toPath(p) {
+  if (!p.length) return '';
+  return 'M' + p.map(function (q) { return q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join('L') + 'Z';
+}
+
+/* ── 색 이름 ───────────────────────────────────────────────────── */
+function colorName(L, a, b, ntu) {
+  var c = Math.sqrt(a * a + b * b);
+  var opaque = (ntu || 0) > 60;
+  var tone = L > 92 ? '' : L > 78 ? '' : L > 55 ? '어두운 ' : '짙은 ';
+  if (c < 3.5) return L > 92 ? (opaque ? '백색' : '무색 투명') : L > 70 ? '회백색' : '회색';
+  if (b > 8 && Math.abs(a) < b * 0.7) return tone + (b > 34 ? '진한 황색' : b > 18 ? '황색' : '미황색');
+  if (a > 12 && b > 8) return tone + (a > 35 ? '적갈색' : '살구색');
+  if (a > 12) return tone + (a > 35 ? '적색' : '분홍색');
+  if (a < -8) return tone + '녹색';
+  if (b < -8) return tone + '청색';
+  return tone + '미황색';
+}
+
+/* ── 상태 ──────────────────────────────────────────────────────── */
+var S = {
+  tilt: 0, phi: 0, bg: 'text', days: 0, hot: false,
+  raf: 0, sensor: false, res: null, aged: null, prod: null,
+  stick: 0, fill: 0.72, shakeT: 0
+};
+
+var R = {};      /* SVG 참조 */
+
+/* ── 뷰 만들기 ─────────────────────────────────────────────────── */
+function buildVial() {
+  var s = sv('svg', { viewBox: '0 0 210 310', class: 'vial' });
+  s.setAttribute('style', 'width:100%;max-width:260px;height:auto;overflow:visible');
+
+  var defs = sv('defs');
+  var cp = sv('clipPath', { id: 'vialclip' });
+  cp.appendChild(sv('path', {
+    d: 'M69 52 h72 v186 a20 20 0 0 1 -20 20 h-32 a20 20 0 0 1 -20 -20 z' }));
+  defs.appendChild(cp);
+  var gr = sv('linearGradient', { id: 'vialglass', x1: '0', y1: '0', x2: '1', y2: '0' });
+  [['0', '#000', '.16'], ['.22', '#fff', '.34'], ['.55', '#fff', '.05'], ['1', '#000', '.18']]
+    .forEach(function (x) {
+      gr.appendChild(sv('stop', { offset: x[0], 'stop-color': x[1], 'stop-opacity': x[2] }));
+    });
+  defs.appendChild(gr);
+  s.appendChild(defs);
+
+  /* 배경 */
+  R.bg = sv('g');
+  s.appendChild(R.bg);
+
+  /* 병 전체 (회전) */
+  R.rot = sv('g');
+  s.appendChild(R.rot);
+
+  var body = 'M69 52 h72 v186 a20 20 0 0 1 -20 20 h-32 a20 20 0 0 1 -20 -20 z';
+  R.rot.appendChild(sv('path', { d: body, fill: 'rgba(255,255,255,.05)' }));
+
+  var inner = sv('g', { 'clip-path': 'url(#vialclip)' });
+  R.film = sv('path', { d: body, fill: '#ddd', opacity: '0' });
+  R.liq = sv('path', { d: '', fill: '#ddd', opacity: '.5' });
+  R.sep = sv('path', { d: '', fill: '#fff', opacity: '0' });
+  R.bubs = sv('g', { opacity: '0' });
+  [80, 96, 112, 128].forEach(function (x, i) {
+    var c = sv('circle', { cx: String(x), cy: '120', r: String(1.6 + (i % 3) * 0.9),
+      fill: 'rgba(255,255,255,.75)' });
+    inner.appendChild(c);
+  });
+  inner.insertBefore(R.film, inner.firstChild);
+  inner.insertBefore(R.liq, inner.firstChild);
+  inner.appendChild(R.sep);
+  R.rot.appendChild(inner);
+  R.bubsHost = inner;
+
+  /* 실 늘어짐 */
+  R.string = sv('path', { d: '', fill: 'none', stroke: '#ccc', 'stroke-width': '2.4',
+    'stroke-linecap': 'round', opacity: '0' });
+  R.rot.appendChild(R.string);
+
+  /* 유리 반사 · 테두리 · 뚜껑 */
+  R.rot.appendChild(sv('path', { d: body, fill: 'url(#vialglass)' }));
+  R.rot.appendChild(sv('path', { d: body, fill: 'none',
+    stroke: 'rgba(255,255,255,.5)', 'stroke-width': '2' }));
+  R.rot.appendChild(sv('rect', { x: '78', y: '28', width: '54', height: '26', rx: '7',
+    fill: 'rgba(255,255,255,.13)', stroke: 'rgba(255,255,255,.45)', 'stroke-width': '1.8' }));
+  R.rot.appendChild(sv('rect', { x: '86', y: '18', width: '38', height: '12', rx: '4',
+    fill: 'rgba(255,255,255,.2)' }));
+
+  return s;
+}
+
+var RECT = [[71, 54], [139, 54], [139, 256], [71, 256]];
+var CX = 105, CY = 155;
+
+function drawBg() {
+  clear(R.bg);
+  if (S.bg === 'text') {
+    R.bg.appendChild(sv('rect', { x: '0', y: '0', width: '210', height: '310', fill: '#FFFFFF' }));
+    ['가나다라마', '포뮬라랩 육안', '0123456789', '탁도 판정용', 'ABCDEFGH'].forEach(function (t, i) {
+      var n = sv('text', { x: '105', y: String(76 + i * 42), 'text-anchor': 'middle',
+        'font-size': '19', 'font-weight': '700', fill: '#1B2733', 'font-family': 'inherit' });
+      n.textContent = t;
+      R.bg.appendChild(n);
+    });
+  } else if (S.bg === 'dark') {
+    R.bg.appendChild(sv('rect', { x: '0', y: '0', width: '210', height: '310', fill: '#0B1016' }));
+  } else {
+    R.bg.appendChild(sv('rect', { x: '0', y: '0', width: '210', height: '310', fill: '#F4F6F8' }));
+  }
+}
+
+/* ── 한 프레임 그리기 ──────────────────────────────────────────── */
+function paint() {
+  var res = S.res, aged = S.aged;
+  if (!res) return;
+  var hex = aged.color.hex;
+  var ntu = res.ntu;
+  var alpha = 0.10 + 0.90 * Math.min(1, Math.pow(Math.max(ntu, 0.4) / 600, 0.5));
+
+  R.rot.setAttribute('transform', 'rotate(' + S.tilt.toFixed(1) + ' ' + CX + ' ' + CY + ')');
+
+  var g = S.phi * Math.PI / 180;
+  var gx = Math.sin(g), gy = Math.cos(g);
+  var target = areaOf(RECT) * S.fill;
+  var poly = levelPoly(RECT, gx, gy, target);
+
+  R.liq.setAttribute('d', toPath(poly));
+  R.liq.setAttribute('fill', hex);
+  R.liq.setAttribute('opacity', alpha.toFixed(3));
+
+  /* 벽에 남은 막 */
+  var filmOp = S.stick > 0.25 && Math.abs(S.tilt) > 12
+    ? Math.min(0.4, (S.stick - 0.2) * 0.55) * alpha : 0;
+  R.film.setAttribute('fill', hex);
+  R.film.setAttribute('opacity', filmOp.toFixed(3));
+
+  /* 크리밍 층 — 액면 쪽에 얇게 */
+  if (aged.sepMm > 0.6) {
+    var t = Math.min(28, aged.sepMm * 1.1);
+    var d2 = poly.length ? (function () {
+      var lo = -1e4, hi = 1e4, mid, p;
+      var tgt = Math.max(areaOf(poly) - target * (1 - t / 200), 1);
+      for (var i = 0; i < 20; i++) {
+        mid = (lo + hi) / 2;
+        p = clipHalf(poly, -gx, -gy, mid);
+        if (areaOf(p) > t * 3) lo = mid; else hi = mid;
+      }
+      return clipHalf(poly, -gx, -gy, lo);
+    })() : [];
+    R.sep.setAttribute('d', toPath(d2));
+    R.sep.setAttribute('fill', '#FFFFFF');
+    R.sep.setAttribute('opacity', Math.min(0.5, 0.12 + aged.sepMm / 60).toFixed(3));
+  } else R.sep.setAttribute('opacity', '0');
+
+  /* 기포 */
+  R.bubsHost.style.opacity = '1';
+
+  /* 실 늘어짐 */
+  var stringy = S.stringy;
+  if (stringy > 0.25 && Math.abs(S.tilt) > 60) {
+    var tipX = 105 + (S.tilt > 0 ? 30 : -30);
+    R.string.setAttribute('d', 'M105 250 Q ' + tipX + ' 275 ' + (tipX + (S.tilt > 0 ? 10 : -10)) + ' 300');
+    R.string.setAttribute('stroke', hex);
+    R.string.setAttribute('opacity', Math.min(0.85, stringy).toFixed(2));
+    R.string.setAttribute('stroke-width', (1.4 + stringy * 2.4).toFixed(1));
+  } else R.string.setAttribute('opacity', '0');
+}
+
+/* ── 흐름 애니메이션 ───────────────────────────────────────────── */
+function tick() {
+  var eq = S.tilt * (1 - S.stick);
+  var tau = 0.055 + S.stick * 0.9;                /* 되직할수록 천천히 눕는다 */
+  S.phi += (eq - S.phi) * (1 - Math.exp(-1 / (tau * 33)));
+  if (S.shakeT > 0) {
+    S.shakeT -= 1;
+    S.phi += Math.sin(S.shakeT * 0.9) * 14 * (S.shakeT / 30);
+  }
+  paint();
+  if (Math.abs(eq - S.phi) < 0.05 && S.shakeT <= 0) {
+    S.phi = eq; paint();
+    clearInterval(S.raf); S.raf = 0;
+  }
+}
+function nudge() {
+  if (S.raf) return;
+  S.raf = setInterval(tick, 30);
+  setTimeout(function () {          /* 타이머가 죽은 환경에서도 결과는 맞게 */
+    if (S.raf) return;
+    S.phi = S.tilt * (1 - S.stick); paint();
+  }, 4000);
+}
+
+/* ── 소견 ──────────────────────────────────────────────────────── */
+function flowText() {
+  var e = S.res.eta, y = S.res.visc.yieldStress;
+  if (y > 25) return ['거꾸로 들어도 흘러내리지 않는다', '항복응력 ' + y.toFixed(0) + ' Pa — 떠먹는 제형'];
+  if (y > 8)  return ['기울여도 한참 버티다 천천히 무너진다', '항복응력 ' + y.toFixed(1) + ' Pa'];
+  if (e > 60000) return ['거의 움직이지 않는다', '숟가락으로 떠야 하는 되기'];
+  if (e > 20000) return ['기울이면 아주 천천히 기운다', '통을 흔들어야 나온다'];
+  if (e > 6000)  return ['천천히 기울어 눕는다', '펌프로 밀어낼 수 있는 되기'];
+  if (e > 1200)  return ['부드럽게 흘러내린다', '튜브·펌프 모두 가능'];
+  if (e > 60)    return ['주르륵 흐른다', '점적 용기에 맞다'];
+  return ['물처럼 즉시 쏟아진다', '분무·토너 용기'];
+}
+
+function clarityText(ntu) {
+  if (ntu < 5)   return ['뒤 글자가 또렷하게 읽힌다', '투명'];
+  if (ntu < 40)  return ['글자가 읽히지만 살짝 뿌옇다', '미탁'];
+  if (ntu < 300) return ['글자 윤곽만 겨우 보인다', '반투명'];
+  if (ntu < 2000)return ['글자가 전혀 보이지 않는다', '유백'];
+  return ['빛이 거의 통과하지 않는다', '불투명'];
+}
+
+function renderNotes() {
+  var box = clear($('#visNotes'));
+  var res = S.res, aged = S.aged, p = S.prod;
+  var c = aged.color;
+
+  function row(k, v, sub, sw) {
+    box.appendChild(el('div.vrow', null, [
+      el('div.vk', { text: k }),
+      el('div.vv', null, [
+        sw ? el('span.vsw', { style: 'background:' + sw }) : null,
+        el('b', { text: v }),
+        sub ? el('small', { text: sub }) : null
+      ])
+    ]));
+  }
+
+  row('색상', colorName(c.L, c.a, c.b, res.ntu), c.hex + '  ·  L ' + c.L.toFixed(0) +
+      ' a ' + c.a.toFixed(1) + ' b ' + c.b.toFixed(1), c.hex);
+
+  var cy = clarityText(res.ntu);
+  row('투명도', cy[1], cy[0] + '  ·  ' + K.eng(res.ntu) + ' NTU');
+
+  var fl = flowText();
+  row('흐름', fl[0], fl[1] + '  ·  ' + K.eng(res.eta) + ' cP');
+
+  if (res.d32 && res.drop && !res.drop.minor)
+    row('입자', aged.d32.toFixed(2) + ' µm',
+        S.days ? '처음 ' + res.d32.toFixed(2) + ' µm 에서 자랐다' : '유화 액적 평균');
+
+  if (res.foam > 1) row('거품', Math.round(res.foam) + ' / 100', '물에 풀었을 때의 기포력');
+  if (res.hard > 0) row('경도', res.hard.toFixed(1), '무수 제형의 단단한 정도');
+  if (res.uv) row('차단력', 'SPF ' + Math.round(res.uv.spf) + '  ' + res.uv.pa,
+                  'UVA-PF ' + res.uv.pfa.toFixed(1));
+
+  if (res.agg && res.agg.dn > 0.001 && res.d32)
+    row('굴절률 차', res.agg.dn.toFixed(3),
+        res.agg.dn < 0.06 ? '작아서 덜 뿌옇다 (실리콘계)' : '커서 하얗게 보인다');
+
+  /* 보관 소견 */
+  box.appendChild(el('div.vsec', { text: S.days
+    ? (S.hot ? '45℃ 가속 4주 (상온 약 1년)' : S.days + '일 보관 후') : '제조 직후' }));
+  if (!aged.notes.length) {
+    box.appendChild(el('div.vnote.ok', { text: S.days
+      ? '눈에 띄는 변화가 없다. 색 · 층 · 입자 모두 처음과 같다.'
+      : '갓 만든 상태다. 보관 기간을 바꿔 시간이 지난 뒤를 볼 수 있다.' }));
+  }
+  aged.notes.forEach(function (n) {
+    box.appendChild(el('div.vnote.l' + n.lv, null, [
+      el('b', { text: n.ko }), n.msg
+    ]));
+  });
+
+  /* 규격 대비 */
+  var j = PROD.judge(p.key, res);
+  var fails = j.items.filter(function (x) { return !x.ok; }).map(function (x) { return x.ko; })
+    .concat((j.req || []).filter(function (x) { return !x.ok; }).map(function (x) { return x.ko; }));
+  box.appendChild(el('div.vnote.' + (j.ok ? 'ok' : 'l3'), null, [
+    el('b', { text: j.ok ? p.ko + ' 규격 통과' : p.ko + ' 규격 미달' }),
+    j.ok ? '점도 · pH · 탁도와 필수 요건을 모두 만족한다.'
+         : '미달 항목 — ' + fails.join(' · ')
+  ]));
+}
+
+/* ── 열기 ──────────────────────────────────────────────────────── */
+function open(res, prod) {
+  S.res = res;
+  S.prod = prod || PROD.get(K.S.prod);
+  S.tilt = 0; S.phi = 0; S.days = 0; S.hot = false; S.shakeT = 0;
+
+  var y = res.visc.yieldStress;
+  S.stick = cl(Math.log(Math.max(res.eta, 1)) / Math.LN10 / 5.2, 0, 0.96);
+  if (y > 8) S.stick = Math.max(S.stick, 0.93);
+  if (y > 25) S.stick = Math.max(S.stick, 0.985);
+  S.fill = cl((K.S.result ? K.S.result.yieldPct : 74) / 100 * 0.78, 0.3, 0.8);
+
+  var st = 0;
+  (res.agg.thickers || []).forEach(function (t) {
+    if (['xanthan', 'ha', 'sclero', 'carrag', 'pq10', 'guar', 'gellan'].indexOf(t.g.id) >= 0)
+      st += t.c * 2.6;
+  });
+  S.stringy = Math.min(1, st);
+
+  S.aged = CHEM.age(res, 0, false);
+
+  var box = $('#vis');
+  box.hidden = false;
+  var stage = clear($('#visStage'));
+  stage.appendChild(buildVial());
+  drawBg();
+  paint();
+  renderNotes();
+  buildControls();
+}
+
+function reAge() {
+  S.aged = CHEM.age(S.res, S.days, S.hot);
+  paint(); renderNotes();
+}
+
+function close() {
+  $('#vis').hidden = true;
+  if (S.raf) clearInterval(S.raf);
+  S.raf = 0;
+  if (S.sensor) { window.removeEventListener('deviceorientation', onOri); S.sensor = false; }
+}
+
+function setTilt(v) {
+  S.tilt = cl(v, -180, 180);
+  var lab = $('#visTiltV'); if (lab) lab.textContent = Math.round(S.tilt) + '°';
+  var sl = $('#visSlider'); if (sl && +sl.value !== Math.round(S.tilt)) sl.value = Math.round(S.tilt);
+  paint();          /* 병은 곧바로 돈다 */
+  nudge();          /* 안에 든 것만 천천히 따라 눕는다 */
+}
+
+function onOri(e) {
+  var g = e.gamma;
+  if (g == null) return;
+  setTilt(cl(g * 2, -180, 180));
+}
+
+function enableSensor(btn) {
+  function attach() {
+    window.addEventListener('deviceorientation', onOri);
+    S.sensor = true;
+    btn.setAttribute('aria-pressed', true);
+    btn.textContent = '센서 켜짐';
+    K.toast('휴대폰을 좌우로 기울여 보세요');
+  }
+  if (S.sensor) {
+    window.removeEventListener('deviceorientation', onOri);
+    S.sensor = false;
+    btn.setAttribute('aria-pressed', false);
+    btn.textContent = '기울기 센서';
+    return;
+  }
+  var D = window.DeviceOrientationEvent;
+  if (!D) { K.toast('이 기기에서는 기울기 센서를 쓸 수 없습니다'); return; }
+  if (typeof D.requestPermission === 'function') {
+    D.requestPermission().then(function (r) {
+      if (r === 'granted') attach(); else K.toast('센서 사용이 거부되었습니다');
+    }).catch(function () { K.toast('센서를 켤 수 없습니다'); });
+  } else attach();
+}
+
+/* ── 조작부 ────────────────────────────────────────────────────── */
+function buildControls() {
+  var c = clear($('#visCtl'));
+
+  /* 기울기 */
+  var row1 = el('div.vctl');
+  row1.appendChild(el('span.vlab', { text: '기울기' }));
+  [[0, '세움'], [45, '45°'], [90, '눕힘'], [135, '135°'], [180, '뒤집기']].forEach(function (t) {
+    row1.appendChild(el('button.chip', { text: t[1], onclick: function () { setTilt(t[0]); } }));
+  });
+  row1.appendChild(el('button.chip', { text: '흔들기', onclick: function () {
+    S.shakeT = 30; S.days = 0; S.hot = false; syncDays(); reAge(); nudge();
+  } }));
+  row1.appendChild(el('button.chip', { text: '기울기 센서', 'aria-pressed': false,
+    onclick: function (e) { enableSensor(e.currentTarget); } }));
+  c.appendChild(row1);
+
+  var slRow = el('div.vctl');
+  var sl = el('input', { id: 'visSlider', type: 'range', min: '-180', max: '180', value: '0',
+    style: 'flex:1', oninput: function () { setTilt(+sl.value); } });
+  slRow.appendChild(sl);
+  slRow.appendChild(el('b', { id: 'visTiltV', class: 'num', style: 'width:48px;text-align:right', text: '0°' }));
+  c.appendChild(slRow);
+
+  /* 배경 */
+  var row2 = el('div.vctl');
+  row2.appendChild(el('span.vlab', { text: '배경' }));
+  [['text', '글자 (탁도 판정)'], ['light', '밝게'], ['dark', '어둡게']].forEach(function (t) {
+    row2.appendChild(el('button.chip', { text: t[1], 'aria-pressed': S.bg === t[0],
+      onclick: function () { S.bg = t[0]; drawBg(); buildControls(); } }));
+  });
+  c.appendChild(row2);
+
+  /* 보관 */
+  var row3 = el('div.vctl');
+  row3.appendChild(el('span.vlab', { text: '보관' }));
+  [[0, false, '제조 직후'], [7, false, '1주'], [30, false, '1개월'], [90, false, '3개월'],
+   [28, true, '45℃ 4주']].forEach(function (t) {
+    row3.appendChild(el('button.chip', { text: t[2],
+      'aria-pressed': S.days === t[0] && S.hot === t[1],
+      onclick: function () { S.days = t[0]; S.hot = t[1]; buildControls(); reAge(); } }));
+  });
+  c.appendChild(row3);
+}
+function syncDays() { }
+
+G.VIS = { open: open, close: close, setTilt: setTilt, colorName: colorName };
 })(window);
 
 /* =====================================================================
@@ -7104,6 +7766,8 @@ function boot() {
   $('#pickDone').addEventListener('click', UI.closePicker);
   $('#btnLearn').addEventListener('click', UI.openLearn);
   $('#learnDone').addEventListener('click', UI.closeLearn);
+  $('#visDone').addEventListener('click', function () { G.VIS.close(); });
+  $('#vis').addEventListener('click', function (e) { if (e.target.id === 'vis') G.VIS.close(); });
   $('#learn').addEventListener('click', function (e) { if (e.target.id === 'learn') UI.closeLearn(); });
   $('#picker').addEventListener('click', function (e) { if (e.target.id === 'picker') UI.closePicker(); });
 
@@ -7116,6 +7780,7 @@ function boot() {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); UI.run(false); }
     if (e.key === 'Escape' && !$('#picker').hidden) { e.preventDefault(); UI.closePicker(); }
     else if (e.key === 'Escape' && !$('#learn').hidden) { e.preventDefault(); UI.closeLearn(); }
+    else if (e.key === 'Escape' && !$('#vis').hidden) { e.preventDefault(); G.VIS.close(); }
     if (e.key === '/' && !typing) { e.preventDefault(); UI.openPicker(); }
   });
 

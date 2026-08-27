@@ -83,6 +83,25 @@
   </div>
 </div>
 
+<!-- 육안 분석 -->
+<div id="vis" class="ovl" hidden>
+  <div class="box">
+    <div class="phd">
+      <b>🔍 육안 분석</b>
+      <span style="font-size:12.5px;color:var(--ink-3)">기울여 보고 · 글자에 대보고 · 두고 본다</span>
+      <div style="flex:1"></div>
+      <button class="btn" id="visDone">닫기</button>
+    </div>
+    <div class="visbody">
+      <div class="visleft">
+        <div id="visStage"></div>
+        <div id="visCtl"></div>
+      </div>
+      <div class="visright" id="visNotes"></div>
+    </div>
+  </div>
+</div>
+
 <!-- 제조 연출 -->
 <div id="brew" hidden>
   <div class="brewbox">

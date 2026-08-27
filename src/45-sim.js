@@ -102,7 +102,8 @@ function run(rows, opt) {
   var vacFrac = 0, vacMin = 0, totalStirMin = 0;
   var etaGuess = 200;
 
-  var pre = CHEM.evaluate(rows, { tip: 6.3, sec: 300 });
+  var expectVisc = opt.spec && opt.spec.visc ? opt.spec.visc : null;
+  var pre = CHEM.evaluate(rows, { tip: 6.3, sec: 300, expectVisc: expectVisc });
   etaGuess = Math.max(pre.eta, 10);
 
   var dt = 20;                                     /* 적분 간격 s */
@@ -360,6 +361,7 @@ function run(rows, opt) {
   var lastTip = maxTip, lastSec = Math.max(homoSec, 60);
   var uvUndis = (byId['bemt'] && maxT < 80) || (byId['eht'] && maxT < 82);
   var res = CHEM.evaluate(finalRows, {
+    expectVisc: expectVisc,
     uvUndissolved: uvUndis,
     tip: lastTip, sec: lastSec,
     coolFactor: coolFactor, browning: browning,
@@ -368,7 +370,7 @@ function run(rows, opt) {
   });
 
   /* 이론값(오차 없는 처방·이상 공정)과의 비교 */
-  var ideal = CHEM.evaluate(rows, { tip: 6.3, sec: 300, coolFactor: 1 });
+  var ideal = CHEM.evaluate(rows, { tip: 6.3, sec: 300, coolFactor: 1, expectVisc: expectVisc });
 
   return {
     rows: finalRows, items: items, ideal: ideal, res: res,

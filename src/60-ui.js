@@ -608,7 +608,7 @@ function renderResult() {
   }
 
   var run = S.result;
-  var r = run ? run.res : CHEM.evaluate(S.rows, { tip: 6.3, sec: 300 });
+  var r = run ? run.res : CHEM.evaluate(S.rows, { tip: 6.3, sec: 300, expectVisc: PROD.get(S.prod).spec.visc });
   var p = PROD.get(S.prod);
   var judge = PROD.judge(S.prod, r);
   var wrap = el('div.res');
@@ -677,7 +677,28 @@ function renderResult() {
   if (run) run.warn.forEach(function (w) {
     if (!probs.some(function (x) { return x.ko === w.ko && x.msg === w.msg; })) probs.push(w);
   });
+  /* 규격·필수 요건 미달도 여기에 함께 올린다.
+     "지적 사항 없음" 인데 규격은 미달인 상태가 나오면 안 된다. */
+  judge.items.forEach(function (i) {
+    if (i.ok) return;
+    var lowSide = i.val < i.range[0];
+    probs.push({ sev: 20, ko: '규격 미달 — ' + i.ko,
+      msg: i.ko + ' 가 ' + (i.fmt ? i.val.toFixed(i.fmt) : K.n0(i.val)) + (i.unit ? ' ' + i.unit : '') +
+           ' 로, 규격 ' + fnum(i.range[0], i.fmt) +
+           (i.range[1] >= 1e6 ? ' 이상' : ' ~ ' + fnum(i.range[1], i.fmt)) +
+           ' 을 ' + (lowSide ? '밑돈다.' : '넘는다.') });
+  });
+  (judge.req || []).forEach(function (i) {
+    if (i.ok) return;
+    probs.push({ sev: 24, ko: '필수 요건 미달 — ' + i.ko,
+      msg: i.why + ' 지금 값은 ' + i.txt + ' 다.' });
+  });
   probs.sort(function (a, b) { return b.sev - a.sev; });
+
+  wrap.appendChild(el('button.btn.wide', {
+    style: 'margin-bottom:12px', text: '🔍 육안 분석 — 기울여 보기',
+    onclick: function () { if (G.VIS) G.VIS.open(r, p); }
+  }));
 
   wrap.appendChild(acc(probs.length ? '무엇이 문제인가' : '문제 없음',
     probs.length, probs.length ? (probs[0].sev >= 14 ? 'bad' : '') : 'ok',
@@ -1094,7 +1115,7 @@ function runBatch(spread) {
   var t = K.total();
   if (Math.abs(t - 100) > 0.02) K.toast('합계가 ' + t.toFixed(2) + '% 입니다 — 비율대로 환산해 제조합니다');
   var p = PROD.get(S.prod);
-  var opt = { batchG: S.batchG, rig: K.rig(), steps: K.steps(), kind: p.kind, seed: S.seed };
+  var opt = { batchG: S.batchG, rig: K.rig(), steps: K.steps(), kind: p.kind, spec: p.spec, seed: S.seed };
   try {
     S.result = SIM.run(S.rows, opt);
     S.spread = spread ? SIM.repeat(S.rows, opt, 5) : null;

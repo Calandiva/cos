@@ -316,9 +316,13 @@ function show(run, onDone) {
       }));
     }
 
-    wrap.appendChild(el('button.btn.pri.wide', {
-      style: 'margin-top:2px', text: '자세히 보기', onclick: close
-    }));
+    wrap.appendChild(el('div', { style: 'display:flex;gap:8px;width:100%;margin-top:2px' }, [
+      el('button.btn', { style: 'flex:1;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);color:#F3F6F9',
+        text: '🔍 육안 분석', onclick: function () {
+          if (G.VIS) G.VIS.open(run.res, PROD.get(K.S.prod));
+        } }),
+      el('button.btn.pri', { style: 'flex:1', text: '자세히 보기', onclick: close })
+    ]));
     stage2.appendChild(wrap);
   }
 

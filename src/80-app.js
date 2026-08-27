@@ -284,6 +284,8 @@ function boot() {
   $('#pickDone').addEventListener('click', UI.closePicker);
   $('#btnLearn').addEventListener('click', UI.openLearn);
   $('#learnDone').addEventListener('click', UI.closeLearn);
+  $('#visDone').addEventListener('click', function () { G.VIS.close(); });
+  $('#vis').addEventListener('click', function (e) { if (e.target.id === 'vis') G.VIS.close(); });
   $('#learn').addEventListener('click', function (e) { if (e.target.id === 'learn') UI.closeLearn(); });
   $('#picker').addEventListener('click', function (e) { if (e.target.id === 'picker') UI.closePicker(); });
 
@@ -296,6 +298,7 @@ function boot() {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); UI.run(false); }
     if (e.key === 'Escape' && !$('#picker').hidden) { e.preventDefault(); UI.closePicker(); }
     else if (e.key === 'Escape' && !$('#learn').hidden) { e.preventDefault(); UI.closeLearn(); }
+    else if (e.key === 'Escape' && !$('#vis').hidden) { e.preventDefault(); G.VIS.close(); }
     if (e.key === '/' && !typing) { e.preventDefault(); UI.openPicker(); }
   });
 
