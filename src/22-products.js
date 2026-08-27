@@ -15,11 +15,57 @@ function f(list) {                     /* [id, pct] 쌍 배열 → row 배열 */
   return list.map(function (r) { return { id: r[0], pct: r[1] }; });
 }
 
+/* ── 필수 요건 ──────────────────────────────────────────────────────
+   점도·pH·탁도만으로는 "대충 만든 것" 을 걸러내지 못한다.
+   제품이 제품 노릇을 하려면 반드시 갖춰야 하는 것들을 따로 건다.      */
+var R = {
+  preserve: function (lo) { return { k: 'preserve', lo: lo,
+    ko: '방부 지수 ' + lo.toFixed(2) + ' 이상',
+    why: '물이 든 화장품은 미생물을 막지 못하면 제품이 아니다.' }; },
+  stab:     function (lo) { return { k: 'stab', lo: lo,
+    ko: '안정도 ' + lo + '점 이상',
+    why: '분리되거나 석출되면 규격 안에 들어와도 팔 수 없다.' }; },
+  emul:     function ()   { return { k: 'emul',
+    ko: '유화계 성립 (오일에 맞는 유화제)',
+    why: '오일을 잡아줄 유화제가 없으면 그냥 섞어 놓은 물과 기름이다.' }; },
+  d32:      function (hi) { return { k: 'd32', hi: hi,
+    ko: '평균 액적 ' + hi + ' µm 이하',
+    why: '액적이 굵으면 며칠 안에 뜬다.' }; },
+  spf:      function (lo) { return { k: 'spf', lo: lo,
+    ko: 'SPF ' + lo + ' 이상',
+    why: '자외선차단제는 표시 차단력이 나와야 제품이다.' }; },
+  pa:       function (lo) { return { k: 'pa', lo: lo,
+    ko: 'UVA-PF ' + lo + ' 이상 (PA+++ 이상)',
+    why: 'UVB 만 막으면 광노화를 막지 못한다. 한국 PA 등급은 UVA-PF 로 매긴다.' }; },
+  foam:     function (lo) { return { k: 'foam', lo: lo,
+    ko: '거품력 ' + lo + ' 이상',
+    why: '세정 제품은 거품이 서야 팔린다.' }; },
+  cat:      function (c, lo) { return { k: 'cat', cat: c, lo: lo,
+    ko: G.ING.catName(c) + ' 합계 ' + lo + '% 이상',
+    why: '이 제형이 성립하려면 최소한 이만큼은 필요하다.' }; },
+  cationic: function (lo) { return { k: 'cationic', lo: lo,
+    ko: '양이온 컨디셔닝제 ' + lo + '% 이상',
+    why: '모발에 붙을 양이온이 없으면 컨디셔너가 아니다.' }; },
+  soap:     function ()   { return { k: 'soap',
+    ko: '비누화 (지방산 + 알칼리)',
+    why: '지방산과 알칼리가 만나야 폼 클렌저의 거품이 만들어진다.' }; },
+  anhydrous:function ()   { return { k: 'anhydrous',
+    ko: '무수 (정제수 5% 미만)',
+    why: '물이 들어가면 무수 제형이 아니다.' }; },
+  hard:     function (lo, hi) { return { k: 'hard', lo: lo, hi: hi,
+    ko: '경도 ' + lo + ' ~ ' + hi,
+    why: '무르면 여름에 주저앉고 단단하면 발리지 않는다.' }; },
+  pigment:  function (lo) { return { k: 'pigment', lo: lo,
+    ko: '착색 안료 ' + lo + '% 이상',
+    why: '색이 없으면 파운데이션이 아니다.' }; }
+};
+
 var P = [
 
 { key: 'toner', ko: '스킨 · 토너', icon: '💧', kind: 'solubilize',
   tag: '수용액 · 가용화',
   spec: { visc: [1, 20], ph: [4.2, 6.0], ntu: [0, 10] },
+  req: [R.preserve(0.75), R.stab(80)],
   n: '가장 단순해 보이지만 가장 어렵다. 오일과 향을 물에 "투명하게" 녹여야 하기 때문이다. ' +
      '가용화제를 향의 4~8배로 잡고, 오일과 가용화제를 먼저 섞은 뒤 물에 천천히 넣어야 미셀이 작게 잡힌다. ' +
      '비율이 모자라면 그 즉시 뿌옇게 흐려진다.',
@@ -31,15 +77,17 @@ var P = [
 { key: 'mist', ko: '미스트', icon: '🌫️', kind: 'solubilize',
   tag: '초저점도 · 분무',
   spec: { visc: [1, 8], ph: [4.5, 6.5], ntu: [0, 5] },
+  req: [R.preserve(0.75), R.stab(80)],
   n: '점도가 조금만 있어도 노즐이 막히고 입자가 굵어진다. 점증제는 쓰지 않는다. ' +
      '전해질이 많으면 분사 후 얼룩이 남는다.',
   key3: ['점증제 금지 — 분무 입자가 굵어진다', '가용화 실패는 노즐 막힘으로 직결', '잔여물이 남지 않게 고형분을 낮게'],
-  base: f([['aqua', 93.28], ['gly', 2], ['pdo', 2], ['pg10laur', 0.6], ['parfum', 0.12],
-           ['hex', 1], ['panth', 0.5], ['phenox', 0.45], ['edta', 0.02], ['citric', 0.03]]) },
+  base: f([['aqua', 93.03], ['gly', 2], ['pdo', 2], ['pg10laur', 0.6], ['parfum', 0.12],
+           ['hex', 1], ['panth', 0.5], ['phenox', 0.55], ['ehg', 0.15], ['edta', 0.02], ['citric', 0.03]]) },
 
 { key: 'essence', ko: '에센스', icon: '✨', kind: 'coldgel',
   tag: '냉공정 겔',
   spec: { visc: [800, 10000], ph: [4.5, 6.5], ntu: [0, 400] },
+  req: [R.preserve(0.75), R.stab(82)],
   n: '가열하지 않고 만드는 제형. 열에 약한 활성 성분을 그대로 살릴 수 있고 에너지·시간이 절약된다. ' +
      '중화가 필요 없는 냉공정 점증제(아리스토플렉스·세피노브·시뮬젤)가 주역이다.',
   key3: ['가열이 없으니 열 손실도 없다', '점증제 수화 시간이 곧 품질', '고분자는 반드시 분산 후 투입'],
@@ -50,6 +98,7 @@ var P = [
 { key: 'serum', ko: '세럼 · 앰플', icon: '🧪', kind: 'gel',
   tag: '투명 겔 · 고농도 활성',
   spec: { visc: [1500, 12000], ph: [4.5, 6.8], ntu: [0, 150] },
+  req: [R.preserve(0.75), R.stab(78)],
   n: '활성 성분을 높은 농도로 넣는 만큼 전해질 부하가 커진다. ' +
      '카보머 겔은 그 전해질에 가장 약하므로, 투명도와 점도를 동시에 지키는 것이 이 제형의 승부처다.',
   key3: ['활성 농도 ↑ = 전해질 ↑ = 카보머 점도 ↓', '중화도가 점도를 지배한다', '킬레이트제로 변색을 막는다'],
@@ -60,6 +109,7 @@ var P = [
 { key: 'gel', ko: '수분 젤', icon: '🫧', kind: 'gel',
   tag: '카보머 투명 겔',
   spec: { visc: [10000, 60000], ph: [5.0, 7.0], ntu: [0, 60] },
+  req: [R.preserve(0.75), R.stab(82)],
   n: '카보머를 물에 완전히 수화시킨 뒤 중화해 만드는 투명 겔. ' +
      '중화제를 한 번에 부으면 그 자리만 겔이 되어 덩어리가 지고 전체 점도는 오히려 떨어진다. 천천히, 교반하면서.',
   key3: ['수화 → 중화 순서를 절대 바꾸지 않는다', '중화제는 적하하듯 천천히', '기포가 들어가면 빠지지 않는다 — 진공 탈포'],
@@ -70,6 +120,7 @@ var P = [
 { key: 'lotion', ko: '로션', icon: '🥛', kind: 'emulsion',
   tag: 'O/W 유화 · 저점도',
   spec: { visc: [2000, 9000], ph: [4.5, 6.5], ntu: [600, 1e6] },
+  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4)],
   n: '수중유형 유화의 기본형. 지방알코올과 유화제가 만드는 라멜라 겔망이 되기를 결정하고, ' +
      '호모믹서가 만드는 액적 크기가 안정성과 백탁을 결정한다.',
   key3: ['요구 HLB 와 유화제 HLB 를 맞춘다', '라멜라 겔망 = 세테아릴알코올 × 유화제', '냉각 속도가 점도를 바꾼다'],
@@ -80,6 +131,7 @@ var P = [
 { key: 'cream', ko: '크림', icon: '🍦', kind: 'emulsion',
   tag: 'O/W 유화 · 고점도',
   spec: { visc: [15000, 60000], ph: [4.5, 6.5], ntu: [800, 1e6] },
+  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4)],
   n: '로션과 같은 원리지만 지방알코올과 오일이 늘어 라멜라 구조가 훨씬 두꺼워진다. ' +
      '내상 부피분율이 커질수록 점도는 급격히 오르고, 74%를 넘기면 상이 뒤집힌다.',
   key3: ['내상 부피분율이 점도를 지수적으로 올린다', '세라마이드·고융점 왁스는 완전 용해가 필수', '대량 생산에서 가장 묽어지기 쉬운 제형'],
@@ -91,17 +143,22 @@ var P = [
 { key: 'sun', ko: '선크림', icon: '☀️', kind: 'sun',
   tag: '자외선차단 · 하이브리드',
   spec: { visc: [4000, 30000], ph: [5.5, 7.5], ntu: [3000, 1e6] },
+  req: [R.preserve(0.75), R.stab(78), R.spf(30), R.pa(8)],
   n: '유기 차단제는 완전히 녹여야 하고, 무기 차단제는 완전히 흩어야 한다. ' +
      '둘 중 하나라도 실패하면 표시 SPF 가 나오지 않는다. 도포막의 균일성이 곧 차단력이다.',
   key3: ['유기 차단제는 80℃ 이상에서 완전 용해', '무기 분산은 전단 시간이 곧 차단력', '징크옥사이드는 pH 를 올리고 카보머를 죽인다'],
-  base: f([['aqua', 54.95], ['gly', 5], ['bg', 3], ['edta', 0.05], ['emc', 6],
-           ['ehs', 4], ['bemt', 2], ['octo', 3], ['ceh', 5], ['dcc', 4],
-           ['tio2uv', 5], ['kcp', 1.2], ['ceteryl', 1.5], ['gmsse', 2], ['dime5', 2],
-           ['xanthan', 0.2], ['pe9010', 1.0], ['parfum', 0.1]]) },
+  base: f([['aqua', 47.70], ['gly', 5], ['bg', 3], ['edta', 0.05],
+           ['hpstarch', 0.8], ['xanthan', 0.15],
+           ['emc', 5], ['ehs', 4], ['eht', 3], ['dhhb', 5], ['bemt', 2.5], ['ps15', 2],
+           ['tio2uv', 3], ['zno', 3],
+           ['ceh', 4], ['triethylhex', 4], ['dime5', 2],
+           ['kcp', 1.2], ['ceteryl', 1.5], ['gmsse', 2],
+           ['pe9010', 1.0], ['parfum', 0.1]]) },
 
 { key: 'shampoo', ko: '샴푸', icon: '🧴', kind: 'surfactant',
   tag: '음이온 미셀 · 세정',
   spec: { visc: [2500, 9000], ph: [4.8, 6.0], ntu: [0, 3000] },
+  req: [R.preserve(0.75), R.cat('surf', 20), R.foam(40)],
   n: '점도가 점증제가 아니라 "미셀의 모양"에서 나오는 유일한 제형. ' +
      '소금을 넣으면 구형 미셀이 막대형으로 자라 점도가 오르지만, 어느 지점을 넘으면 다시 급락한다(솔트 커브). ' +
      '양이온 폴리머는 헹굴 때 뭉쳐 모발에 얹힌다.',
@@ -113,6 +170,7 @@ var P = [
 { key: 'conditioner', ko: '컨디셔너 · 린스', icon: '💆', kind: 'conditioner',
   tag: '양이온 라멜라',
   spec: { visc: [8000, 30000], ph: [3.5, 5.0], ntu: [500, 1e6] },
+  req: [R.preserve(0.75), R.stab(80), R.cationic(1.5)],
   n: '양이온 계면활성제와 지방알코올이 만드는 라멜라가 전부다. ' +
      'pH 를 4 부근으로 낮춰야 모발 표면의 음전하가 살아나 양이온이 달라붙는다. ' +
      '음이온 계면활성제가 섞이면 그 자리에서 침전한다.',
@@ -124,6 +182,7 @@ var P = [
 { key: 'cleansingfoam', ko: '클렌징 폼', icon: '🫧', kind: 'saponify',
   tag: '비누화 · 크리미 거품',
   spec: { visc: [20000, 200000], ph: [9.0, 10.8], ntu: [500, 1e6] },
+  req: [R.soap(), R.foam(40), R.stab(78)],
   n: '지방산과 KOH 를 그 자리에서 반응시켜 비누를 만든다. ' +
      '중화가 진행되면서 점도가 폭발적으로 올라 교반기에 부하가 걸리고, 반응열로 온도가 스스로 오른다. ' +
      '과중화하면 강알칼리가 남아 자극이 된다 — 이론량의 90~95%만 넣는다.',
@@ -135,6 +194,7 @@ var P = [
 { key: 'cleansingoil', ko: '클렌징 오일', icon: '🛢️', kind: 'anhydrous',
   tag: '무수 · 자기유화',
   spec: { visc: [15, 90], ph: null, ntu: [0, 60] },
+  req: [R.anhydrous(), R.cat('surf', 12)],
   n: '물이 없으니 방부가 필요 없고 미생물 걱정도 없다. 대신 물이 닿는 순간 하얗게 유화되어 씻겨 나가야 한다. ' +
      '자기유화제 비율이 모자라면 얼굴에 기름이 남고, 넘치면 눈이 시리다.',
   key3: ['물이 없으면 방부제도 필요 없다', '자기유화제 15~20% 가 워터오프의 조건', '오일 점도의 로그 평균이 최종 점도'],
@@ -144,6 +204,7 @@ var P = [
 { key: 'bodywash', ko: '바디워시', icon: '🚿', kind: 'surfactant',
   tag: '세정 · 저자극',
   spec: { visc: [2000, 8000], ph: [4.8, 6.0], ntu: [0, 4000] },
+  req: [R.preserve(0.75), R.cat('surf', 18), R.foam(38)],
   n: '샴푸와 원리는 같지만 넓은 면적에 쓰이므로 자극을 더 낮춰야 한다. ' +
      '회합형 점증제(PEG-150 다이스테아레이트)를 쓰면 소금 없이도 점도를 올릴 수 있다.',
   key3: ['자극 = 음이온 비율. 양쪽성·아미노산계로 희석', '펄감은 글리콜다이스테아레이트가 만든다', '헹굼 후 당김을 오일로 잡는다'],
@@ -154,6 +215,7 @@ var P = [
 { key: 'bodylotion', ko: '바디로션', icon: '🧴', kind: 'emulsion',
   tag: 'O/W · 대용량',
   spec: { visc: [2500, 20000], ph: [4.5, 6.5], ntu: [600, 1e6] },
+  req: [R.preserve(0.75), R.stab(80), R.emul(), R.d32(4)],
   n: '한 번에 많은 양을 쓰는 만큼 원가와 펌핑성이 중요하다. ' +
      '값싼 오일로 사용감을 내고, 점도는 라멜라로 잡는 것이 정석.',
   key3: ['원가가 곧 경쟁력 — 미네랄오일·해바라기유', '펌프가 밀어낼 수 있는 점도까지만', '대용량 배치라 열이력이 길다'],
@@ -165,6 +227,7 @@ var P = [
 { key: 'lipbalm', ko: '립밤', icon: '💄', kind: 'melt',
   tag: '무수 · 용융 주입',
   spec: { visc: null, ph: null, ntu: null, hard: [18, 45] },
+  req: [R.anhydrous(), R.hard(18, 48)],
   n: '왁스의 융점과 배합비가 경도를 결정한다. ' +
      '너무 단단하면 발리지 않고, 무르면 여름에 주저앉는다. ' +
      '급냉하면 결정이 거칠어지고, 서냉하면 표면에 오일이 배어 나온다(발한).',
@@ -176,18 +239,20 @@ var P = [
 { key: 'foundation', ko: '파운데이션', icon: '🎨', kind: 'pigment',
   tag: 'O/W · 안료 분산',
   spec: { visc: [5000, 25000], ph: [5.5, 7.5], ntu: [3000, 1e6] },
+  req: [R.preserve(0.75), R.stab(80), R.emul(), R.pigment(0.3)],
   n: '색을 맞추는 제형. 흑색산화철은 0.01% 차이로 톤이 달라지므로 계량 오차가 그대로 색차가 된다. ' +
      '안료가 덜 풀리면 줄무늬가 생기고 커버력이 떨어진다.',
   key3: ['안료는 별도 분산 후 투입 — 뭉치면 색이 안 난다', '흑색산화철은 계량 오차에 가장 민감', '파우더가 가라앉지 않게 항복응력을 준다'],
-  base: f([['aqua', 54.98], ['gly', 5], ['bg', 4], ['edta', 0.05], ['nacitrate', 0.1],
+  base: f([['aqua', 54.73], ['gly', 5], ['bg', 4], ['edta', 0.05], ['nacitrate', 0.1],
            ['ceh', 6], ['cct', 4], ['dime5', 3], ['dimecop', 3], ['ceteryl', 1],
            ['gmsse', 2], ['kcp', 0.8], ['tio2uv', 6], ['ci77492', 1.2],
            ['ci77491', 0.45], ['ci77499', 0.12], ['mica', 3], ['silica', 2],
-           ['nylon12', 2], ['xanthan', 0.2], ['pe9010', 1], ['parfum', 0.1]]) },
+           ['nylon12', 2], ['xanthan', 0.2], ['pe9010', 1.1], ['ehg', 0.15], ['parfum', 0.1]]) },
 
 { key: 'hairessence', ko: '헤어 에센스', icon: '🌾', kind: 'anhydrous',
   tag: '무수 · 실리콘',
   spec: { visc: [4, 60], ph: null, ntu: [0, 30] },
+  req: [R.anhydrous()],
   n: '실리콘의 휘발성과 굴절률로 사용감을 만든다. ' +
      '무거우면 머리가 처지고 가벼우면 지속력이 없다. 산패하기 쉬운 식물유에는 항산화제가 필수.',
   key3: ['휘발성 실리콘이 산뜻함, 비휘발성이 지속력', '굴절률이 높을수록 윤기', '식물유에는 반드시 항산화제'],
@@ -203,9 +268,9 @@ P.forEach(function (p, i) { p.idx = i; BY[p.key] = p; });
 G.PROD = {
   LIST: P, BY: BY,
   get: function (k) { return BY[k]; },
-  /* 규격 판정: {ok, items:[{ko, val, range, ok}]} */
+  /* 규격 판정 */
   judge: function (key, res) {
-    var p = BY[key]; if (!p) return { ok: true, items: [] };
+    var p = BY[key]; if (!p) return { ok: true, items: [], req: [] };
     var it = [], s = p.spec;
     function add(ko, val, rng, unit, fmt) {
       if (!rng) return;
@@ -215,7 +280,42 @@ G.PROD = {
     add('점도', res.eta, s.visc, 'cP', 0);
     add('pH', res.pH, s.ph, '', 2);
     add('탁도', res.ntu, s.ntu, 'NTU', 0);
-    return { ok: it.every(function (x) { return x.ok; }), items: it };
+
+    var a = res.agg, req = [];
+    (p.req || []).forEach(function (c) {
+      var v = 0, ok = false, txt = '';
+      switch (c.k) {
+        case 'preserve': v = res.preserve; ok = v >= c.lo; txt = v.toFixed(2); break;
+        case 'stab':     v = res.stability.score; ok = v >= c.lo; txt = String(v); break;
+        case 'd32':      v = res.d32 || 0; ok = !v || v <= c.hi; txt = v ? v.toFixed(2) + ' µm' : '—'; break;
+        case 'spf':      v = res.uv ? res.uv.spf : 0; ok = v >= c.lo; txt = v ? Math.round(v) : '없음'; break;
+        case 'pa':       v = res.uv ? res.uv.pfa : 0; ok = v >= c.lo;
+                         txt = res.uv ? res.uv.pfa.toFixed(1) + ' · ' + res.uv.pa : '없음'; break;
+        case 'foam':     v = res.foam; ok = v >= c.lo; txt = Math.round(v); break;
+        case 'cat':      v = a.byCat[c.cat] || 0; ok = v >= c.lo; txt = v.toFixed(1) + '%'; break;
+        case 'cationic': v = a.cond; ok = v >= c.lo; txt = v.toFixed(1) + '%'; break;
+        case 'soap':     ok = !!a.soap; txt = a.soap ? '성립' : '없음'; break;
+        case 'anhydrous':ok = a.water < 5; txt = a.water.toFixed(1) + '%'; break;
+        case 'hard':     v = res.hard; ok = v >= c.lo && v <= c.hi; txt = v.toFixed(1); break;
+        case 'pigment':  v = a.pigment; ok = v >= c.lo; txt = v.toFixed(2) + '%'; break;
+        case 'emul': {
+          var oil = a.oil + a.wax;
+          if (oil < 3) { ok = true; txt = '해당 없음'; }
+          else {
+            var dp = res.drop;
+            ok = a.emul > 0.05 && !!dp && !dp.starved && Math.abs(dp.bh - dp.rh) < 4;
+            txt = dp ? '유화제 ' + a.emul.toFixed(1) + '%, HLB 차 ' + Math.abs(dp.bh - dp.rh).toFixed(1)
+                     : '유화제 ' + a.emul.toFixed(1) + '%';
+          }
+          break;
+        }
+      }
+      req.push({ ko: c.ko, why: c.why, ok: ok, txt: String(txt) });
+    });
+
+    var specOk = it.every(function (x) { return x.ok; });
+    var reqOk = req.every(function (x) { return x.ok; });
+    return { ok: specOk && reqOk, specOk: specOk, reqOk: reqOk, items: it, req: req };
   }
 };
 })(window);

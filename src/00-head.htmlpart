@@ -490,4 +490,30 @@ h3.sec:first-child{margin-top:0}
 @keyframes steam{0%{opacity:0;transform:translateY(6px)}
   35%{opacity:.7}100%{opacity:0;transform:translateY(-22px)}}
 .tank .vac{fill:rgba(126,166,240,.22);stroke:rgba(126,166,240,.6);stroke-width:1.6}
+
+/* ══ 트렌드 배지 · 용어집 · 가이드 ═══════════════════════════════ */
+.hotb{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:9px;
+  background:var(--acc);color:var(--acc-ink);font-size:10px;font-weight:700;
+  letter-spacing:.02em;flex:0 0 auto;margin-left:6px;vertical-align:2px}
+
+.gterm{border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:9px;
+  background:var(--panel)}
+.gterm .gt-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.gterm .gt-h b{font-size:15px;font-weight:700}
+.gterm .gt-h em{font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.gterm .gt-d{font-size:14px;margin-top:5px;color:var(--ink)}
+.gterm .gt-n{font-size:13px;margin-top:6px;color:var(--ink-2);line-height:1.7}
+.ggroup{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.06em;
+  margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.ggroup:first-child{margin-top:0}
+
+.skel{width:100%;border-collapse:collapse;font-size:13.5px}
+.skel td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.skel td:first-child{width:104px;color:var(--ink-3);font-weight:600;font-size:12.5px;white-space:nowrap}
+.skel td:last-child{width:96px;text-align:right;font-family:var(--mono);font-size:12px;color:var(--ink-2);white-space:nowrap}
+.tip{border-left:3px solid var(--acc-line);padding:2px 0 2px 11px;margin-bottom:12px}
+.tip b{display:block;font-size:13px;color:var(--acc);font-weight:700;margin-bottom:3px}
+.tip div{font-size:13.5px;color:var(--ink-2);line-height:1.7}
+.wlist{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2);line-height:1.75}
+.wlist li{margin:5px 0}
 </style>

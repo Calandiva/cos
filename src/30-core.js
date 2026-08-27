@@ -15,13 +15,16 @@ function el(tag, attr, kids) {
     else n.classList.add(parts[i + 1]);
   }
   if (attr) for (var k in attr) {
-    var v = attr[k];
-    if (v == null || v === false) continue;
+    var v = attr[k], aria = k.slice(0, 5) === 'aria-';
+    if (v == null) continue;
+    if (v === false && !aria) continue;          /* aria-* 는 false 도 명시해야 한다 */
     if (k === 'text') n.textContent = v;
     else if (k === 'html') n.innerHTML = v;
     else if (k === 'style') n.setAttribute('style', v);
     else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), v);
-    else n.setAttribute(k, v === true ? '' : v);
+    else if (v === true) n.setAttribute(k, aria ? 'true' : '');
+    else if (v === false) n.setAttribute(k, 'false');
+    else n.setAttribute(k, v);
   }
   if (kids != null) (Array.isArray(kids) ? kids : [kids]).forEach(function (c) {
     if (c == null || c === false) return;

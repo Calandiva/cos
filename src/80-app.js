@@ -135,6 +135,7 @@ function openMenu() {
     el('h3.sec', { text: '도움말' }),
     el('div', { style: 'display:flex;gap:8px;flex-wrap:wrap' }, [
       el('button.btn.sm', { text: '사용 설명', onclick: help }),
+      el('button.btn.sm', { text: '용어집', onclick: function () { UI.openGloss(''); } }),
       el('button.btn.sm', { text: '계산 근거', onclick: about })
     ]),
 

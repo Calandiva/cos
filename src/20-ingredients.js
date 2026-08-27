@@ -51,7 +51,13 @@ var PHASES = {
 var NORM = {
   cat: 'misc', ph: 'A', sol: 'w', u: [0, 10, 1], d: 1.0, ri: 0,
   hlb: 0, rh: 0, th: null, lam: 0, lab: [98, 0, 1], tint: 0.02, op: 0,
-  tmax: 0, pv: 0, pc: 0, el: 0, vol: 0, ox: 0, pr: 5000, tags: '', n: ''
+  tmax: 0, pv: 0, pc: 0, el: 0, vol: 0, ox: 0, pr: 5000,
+  spf: 0,      /* 1% 당 SPF 기여 */
+  pfa: 0,      /* 1% 당 UVA-PF 기여 */
+  foam: 0,     /* 거품력 (활성분 1% 당) */
+  hard: 0,     /* 무수 제형 경도 기여 */
+  hot: 0,      /* 최근 실무에서 많이 쓰는 원료 */
+  tags: '', n: ''
 };
 
 /* ------------------------------------------------------------------ */
@@ -148,7 +154,7 @@ var RAW = [
   n: '중화가 필요 없고 상온에서 바로 부풀어 오르는 점증제. 냉공정(콜드 프로세스) 에센스·젤의 주력.' },
 
 { id: 'sepinov', ko: '하이드록시에틸아크릴레이트/소듐아크릴로일다이메틸타우레이트코폴리머', inci: 'Hydroxyethyl Acrylate/Sodium Acryloyldimethyl Taurate Copolymer', cat: 'thick', ph: 'A', sol: 'w', u: [0, 3, 1.0], d: 0.5,
-  th: [18000, 1.45], hlb: 12, op: 4, pv: 6.2, pc: 0.25, pr: 98000,
+  th: [18000, 1.45], hlb: 12, op: 4, pv: 6.2, pc: 0.25, pr: 98000, hot: 1,
   tags: '세피노브 sepinov emt10 점증 유화 냉공정 부드러움',
   n: '점증 + 보조 유화. 전해질 내성이 좋고 벨벳 같은 사용감을 준다. 냉공정과 열공정 모두 가능.' },
 
@@ -191,11 +197,11 @@ var RAW = [
   n: '세테아릴보다 부드럽고 매끄러운 감촉. 겔망 형성력은 조금 약하다.' },
 
 { id: 'stearyl', ko: '스테아릴알코올', inci: 'Stearyl Alcohol', cat: 'wax', ph: 'B', sol: 'o', u: [0, 8, 2], d: 0.81, ri: 1.437,
-  lam: 1.05, rh: 15.5, op: 190, pr: 4300, tags: '스테아릴알코올 stearyl 지방알코올 단단함',
+  lam: 1.05, rh: 15.5, op: 190, pr: 4300, hard: 0.8, tags: '스테아릴알코올 stearyl 지방알코올 단단함',
   n: '탄소수가 길어 더 단단하고 왁시한 느낌. 겔망은 가장 강하다.' },
 
 { id: 'behenyl', ko: '베헤닐알코올', inci: 'Behenyl Alcohol', cat: 'wax', ph: 'B', sol: 'o', u: [0, 5, 1.5], d: 0.82, ri: 1.44,
-  lam: 1.25, rh: 15, op: 210, pr: 14000, tags: '베헤닐알코올 behenyl c22 고급지방알코올',
+  lam: 1.25, rh: 15, op: 210, pr: 14000, hard: 0.9, tags: '베헤닐알코올 behenyl c22 고급지방알코올',
   n: 'C22. 소량으로 큰 점도를 내지만 융점이 70℃로 높아 완전히 녹이지 않으면 알갱이가 남는다.' },
 
 { id: 'stearic', ko: '스테아릭애씨드', inci: 'Stearic Acid', cat: 'wax', ph: 'B', sol: 'o', u: [0, 15, 3], d: 0.85, ri: 1.43,
@@ -204,26 +210,26 @@ var RAW = [
   n: '알칼리(TEA·NaOH)와 만나면 그 자리에서 비누(유화제)가 된다. 이 비누화 유화가 고전적 바니싱 크림의 원리다. 과량이면 하얗게 뜨는 백탁 자국이 남는다.' },
 
 { id: 'beeswax', ko: '비즈왁스', inci: 'Cera Alba', cat: 'wax', ph: 'B', sol: 'o', u: [0, 15, 3], d: 0.96, ri: 1.44,
-  lam: 0.9, rh: 12, op: 220, lab: [92, 1, 14], tint: 0.3, pr: 16000,
+  lam: 0.9, rh: 12, op: 220, lab: [92, 1, 14], tint: 0.3, pr: 16000, hard: 1.6,
   tags: '비즈왁스 밀랍 cera alba 왁스 립밤 발수',
   n: '밀랍. 융점 62~65℃. 발수막을 만들어 립밤·밤 제형의 뼈대가 된다.' },
 
 { id: 'candel', ko: '칸데릴라왁스', inci: 'Euphorbia Cerifera Wax', cat: 'wax', ph: 'B', sol: 'o', u: [0, 15, 4], d: 0.98, ri: 1.45,
-  lam: 1.1, rh: 11, op: 230, lab: [90, 0, 10], tint: 0.2, pr: 22000,
+  lam: 1.1, rh: 11, op: 230, lab: [90, 0, 10], tint: 0.2, pr: 22000, hard: 2.4,
   tags: '칸데릴라 왁스 비건 립밤 광택',
   n: '비건 왁스. 밀랍보다 단단하고 광택이 좋다. 융점 68~73℃.' },
 
 { id: 'carnauba', ko: '카나우바왁스', inci: 'Copernicia Cerifera Wax', cat: 'wax', ph: 'B', sol: 'o', u: [0, 10, 2], d: 0.99, ri: 1.45,
-  lam: 1.4, rh: 11, op: 240, lab: [88, 1, 16], tint: 0.3, pr: 26000,
+  lam: 1.4, rh: 11, op: 240, lab: [88, 1, 16], tint: 0.3, pr: 26000, hard: 3.2,
   tags: '카나우바 왁스 경도 광택 마스카라',
   n: '융점 82~86℃로 가장 단단하다. 마스카라·립스틱의 내열도를 올린다. 완전히 녹이려면 85℃ 이상이 필요하다.' },
 
 { id: 'micro', ko: '마이크로크리스탈린왁스', inci: 'Microcrystalline Wax', cat: 'wax', ph: 'B', sol: 'o', u: [0, 15, 4], d: 0.92, ri: 1.45,
-  lam: 1.0, rh: 10, op: 200, pr: 6000, tags: '마이크로크리스탈린 왁스 유연 결착',
+  lam: 1.0, rh: 10, op: 200, pr: 6000, hard: 1.5, tags: '마이크로크리스탈린 왁스 유연 결착',
   n: '미세결정 왁스. 오일을 잘 붙들어 립 제형의 발한(sweating)을 막는다.' },
 
 { id: 'shea', ko: '시어버터', inci: 'Butyrospermum Parkii Butter', cat: 'wax', ph: 'B', sol: 'o', u: [0, 20, 4], d: 0.91, ri: 1.463,
-  lam: 0.35, rh: 8, op: 120, lab: [93, -1, 9], tint: 0.25, ox: 0.3, pr: 12000,
+  lam: 0.35, rh: 8, op: 120, lab: [93, -1, 9], tint: 0.25, ox: 0.3, pr: 12000, hard: 0.35,
   tags: '시어버터 shea butter 버터 보습 유연',
   n: '융점 32~38℃로 체온에서 녹는다. 결정형이 여러 가지라 급냉하면 나중에 알갱이(그레이닝)가 생긴다.' },
 
@@ -300,7 +306,7 @@ var RAW = [
   n: '완전히 날아가면서 필름만 남긴다. 워터프루프 선크림·롱웨어 메이크업의 핵심. 가온 시 대부분 증발하므로 냉각 후 투입한다.' },
 
 { id: 'petro', ko: '페트롤라툼', inci: 'Petrolatum', cat: 'oil', ph: 'B', sol: 'o', u: [0, 30, 5], d: 0.87, ri: 1.48,
-  rh: 8, lam: 0.3, op: 100, pr: 3000, tags: '바세린 페트롤라툼 폐색 보호막',
+  rh: 8, lam: 0.3, op: 100, pr: 3000, hard: 0.3, tags: '바세린 페트롤라툼 폐색 보호막',
   n: '가장 강력한 폐색제. 경피수분손실을 거의 완전히 막지만 무겁고 번들거린다.' },
 
 { id: 'bos', ko: '부틸옥틸살리실레이트', inci: 'Butyloctyl Salicylate', cat: 'oil', ph: 'B', sol: 'o', u: [0, 10, 3], d: 1.0, ri: 1.51,
@@ -370,7 +376,7 @@ var RAW = [
   n: '세테아릴알코올과 함께 강한 라멜라 구조를 만든다. 유화왁스(Emulsifying Wax NF)의 주성분.' },
 
 { id: 'olivem', ko: '세테아릴올리베이트/솔비탄올리베이트', inci: 'Cetearyl Olivate (and) Sorbitan Olivate', cat: 'emul', ph: 'B', sol: 'o', u: [0, 8, 4], d: 0.95, ri: 1.46,
-  hlb: 9.0, lam: 0.7, op: 160, pr: 28000,
+  hlb: 9.0, lam: 0.7, op: 160, pr: 28000, hot: 1,
   tags: '올리브엠 olivem 1000 천연유화제 액정 리퀴드크리스탈',
   n: '올리브 유래. 피부 지질과 비슷한 액정(liquid crystal) 구조를 만들어 촉촉하면서도 무겁지 않다. 천연 처방의 주력.' },
 
@@ -421,47 +427,47 @@ var RAW = [
 
 /* ── 세정 계면활성제 ────────────────────────────────────────────── */
 { id: 'sles', ko: '소듐라우레스설페이트', inci: 'Sodium Laureth Sulfate (70%)', cat: 'surf', ph: 'A', sol: 'w', u: [0, 40, 12], d: 1.05,
-  hlb: 16, op: 6, el: 1.2, pv: 6.5, pc: 0.2, pr: 2200,
+  hlb: 16, op: 6, el: 1.2, pv: 6.5, pc: 0.2, pr: 2200, foam: 1.0,
   tags: 'sles 소듐라우레스설페이트 설페이트 샴푸 세정 거품',
   n: '풍부한 거품과 강한 세정력. 소금으로 점도를 조절할 수 있는 것이 큰 장점이다. 자극 때문에 베타인·글루타메이트와 섞어 완화한다.' },
 
 { id: 'slmi', ko: '소듐라우로일메칠아이세티오네이트', inci: 'Sodium Lauroyl Methyl Isethionate', cat: 'surf', ph: 'A', sol: 'w', u: [0, 25, 8], d: 1.0,
-  hlb: 15, op: 20, el: 0.8, pv: 6.0, pc: 0.2, pr: 12000,
+  hlb: 15, op: 20, el: 0.8, pv: 6.0, pc: 0.2, pr: 12000, foam: 0.85, hot: 1,
   tags: '아이세티오네이트 slmi 저자극 크리미 거품 설페이트프리',
   n: '설페이트 프리의 대표. 크리미하고 조밀한 거품과 부드러운 마무리. 찬물에 잘 안 녹으니 가온 용해가 필요하다.' },
 
 { id: 'capb', ko: '코카미도프로필베타인', inci: 'Cocamidopropyl Betaine (30%)', cat: 'surf', ph: 'A', sol: 'w', u: [0, 30, 8], d: 1.04,
-  hlb: 13, op: 4, el: 1.5, pv: 5.5, pc: 0.3, pr: 2600,
+  hlb: 13, op: 4, el: 1.5, pv: 5.5, pc: 0.3, pr: 2600, foam: 0.7,
   tags: '코카미도프로필베타인 capb 양쪽성 거품보조 자극완화',
   n: '양쪽성. 단독 세정력은 약하지만 다른 계면활성제의 자극을 낮추고 거품을 안정시킨다. 거의 모든 세정 처방에 들어간다.' },
 
 { id: 'chs', ko: '코카미도프로필하이드록시설테인', inci: 'Cocamidopropyl Hydroxysultaine', cat: 'surf', ph: 'A', sol: 'w', u: [0, 20, 5], d: 1.05,
-  hlb: 13, op: 4, el: 1.6, pv: 6.0, pc: 0.3, pr: 4200,
+  hlb: 13, op: 4, el: 1.6, pv: 6.0, pc: 0.3, pr: 4200, foam: 0.75,
   tags: '하이드록시설테인 양쪽성 저ph 점증',
   n: '베타인보다 낮은 pH에서도 안정하고 점증 반응이 좋다.' },
 
 { id: 'cocoglut', ko: '소듐코코일글루타메이트', inci: 'Sodium Cocoyl Glutamate', cat: 'surf', ph: 'A', sol: 'w', u: [0, 25, 8], d: 1.05,
-  hlb: 14, op: 8, el: 1.4, pv: 6.5, pc: 0.5, pr: 9000,
+  hlb: 14, op: 8, el: 1.4, pv: 6.5, pc: 0.5, pr: 9000, foam: 0.6, hot: 1,
   tags: '코코일글루타메이트 아미노산계 약산성 저자극 클렌징',
   n: '아미노산계. 약산성에서 부드럽게 씻긴다. pH 5 아래로 내려가면 유리산이 석출되어 뿌옇게 흐려질 수 있다.' },
 
 { id: 'decylglu', ko: '데실글루코사이드', inci: 'Decyl Glucoside', cat: 'surf', ph: 'A', sol: 'w', u: [0, 20, 5], d: 1.05,
-  hlb: 13, op: 10, pv: 11.5, pc: 0.6, pr: 6000,
+  hlb: 13, op: 10, pv: 11.5, pc: 0.6, pr: 6000, foam: 0.45,
   tags: '데실글루코사이드 apg 비이온 천연 저자극 베이비',
   n: '당 유래 비이온. 매우 순하지만 원액 pH가 11 부근이라 반드시 산으로 낮춰야 한다. 거품이 성기다.' },
 
 { id: 'lauryglu', ko: '라우릴글루코사이드', inci: 'Lauryl Glucoside', cat: 'surf', ph: 'A', sol: 'w', u: [0, 20, 5], d: 1.05,
-  hlb: 13, op: 14, pv: 11.5, pc: 0.6, pr: 6200,
+  hlb: 13, op: 14, pv: 11.5, pc: 0.6, pr: 6200, foam: 0.5,
   tags: '라우릴글루코사이드 apg 천연 세정',
   n: '데실글루코사이드보다 세정력이 세고 점도가 있다.' },
 
 { id: 'myristic', ko: '미리스틱애씨드', inci: 'Myristic Acid', cat: 'surf', ph: 'B', sol: 'o', u: [0, 25, 10], d: 0.86,
-  lam: 0.18, op: 160, pv: 4.5, pc: 0.6, pr: 4000,
+  lam: 0.18, op: 160, pv: 4.5, pc: 0.6, pr: 4000, foam: 0.95,
   tags: '미리스틱애씨드 비누화 폼클렌저 크리미거품 지방산',
   n: 'KOH와 반응해 그 자리에서 비누를 만든다. 이것이 크리미한 폼 클렌저의 원리다. 비누화 반응은 발열하며 점도가 급상승하므로 천천히 중화한다.' },
 
 { id: 'lauric', ko: '라우릭애씨드', inci: 'Lauric Acid', cat: 'surf', ph: 'B', sol: 'o', u: [0, 20, 6], d: 0.88,
-  lam: 0.14, op: 150, pv: 4.5, pc: 0.6, pr: 4200,
+  lam: 0.14, op: 150, pv: 4.5, pc: 0.6, pr: 4200, foam: 1.25,
   tags: '라우릭애씨드 비누화 거품량 폼클렌저',
   n: '거품 양을 늘린다. 많이 쓰면 세정 후 당김이 심해진다.' },
 
@@ -513,35 +519,35 @@ var RAW = [
 
 /* ── 자외선차단제 ───────────────────────────────────────────────── */
 { id: 'emc', ko: '에틸헥실메톡시신나메이트', inci: 'Ethylhexyl Methoxycinnamate', cat: 'uv', ph: 'B', sol: 'o', u: [0, 7.5, 6], d: 1.01, ri: 1.545,
-  rh: 11, ox: 0.4, tmax: 88, pr: 16000,
+  rh: 11, ox: 0.4, tmax: 88, pr: 16000, spf: 2.2, pfa: 0.15,
   tags: '옥시노세이트 에틸헥실메톡시신나메이트 uvb 유기자차 옥티녹세이트',
   n: 'UVB 주력. 액상이라 다루기 쉽지만 광안정성이 낮고 아보벤존과 함께 쓰면 서로를 망가뜨린다. 국내 한도 7.5%.' },
 
 { id: 'ehs', ko: '에틸헥실살리실레이트', inci: 'Ethylhexyl Salicylate', cat: 'uv', ph: 'B', sol: 'o', u: [0, 5, 4], d: 1.01, ri: 1.500,
-  rh: 11, pr: 14000, tags: '옥티살레이트 에틸헥실살리실레이트 uvb 광안정 용해보조',
+  rh: 11, pr: 14000, spf: 1.0, pfa: 0.05, tags: '옥티살레이트 에틸헥실살리실레이트 uvb 광안정 용해보조',
   n: 'UVB 보조 + 다른 차단제 용해 보조. 광안정성이 좋다. 한도 5%.' },
 
 { id: 'bemt', ko: '비스에틸헥실옥시페놀메톡시페닐트라이아진', inci: 'Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine', cat: 'uv', ph: 'B', sol: 'o', u: [0, 10, 3], d: 1.1, ri: 1.60,
-  rh: 12, lab: [92, 2, 22], tint: 0.6, op: 12, pr: 420000,
+  rh: 12, lab: [92, 2, 22], tint: 0.6, op: 12, pr: 420000, spf: 3.0, pfa: 1.2, hot: 1,
   tags: '티노소브s bemt 광범위 uva uvb 광안정 고가',
   n: 'UVA·UVB를 모두 막는 고성능 차단제. 노란빛이 강하고 결정성이 높아 완전히 녹이려면 80℃ 이상과 좋은 용제가 필요하다. 식으면서 재결정하면 알갱이가 생긴다.' },
 
 { id: 'ubm', ko: '부틸메톡시다이벤조일메탄', inci: 'Butyl Methoxydibenzoylmethane', cat: 'uv', ph: 'B', sol: 'o', u: [0, 5, 3], d: 1.1, ri: 1.58,
-  rh: 12, ox: 0.6, lab: [93, 0, 18], tint: 0.4, op: 20, pr: 60000,
+  rh: 12, ox: 0.6, lab: [93, 0, 18], tint: 0.4, op: 20, pr: 60000, spf: 1.6, pfa: 1.5,
   tags: '아보벤존 부틸메톡시다이벤조일메탄 uva 광불안정',
   n: 'UVA 표준이지만 빛을 받으면 스스로 분해된다. 옥토크릴렌이나 광안정화제와 반드시 함께 쓴다.' },
 
 { id: 'octo', ko: '옥토크릴렌', inci: 'Octocrylene', cat: 'uv', ph: 'B', sol: 'o', u: [0, 10, 5], d: 1.05, ri: 1.567,
-  rh: 11, pr: 20000, tags: '옥토크릴렌 uvb 광안정화 아보벤존안정',
+  rh: 11, pr: 20000, spf: 1.1, pfa: 0.2, tags: '옥토크릴렌 uvb 광안정화 아보벤존안정',
   n: '그 자체로 UVB를 막고 아보벤존의 광분해를 억제한다. 점성이 있고 끈적임을 준다.' },
 
 { id: 'tio2uv', ko: '티타늄디옥사이드(분산)', inci: 'Titanium Dioxide (and) Triethoxycaprylylsilane', cat: 'uv', ph: 'B', sol: 'd', u: [0, 25, 10], d: 1.5, ri: 2.55,
-  op: 900, lab: [99, 0, -1], tint: 5.0, pr: 48000,
+  op: 900, lab: [99, 0, -1], tint: 5.0, pr: 48000, spf: 2.0, pfa: 0.35,
   tags: '티타늄디옥사이드 tio2 무기자차 백탁 uvb 물리적',
   n: '물리적 차단. 굴절률 2.55로 압도적으로 빛을 산란시켜 강한 백탁을 만든다. 분산이 나쁘면 뭉쳐서 차단력이 떨어지고 얼룩이 진다.' },
 
 { id: 'zno', ko: '징크옥사이드(분산)', inci: 'Zinc Oxide (and) Triethoxycaprylylsilane', cat: 'uv', ph: 'B', sol: 'd', u: [0, 25, 12], d: 1.6, ri: 2.0,
-  op: 600, lab: [99, 0, 0], tint: 4.0, el: 0.4, pv: 7.5, pc: 0.4, pr: 30000,
+  op: 600, lab: [99, 0, 0], tint: 4.0, el: 0.4, pv: 7.5, pc: 0.4, pr: 30000, spf: 1.1, pfa: 0.9,
   tags: '징크옥사이드 zno 무기자차 uva 백탁 진정',
   n: 'UVA까지 넓게 막는다. 약알칼리성이고 아연 이온이 나와 카보머와 상극이며 처방 pH를 끌어올린다.' },
 
@@ -608,7 +614,7 @@ var RAW = [
 
 /* ── 활성 성분 ──────────────────────────────────────────────────── */
 { id: 'niacin', ko: '나이아신아마이드', inci: 'Niacinamide', cat: 'active', ph: 'C', sol: 'w', u: [0, 10, 4], d: 1.4, tmax: 60,
-  pv: 6.5, pc: 0.4, el: 0.3, pr: 22000,
+  pv: 6.5, pc: 0.4, el: 0.3, pr: 22000, hot: 1,
   tags: '나이아신아마이드 비타민b3 미백 주름 홍조',
   n: '미백·주름 이중 기능성. pH 5~7에서 안정하며, pH 4 이하나 장시간 가열에서 니코틴산으로 가수분해되어 홍조와 자극을 일으킨다.' },
 
@@ -618,7 +624,7 @@ var RAW = [
   n: '순수 비타민C. 효과는 최고지만 물·산소·빛·금속이온 앞에서 급격히 산화해 노랗다 못해 갈색으로 변한다. pH 3.5 이하, 무산소 공정, 킬레이트제가 필수다.' },
 
 { id: 'eac', ko: '3-O-에틸아스코빅애씨드', inci: '3-O-Ethyl Ascorbic Acid', cat: 'active', ph: 'C', sol: 'w', u: [0, 5, 2], d: 1.3, tmax: 50,
-  pv: 4.5, pc: 0.6, ox: 0.25, lab: [97, 0, 3], tint: 0.3, pr: 280000,
+  pv: 4.5, pc: 0.6, ox: 0.25, lab: [97, 0, 3], tint: 0.3, pr: 280000, hot: 1,
   tags: '에틸아스코빅애씨드 비타민c유도체 안정 미백',
   n: '안정화된 비타민C 유도체. 순수 C보다 훨씬 덜 변색되면서 피부에서 활성형으로 전환된다.' },
 
@@ -638,7 +644,7 @@ var RAW = [
   n: '주름개선의 정점이자 가장 다루기 어려운 원료. 열·빛·산소에 모두 약하다. 40℃ 이하, 질소 치환, 차광 용기가 삼종 세트다.' },
 
 { id: 'baka', ko: '바쿠치올', inci: 'Bakuchiol', cat: 'active', ph: 'B', sol: 'o', u: [0, 2, 0.5], d: 0.95,
-  ox: 0.3, lab: [90, 2, 20], tint: 0.5, pr: 600000,
+  ox: 0.3, lab: [90, 2, 20], tint: 0.5, pr: 600000, hot: 1,
   tags: '바쿠치올 레티놀대체 식물 항노화',
   n: '레티놀 유사 효과를 내는 식물 유래 성분. 훨씬 안정적이고 자극이 적다.' },
 
@@ -678,7 +684,7 @@ var RAW = [
   n: '폴리페놀이 풍부해 항산화 효과가 좋지만, 바로 그 폴리페놀이 산화되어 처방을 갈색으로 만든다.' },
 
 { id: 'cera', ko: '세라마이드NP', inci: 'Ceramide NP', cat: 'active', ph: 'B', sol: 'o', u: [0, 1, 0.2], d: 0.95,
-  op: 40, pr: 1200000,
+  op: 40, pr: 1200000, hot: 1,
   tags: '세라마이드 ceramide np 장벽 지질 용해어려움',
   n: '피부 장벽 지질. 융점이 높고 용해가 매우 어렵다. 75℃ 이상에서 오일·글리콜에 완전히 녹이지 않으면 식은 뒤 결정으로 석출되어 알갱이가 뜬다.' },
 
@@ -794,8 +800,316 @@ var RAW = [
 
 { id: 'menthol', ko: '멘톨', inci: 'Menthol', cat: 'misc', ph: 'C', sol: 'o', u: [0, 0.5, 0.1], d: 0.9,
   tmax: 40, vol: 0.8, pr: 40000, tags: '멘톨 쿨링 청량 두피 승화',
-  n: '청량감. 승화성이 있어 가온 중에 그대로 날아간다.' }
+  n: '청량감. 승화성이 있어 가온 중에 그대로 날아간다.' },
 
+/* ══════════════════════════════════════════════════════════════════
+   최근 실무 대세 원료 (2025~2026)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 바이오 · 재생 활성 ──────────────────────────────────────────── */
+{ id: 'pdrn', ko: '폴리데옥시리보뉴클레오타이드', inci: 'Polydeoxyribonucleotide', cat: 'active', ph: 'C', sol: 'w', u: [0, 5, 1], d: 1.0, tmax: 45,
+  pv: 6.8, pc: 0.15, el: 0.5, ox: 0.4, op: 3, pr: 2400000, hot: 1,
+  tags: 'pdrn 폴리데옥시리보뉴클레오타이드 연어dna 재생 리쥬란 회복',
+  n: '연어 정소 DNA 단편. 재생·회복 소구로 2025년 이후 K-뷰티의 최대 화두. 고분자 핵산이라 열과 전단에 사슬이 끊기고, 강한 전해질에서 뭉친다. 45℃ 이하 냉각 투입이 원칙.' },
+
+{ id: 'exo', ko: '엑소좀 배양액', inci: 'Adipose-Derived Stem Cell Exosomes', cat: 'active', ph: 'C', sol: 'w', u: [0, 5, 1], d: 1.0, tmax: 40,
+  pv: 7.0, pc: 0.1, el: 0.4, ox: 0.5, op: 4, pr: 6000000, hot: 1,
+  tags: '엑소좀 exosome 줄기세포 배양액 세포외소포 재생',
+  n: '세포가 내보내는 지질 소포. 신호 전달 물질을 실어 나른다는 개념으로 프리미엄 앰플에 들어간다. 지질막이라 열·계면활성제·고전단에 깨진다. 저온·저전단·후첨이 필수.' },
+
+{ id: 'ectoin', ko: '엑토인', inci: 'Ectoin', cat: 'active', ph: 'C', sol: 'w', u: [0, 2, 0.5], d: 1.2, tmax: 70,
+  pv: 6.5, pc: 0.1, el: 0.6, pr: 1800000, hot: 1,
+  tags: '엑토인 ectoin 극한미생물 보호 진정 수분장벽',
+  n: '극한 환경 미생물이 만드는 아미노산 유도체. 세포 주변에 수화막을 만들어 단백질과 지질막을 보호한다. 매우 안정해서 다루기 쉽고, 0.5%면 충분하다.' },
+
+{ id: 'betaglucan', ko: '베타글루칸', inci: 'Beta-Glucan', cat: 'active', ph: 'C', sol: 'w', u: [0, 5, 1], d: 1.0, tmax: 60,
+  th: [1400, 1.2], op: 14, pv: 6.0, pc: 0.1, el: 0.3, ox: 0.3, pr: 90000, hot: 1,
+  tags: '베타글루칸 beta-glucan 귀리 효모 진정 면역 점증',
+  n: '귀리·효모 유래 다당류. 진정과 보습에 더해 약간의 점증 효과가 있다. 고분자라 뿌옇게 흐려지는 경향이 있다.' },
+
+{ id: 'pga', ko: '소듐폴리글루타메이트', inci: 'Sodium Polyglutamate', cat: 'humect', ph: 'C', sol: 'w', u: [0, 2, 0.3], d: 1.0,
+  th: [1800, 1.2], op: 5, pv: 6.5, pc: 0.15, el: 1.4, pr: 220000, hot: 1,
+  tags: '폴리글루탐산 pga 낫토 보습 히알루론대체',
+  n: '낫토 발효 유래. 히알루론산보다 수분 보유력이 크다고 알려져 있다. 염이라 전해질 부하가 있다.' },
+
+{ id: 'trxa', ko: '트라넥사믹애씨드', inci: 'Tranexamic Acid', cat: 'active', ph: 'C', sol: 'w', u: [0, 5, 2], d: 1.3, tmax: 60,
+  pv: 7.0, pc: 0.3, el: 0.5, pr: 60000, hot: 1,
+  tags: '트라넥사믹애씨드 tranexamic 미백 색소침착 홍조 기미',
+  n: '색소 침착과 홍조에 쓰는 미백 활성. 물에 잘 녹고 안정하지만 자체가 약염기라 pH 를 끌어올린다. 2~5%로 쓴다.' },
+
+{ id: 'azeloyl', ko: '포타슘아젤로일다이글리시네이트', inci: 'Potassium Azeloyl Diglycinate', cat: 'active', ph: 'C', sol: 'w', u: [0, 10, 4], d: 1.1,
+  pv: 6.0, pc: 0.4, el: 2.2, pr: 130000, hot: 1,
+  tags: '아젤라익 아젤로일 azeloyl 피지 모공 미백 수용성',
+  n: '아젤라익애씨드의 수용성 유도체. 피지 조절과 색소 완화를 함께 노린다. 전해질 부하가 커서 카보머 겔과는 상성이 나쁘다.' },
+
+{ id: 'retinal', ko: '레티날', inci: 'Retinal (Retinaldehyde)', cat: 'active', ph: 'C', sol: 'o', u: [0, 0.1, 0.05], d: 0.95, tmax: 38,
+  ox: 0.98, lab: [88, 6, 42], tint: 1.4, pr: 4000000, hot: 1,
+  tags: '레티날 retinal 레티날데하이드 비타민a 주름 레티놀상위',
+  n: '레티놀보다 한 단계 앞선 형태라 전환 단계가 짧고 효과가 빠르다. 대신 더 불안정하고 진한 노란색이라 제형이 누렇게 뜬다. 0.05%에서도 색이 보인다.' },
+
+{ id: 'granactive', ko: '하이드록시피나콜론레티노에이트', inci: 'Hydroxypinacolone Retinoate', cat: 'active', ph: 'B', sol: 'o', u: [0, 2, 0.5], d: 1.0,
+  ox: 0.35, lab: [94, 1, 12], tint: 0.3, pr: 1600000, hot: 1,
+  tags: '그래낙티브 hpr 레티노이드 에스터 저자극 주름',
+  n: '수용체에 직접 붙는 레티노이드 에스터. 레티놀보다 훨씬 안정하고 자극이 적어 "순한 레티놀" 소구에 쓴다.' },
+
+{ id: 'argireline', ko: '아세틸헥사펩타이드-8', inci: 'Acetyl Hexapeptide-8', cat: 'active', ph: 'C', sol: 'w', u: [0, 10, 4], d: 1.0, tmax: 45,
+  ox: 0.4, el: 0.6, pv: 6.0, pc: 0.2, pr: 300000, hot: 1,
+  tags: '아르지렐린 아세틸헥사펩타이드 표정주름 보톡스유사 펩타이드',
+  n: '표정 주름을 겨냥한 신호 펩타이드. 보통 10% 용액으로 공급되어 처방에 4~10% 넣는다. 열과 극단적 pH 를 피한다.' },
+
+{ id: 'copperpep', ko: '카퍼트라이펩타이드-1', inci: 'Copper Tripeptide-1', cat: 'active', ph: 'C', sol: 'w', u: [0, 2, 0.5], d: 1.0, tmax: 45,
+  ox: 0.5, el: 0.8, pv: 6.5, pc: 0.2, lab: [72, -14, -6], tint: 3.5, pr: 900000, hot: 1,
+  tags: '구리펩타이드 카퍼펩타이드 ghk-cu 재생 콜라겐',
+  n: '구리 착화 펩타이드. 특유의 파란색이라 처방이 푸르스름해진다. 킬레이트제(EDTA)와 같이 쓰면 구리를 빼앗겨 효과와 색이 함께 사라진다.' },
+
+{ id: 'matrixyl', ko: '팔미토일펜타펩타이드-4', inci: 'Palmitoyl Pentapeptide-4', cat: 'active', ph: 'C', sol: 'w', u: [0, 5, 3], d: 1.0, tmax: 45,
+  ox: 0.45, el: 0.4, pr: 420000, hot: 1,
+  tags: '마트릭실 팔미토일펜타펩타이드 콜라겐 주름 펩타이드',
+  n: '콜라겐 합성 신호를 주는 대표 펩타이드. 3% 전후로 쓴다.' },
+
+{ id: 'glutathione', ko: '글루타티온', inci: 'Glutathione', cat: 'active', ph: 'C', sol: 'w', u: [0, 2, 0.5], d: 1.2, tmax: 40,
+  ox: 0.8, el: 0.7, pv: 4.5, pc: 0.5, lab: [95, 0, 8], tint: 0.4, pr: 260000, hot: 1,
+  tags: '글루타티온 glutathione 항산화 미백 톤업',
+  n: '체내 항산화 물질. 산화되면 효과가 사라지고 특유의 냄새가 난다. 무산소 공정과 킬레이트가 사실상 필수.' },
+
+{ id: 'resveratrol', ko: '레스베라트롤', inci: 'Resveratrol', cat: 'active', ph: 'C', sol: 'o', u: [0, 1, 0.2], d: 1.0, tmax: 50,
+  ox: 0.7, lab: [90, 2, 26], tint: 0.9, pr: 320000,
+  tags: '레스베라트롤 폴리페놀 항산화 포도 항노화',
+  n: '포도 유래 폴리페놀. 강한 항산화제지만 빛과 산소에 갈변한다.' },
+
+{ id: 'butylres', ko: '4-부틸레조르시놀', inci: '4-Butylresorcinol', cat: 'active', ph: 'C', sol: 'w', u: [0, 0.3, 0.2], d: 1.1, tmax: 45,
+  ox: 0.6, el: 0.2, lab: [94, 1, 14], tint: 0.5, pr: 900000, hot: 1,
+  tags: '부틸레조르시놀 미백 고시원료 티로시나제 기미',
+  n: '미백 고시 원료(0.1~0.3%). 티로시나제 억제력이 알부틴보다 훨씬 강하다. 산화 변색에 주의.' },
+
+/* ── 발효 · 포스트바이오틱 ──────────────────────────────────────── */
+{ id: 'galacto', ko: '갈락토미세스발효여과물', inci: 'Galactomyces Ferment Filtrate', cat: 'active', ph: 'C', sol: 'w', u: [0, 90, 20], d: 1.0, tmax: 45,
+  pv: 5.0, pc: 0.4, el: 1.6, ox: 0.5, lab: [93, -1, 12], tint: 0.5, op: 5, pr: 26000, hot: 1,
+  tags: '갈락토미세스 발효여과물 피테라 모공 결 발효',
+  n: '누룩 발효 여과물. 정제수 자리를 통째로 대신해 80~90%까지 넣는 처방도 있다. 산성이고 전해질과 유기물이 많아 점증과 방부 설계를 다시 짜야 한다.' },
+
+{ id: 'bifida', ko: '비피다발효용해물', inci: 'Bifida Ferment Lysate', cat: 'active', ph: 'C', sol: 'w', u: [0, 20, 5], d: 1.0, tmax: 45,
+  pv: 5.5, pc: 0.3, el: 1.4, ox: 0.5, lab: [92, 0, 14], tint: 0.5, op: 6, pr: 60000, hot: 1,
+  tags: '비피다 발효용해물 프로바이오틱 포스트바이오틱 장벽 진정',
+  n: '유산균 용해물. 포스트바이오틱 소구의 대표. 미생물 배지 성분이 함께 들어와 방부 부담이 커진다.' },
+
+{ id: 'lactoferm', ko: '락토바실러스발효물', inci: 'Lactobacillus Ferment', cat: 'active', ph: 'C', sol: 'w', u: [0, 10, 3], d: 1.0, tmax: 45,
+  pv: 4.5, pc: 0.5, el: 1.3, ox: 0.4, op: 5, pr: 40000, hot: 1,
+  tags: '락토바실러스 발효 포스트바이오틱 마이크로바이옴 저자극',
+  n: '마이크로바이옴 소구. 그 자체가 산성이라 처방 pH 를 끌어내린다.' },
+
+{ id: 'riceferm', ko: '쌀발효여과물', inci: 'Oryza Sativa Extract', cat: 'active', ph: 'C', sol: 'w', u: [0, 20, 5], d: 1.0, tmax: 50,
+  pv: 5.5, pc: 0.25, el: 1.0, ox: 0.5, lab: [93, -1, 14], tint: 0.5, op: 6, pr: 22000, hot: 1,
+  tags: '쌀 발효 오리자 사티바 톤업 결 한방',
+  n: '쌀 유래 발효물. 톤업·결 소구로 한국 브랜드가 즐겨 쓴다. 당류가 있어 가열 시 갈변한다.' },
+
+/* ── 진정 · 추출물 ─────────────────────────────────────────────── */
+{ id: 'heartleaf', ko: '어성초추출물', inci: 'Houttuynia Cordata Extract', cat: 'active', ph: 'C', sol: 'w', u: [0, 80, 10], d: 1.0, tmax: 50,
+  pv: 5.5, pc: 0.25, el: 1.1, ox: 0.6, lab: [88, -5, 18], tint: 1.0, op: 7, pr: 20000, hot: 1,
+  tags: '어성초 하우투이니아 진정 트러블 민감 발효',
+  n: '트러블·민감 진정의 대표 소재. 정제수 대신 통째로 넣는 처방이 많다. 색과 전해질을 함께 가져온다.' },
+
+{ id: 'mugwort', ko: '쑥추출물', inci: 'Artemisia Vulgaris Extract', cat: 'active', ph: 'C', sol: 'w', u: [0, 80, 8], d: 1.0, tmax: 50,
+  pv: 5.5, pc: 0.25, el: 1.0, ox: 0.65, lab: [86, -7, 20], tint: 1.3, op: 8, pr: 24000, hot: 1,
+  tags: '쑥 아르테미시아 진정 민감 한방',
+  n: '진정 소재. 녹갈색이 진해 제형 색을 확실히 바꾼다. 폴리페놀이 많아 산화 갈변이 빠르다.' },
+
+{ id: 'snail', ko: '달팽이점액여과물', inci: 'Snail Secretion Filtrate', cat: 'active', ph: 'C', sol: 'w', u: [0, 92, 20], d: 1.0, tmax: 45,
+  th: [900, 1.15], pv: 6.5, pc: 0.2, el: 1.2, ox: 0.4, op: 10, pr: 30000, hot: 1,
+  tags: '달팽이 점액 뮤신 재생 보습 탄력',
+  n: '점성 다당·당단백 혼합물. 자체 점도와 특유의 늘어짐이 있어 점증제 설계에 영향을 준다.' },
+
+{ id: 'propolis', ko: '프로폴리스추출물', inci: 'Propolis Extract', cat: 'active', ph: 'C', sol: 'w', u: [0, 20, 5], d: 1.0, tmax: 45,
+  pv: 5.0, pc: 0.3, el: 0.9, ox: 0.7, lab: [82, 4, 40], tint: 2.2, op: 12, pr: 45000, hot: 1,
+  tags: '프로폴리스 벌 진정 항균 광채 꿀',
+  n: '벌집 수지 추출물. 진한 호박색이라 제형이 확실히 누레진다. 항균력이 있어 방부에 조금 보탬이 된다.' },
+
+{ id: 'madecas', ko: '마데카소사이드', inci: 'Madecassoside', cat: 'active', ph: 'C', sol: 'w', u: [0, 1, 0.2], d: 1.2, tmax: 55,
+  pv: 6.0, pc: 0.1, ox: 0.3, op: 4, pr: 1400000, hot: 1,
+  tags: '마데카소사이드 정제센텔라 시카 진정 재생 teca',
+  n: '센텔라에서 뽑아낸 단일 성분. 추출물과 달리 색과 전해질을 거의 안 들고 온다. 물 용해도가 낮아 폴리올에 미리 녹인다.' },
+
+/* ── 장벽 지질 ─────────────────────────────────────────────────── */
+{ id: 'cholesterol', ko: '콜레스테롤', inci: 'Cholesterol', cat: 'active', ph: 'B', sol: 'o', u: [0, 1, 0.2], d: 1.0,
+  lam: 0.4, op: 60, pr: 180000, hot: 1,
+  tags: '콜레스테롤 장벽 지질 세라마이드조합 3종지질',
+  n: '세라마이드 : 콜레스테롤 : 지방산 = 3:1:1 이 피부 장벽의 황금비다. 세 가지를 같이 넣어야 의미가 있다.' },
+
+{ id: 'phytosph', ko: '피토스핑고신', inci: 'Phytosphingosine', cat: 'active', ph: 'B', sol: 'o', u: [0, 0.5, 0.1], d: 0.95,
+  op: 30, pv: 9.0, pc: 0.4, pr: 900000,
+  tags: '피토스핑고신 스핑고신 장벽 항균 세라마이드전구체',
+  n: '세라마이드의 뼈대가 되는 염기성 지질. 항균력도 있다. 염기성이라 소량으로도 pH 를 올린다.' },
+
+/* ── 각질 · 산 ─────────────────────────────────────────────────── */
+{ id: 'mandelic', ko: '만델릭애씨드', inci: 'Mandelic Acid', cat: 'active', ph: 'C', sol: 'w', u: [0, 10, 3], d: 1.3,
+  pv: 3.4, pc: 1.6, el: 0.4, ox: 0.3, pr: 60000, hot: 1,
+  tags: '만델릭애씨드 aha 저자극 각질 색소 대분자',
+  n: '분자가 커서 천천히 침투하는 AHA. 자극이 적어 민감성 각질 관리에 쓴다.' },
+
+{ id: 'pha', ko: '글루코노락톤', inci: 'Gluconolactone', cat: 'active', ph: 'C', sol: 'w', u: [0, 10, 4], d: 1.2,
+  pv: 3.6, pc: 1.4, el: 0.5, pr: 30000, hot: 1,
+  tags: 'pha 글루코노락톤 폴리하이드록시 저자극 각질 보습',
+  n: 'PHA. 분자에 수산기가 많아 보습을 겸하고 자극이 낮다. 물에서 천천히 글루콘산으로 열려 pH 가 시간이 지나며 내려간다.' },
+
+{ id: 'lha', ko: '카프릴로일살리실릭애씨드', inci: 'Capryloyl Salicylic Acid', cat: 'active', ph: 'B', sol: 'o', u: [0, 2, 0.5], d: 1.1,
+  pv: 3.4, pc: 0.9, pr: 400000,
+  tags: 'lha 카프릴로일살리실릭 bha유도체 모공 각질',
+  n: 'BHA 에 지방 사슬을 붙인 유도체. 유상에 녹아 다루기 쉽고 각질을 낱장으로 떼어낸다.' },
+
+{ id: 'zincpca', ko: '징크피씨에이', inci: 'Zinc PCA', cat: 'active', ph: 'C', sol: 'w', u: [0, 1, 0.3], d: 1.2,
+  pv: 6.5, pc: 0.3, el: 2.6, pr: 90000,
+  tags: '징크피씨에이 아연 피지 모공 트러블',
+  n: '피지 조절용 아연염. 전해질 부하가 크고, 아연 이온이 카보머와 일부 활성을 무너뜨린다.' },
+
+/* ── 현대 점증 · 유화 ──────────────────────────────────────────── */
+{ id: 'sepimax', ko: '폴리아크릴레이트크로스폴리머-6', inci: 'Polyacrylate Crosspolymer-6', cat: 'thick', ph: 'A', sol: 'w', u: [0, 3, 1.2], d: 0.5,
+  th: [16000, 1.35], op: 3, pv: 6.2, pc: 0.2, pr: 140000, hot: 1,
+  tags: '세피맥스젠 sepimax zen 폴리아크릴레이트크로스폴리머-6 전해질내성 냉공정 벨벳',
+  n: '중화가 필요 없고 전해질을 소금 10%까지 견딘다. 고농도 활성이 들어가는 요즘 세럼에서 카보머를 밀어낸 주역. 벨벳 같은 사용감에 파우더 부유력도 좋다.' },
+
+{ id: 'simulgeleg', ko: '소듐아크릴레이트/소듐아크릴로일다이메틸타우레이트코폴리머', inci: 'Sodium Acrylate/Sodium Acryloyldimethyl Taurate Copolymer', cat: 'thick', ph: 'A', sol: 'w', u: [0, 4, 1.5], d: 0.95,
+  th: [11000, 1.35], hlb: 11, op: 5, pv: 6.4, pc: 0.2, pr: 82000, hot: 1,
+  tags: '시뮬젤eg simulgel 즉시점증 냉공정 역상 유화점증',
+  n: '물에 넣는 즉시 점도가 오르는 역상 에멀전형. 냉공정 크림·젤의 뼈대. 유화 보조도 한다.' },
+
+{ id: 'hpstarch', ko: '하이드록시프로필스타치포스페이트', inci: 'Hydroxypropyl Starch Phosphate', cat: 'thick', ph: 'E', sol: 'w', u: [0, 3, 1], d: 0.6,
+  th: [3200, 1.5], op: 30, pv: 6.5, pc: 0.05, ox: 0.3, pr: 24000, hot: 1,
+  tags: '하이드록시프로필스타치포스페이트 전분 천연점증 매트 산뜻',
+  n: '변성 전분. 끈적임 없이 산뜻하게 점도를 올려 선크림·세럼의 사용감 개선에 널리 쓴다.' },
+
+{ id: 'montanov68', ko: '세테아릴알코올/코코-글루코사이드', inci: 'Cetearyl Alcohol (and) Coco-Glucoside', cat: 'emul', ph: 'B', sol: 'o', u: [0, 8, 4], d: 0.9,
+  hlb: 11.5, lam: 0.95, op: 175, pr: 26000, hot: 1,
+  tags: '몬타노브68 세테아릴알코올 코코글루코사이드 액정 천연유화제 peg프리',
+  n: '당 유화제 + 지방알코올이 하나로 묶인 제품. 액정 라멜라를 안정적으로 만들어 초심자도 실패가 적다.' },
+
+{ id: 'emulmell', ko: '폴리글리세릴-6스테아레이트/폴리글리세릴-6베헤네이트', inci: 'Polyglyceryl-6 Stearate (and) Polyglyceryl-6 Behenate', cat: 'emul', ph: 'B', sol: 'o', u: [0, 6, 3], d: 0.95,
+  hlb: 10.5, lam: 0.5, op: 130, pr: 42000, hot: 1,
+  tags: '에멀리움 폴리글리세릴-6 peg프리 천연유화제 라멜라',
+  n: 'PEG-프리 폴리글리세릴 유화제. 가볍고 촉촉한 마무리로 클린뷰티 처방에서 선호된다.' },
+
+{ id: 'sucrosest', ko: '수크로오스스테아레이트', inci: 'Sucrose Stearate', cat: 'emul', ph: 'B', sol: 'o', u: [0, 5, 2], d: 1.0,
+  hlb: 15.0, lam: 0.35, op: 90, pr: 48000, hot: 1,
+  tags: '수크로오스스테아레이트 설탕유화제 저자극 천연 베이비',
+  n: '설탕 에스터. 매우 순하고 사용감이 가벼워 베이비·민감성 제품에 쓴다.' },
+
+{ id: 'pg2dips', ko: '폴리글리세릴-2다이폴리하이드록시스테아레이트', inci: 'Polyglyceryl-2 Dipolyhydroxystearate', cat: 'emul', ph: 'B', sol: 'o', u: [0, 6, 4], d: 0.96,
+  hlb: 5.5, op: 35, pr: 52000,
+  tags: '폴리글리세릴-2 w/o 유중수 비실리콘 천연 선크림',
+  n: '천연 유래 W/O 유화제. 전해질을 넣은 내수상을 잘 잡아 무기 선크림과 잘 맞는다.' },
+
+/* ── 실리콘 대체 에몰리언트 ────────────────────────────────────── */
+{ id: 'c1315', ko: 'C13-15알칸', inci: 'C13-15 Alkane', cat: 'oil', ph: 'B', sol: 'o', u: [0, 30, 8], d: 0.77, ri: 1.428,
+  rh: 11, vol: 0.25, pr: 20000, hot: 1,
+  tags: 'c13-15알칸 에모그린 실리콘대체 드라이터치 생분해 사탕수수',
+  n: '사탕수수 유래 알케인. 사이클로펜타실록산과 사용감이 거의 같으면서 생분해된다. 실리콘 탈피 처방의 1순위 대체재.' },
+
+{ id: 'undectri', ko: '운데칸/트라이데칸', inci: 'Undecane (and) Tridecane', cat: 'oil', ph: 'B', sol: 'o', u: [0, 30, 6], d: 0.75, ri: 1.42,
+  rh: 11, vol: 0.55, tmax: 60, pr: 24000, hot: 1,
+  tags: '운데칸 트라이데칸 휘발성 실리콘대체 드라이 생분해',
+  n: '휘발성 알케인. 아이소도데케인·D5 대체. 날아가면서 뽀송한 마무리를 남긴다.' },
+
+{ id: 'isoamyl', ko: '아이소아밀라우레이트', inci: 'Isoamyl Laurate', cat: 'oil', ph: 'B', sol: 'o', u: [0, 25, 6], d: 0.86, ri: 1.438,
+  rh: 10, pr: 22000, hot: 1,
+  tags: '아이소아밀라우레이트 천연에스터 실리콘대체 실키 생분해',
+  n: '100% 식물 유래 에스터. 다이메티콘과 유사한 실키한 미끄러짐을 낸다.' },
+
+{ id: 'triethylhex', ko: '트리에틸헥사노인', inci: 'Triethylhexanoin', cat: 'oil', ph: 'B', sol: 'o', u: [0, 30, 8], d: 0.88, ri: 1.446,
+  rh: 9, pr: 12000, hot: 1,
+  tags: '트리에틸헥사노인 에스터 자외선용해 가벼움 클렌징',
+  n: '가볍고 산화되지 않는 합성 트라이에스터. 자외선차단제 용해와 클렌징 베이스로 두루 쓴다.' },
+
+{ id: 'inn', ko: '아이소노닐아이소노나노에이트', inci: 'Isononyl Isononanoate', cat: 'oil', ph: 'B', sol: 'o', u: [0, 25, 6], d: 0.86, ri: 1.434,
+  rh: 11, pr: 16000,
+  tags: '아이소노닐아이소노나노에이트 inn 드라이 퍼짐성 메이크업',
+  n: '퍼짐 속도가 매우 빨라 메이크업과 선크림의 발림성을 크게 개선한다.' },
+
+{ id: 'hpolydecene', ko: '하이드로제네이티드폴리데센', inci: 'Hydrogenated Polydecene', cat: 'oil', ph: 'B', sol: 'o', u: [0, 30, 6], d: 0.82, ri: 1.45,
+  rh: 11, pr: 15000,
+  tags: '하이드로제네이티드폴리데센 폴리알파올레핀 미네랄오일대체 안정',
+  n: '완전히 포화된 합성 탄화수소. 미네랄오일 대체재로 산화되지 않고 무취다.' },
+
+/* ── 신세대 자외선차단제 ──────────────────────────────────────── */
+{ id: 'eht', ko: '에틸헥실트라이아존', inci: 'Ethylhexyl Triazone', cat: 'uv', ph: 'B', sol: 'o', u: [0, 5, 3], d: 1.1, ri: 1.57,
+  rh: 12, lab: [95, 0, 10], tint: 0.3, op: 8, spf: 3.6, pfa: 0.15, pr: 380000, hot: 1,
+  tags: '에틸헥실트라이아존 유비눌t150 uvb 고효율 광안정 한국선크림',
+  n: 'UVB 흡광도가 가장 높은 필터. 적은 양으로 SPF 를 크게 올려 한국 SPF50+ 처방의 사실상 표준. 분말이라 80℃ 이상에서 용제에 완전히 녹여야 한다. 한도 5%.' },
+
+{ id: 'dhhb', ko: '다이에틸아미노하이드록시벤조일헥실벤조에이트', inci: 'Diethylamino Hydroxybenzoyl Hexyl Benzoate', cat: 'uv', ph: 'B', sol: 'o', u: [0, 10, 4], d: 1.05, ri: 1.58,
+  rh: 12, lab: [93, 1, 20], tint: 0.5, op: 10, spf: 1.4, pfa: 1.3, pr: 260000, hot: 1,
+  tags: '유비눌a플러스 dhhb uva 광안정 아보벤존대체 액상',
+  n: 'UVA 전담 필터. 아보벤존과 달리 광안정하고 액상이라 다루기 쉽다. 요즘 UVA 차단의 주력. 한도 10%.' },
+
+{ id: 'mbbt', ko: '메틸렌비스벤조트라이아졸릴테트라메틸부틸페놀', inci: 'Methylene Bis-Benzotriazolyl Tetramethylbutylphenol', cat: 'uv', ph: 'A', sol: 'd', u: [0, 10, 4], d: 1.2, ri: 1.6,
+  op: 120, lab: [96, 0, 6], tint: 0.6, spf: 2.5, pfa: 1.1, el: 0.3, pr: 300000, hot: 1,
+  tags: '티노소브m mbbt 유무기하이브리드 광범위 분산형 수상',
+  n: '유기 필터인데 물에 분산된 입자로 공급된다. 흡수와 산란을 함께 해서 UVA·UVB 를 모두 막는다. 수상에 넣는 유기 필터라 처방 설계가 달라진다. 한도 10%.' },
+
+{ id: 'ps15', ko: '폴리실리콘-15', inci: 'Polysilicone-15', cat: 'uv', ph: 'B', sol: 'o', u: [0, 10, 3], d: 1.0, ri: 1.5,
+  rh: 11, spf: 1.4, pfa: 0.1, pr: 220000, hot: 1,
+  tags: '폴리실리콘-15 파솔slx uvb 실리콘필터 사용감 광안정',
+  n: '실리콘 골격의 UVB 필터. 끈적임 없이 사용감을 크게 개선해 한국 선크림이 즐겨 쓴다. 한도 10%.' },
+
+{ id: 'pbsa', ko: '페닐벤즈이미다졸설포닉애씨드', inci: 'Phenylbenzimidazole Sulfonic Acid', cat: 'uv', ph: 'A', sol: 'w', u: [0, 4, 2], d: 1.2,
+  spf: 1.9, pfa: 0.05, pv: 3.0, pc: 1.8, el: 2.0, pr: 90000,
+  tags: '엔술리졸 pbsa 수용성 자외선차단 uvb 산성',
+  n: '물에 녹는 UVB 필터. 수상에 넣어 산뜻한 선크림을 만들 수 있지만, 산성이라 반드시 중화해야 녹고 전해질 부하가 크다. 한도 4%.' },
+
+{ id: 'homosal', ko: '호모살레이트', inci: 'Homosalate', cat: 'uv', ph: 'B', sol: 'o', u: [0, 10, 6], d: 1.05, ri: 1.517,
+  rh: 11, spf: 0.85, pfa: 0.05, pr: 12000,
+  tags: '호모살레이트 uvb 용제 자외선차단제용해 저가',
+  n: 'UVB 차단 겸 다른 필터를 녹이는 용제. 차단력 자체는 약하지만 처방을 성립시키는 역할이 크다. 한도 10%.' },
+
+/* ── 세정 · 헤어 ───────────────────────────────────────────────── */
+{ id: 'smct', ko: '소듐메칠코코일타우레이트', inci: 'Sodium Methyl Cocoyl Taurate', cat: 'surf', ph: 'A', sol: 'w', u: [0, 20, 6], d: 1.05,
+  hlb: 15, op: 12, el: 1.3, pv: 7.0, pc: 0.3, foam: 1.15, pr: 16000, hot: 1,
+  tags: '타우레이트 smct 아미노산계 조밀한거품 저자극 설페이트프리',
+  n: '타우린계. 거품이 조밀하고 풍성하면서 자극이 낮아 설페이트 프리 샴푸의 주력이 되었다. 경수에도 강하다.' },
+
+{ id: 'dsls', ko: '다이소듐라우레스설포석시네이트', inci: 'Disodium Laureth Sulfosuccinate', cat: 'surf', ph: 'A', sol: 'w', u: [0, 25, 8], d: 1.05,
+  hlb: 14, op: 8, el: 1.2, pv: 6.0, pc: 0.25, foam: 0.9, pr: 7000, hot: 1,
+  tags: '설포석시네이트 저자극 유아 거품 순한세정',
+  n: '설포석시네이트계. 순하면서 거품이 좋아 유아용·저자극 세정에 널리 쓴다.' },
+
+{ id: 'aos', ko: '소듐C14-16올레핀설포네이트', inci: 'Sodium C14-16 Olefin Sulfonate', cat: 'surf', ph: 'A', sol: 'w', u: [0, 25, 8], d: 1.05,
+  hlb: 16, op: 6, el: 1.3, pv: 7.5, pc: 0.3, foam: 1.1, pr: 3000,
+  tags: 'aos 올레핀설포네이트 설페이트프리 거품 저가 세정',
+  n: '설페이트가 아니면서 거품과 세정력이 강하다. 값이 싸 바디워시에 널리 쓴다. 다만 탈지력이 세다.' },
+
+{ id: 'pq67', ko: '폴리쿼터늄-67', inci: 'Polyquaternium-67', cat: 'cond', ph: 'E', sol: 'w', u: [0, 2, 0.5], d: 1.0,
+  th: [1600, 1.3], op: 8, el: 0.4, pv: 6.0, pc: 0.1, pr: 55000, hot: 1,
+  tags: '폴리쿼터늄-67 소프케어 컨디셔닝 샴푸 손상모발',
+  n: '소수성 곁사슬을 붙인 양이온 셀룰로오스. 손상 부위에 더 잘 붙고 헹굼감이 가볍다.' },
+
+{ id: 'bisamino', ko: '비스아미노프로필다이메티콘', inci: 'Bis-Aminopropyl Dimethicone', cat: 'cond', ph: 'B', sol: 'o', u: [0, 3, 1], d: 0.98, ri: 1.41,
+  rh: 11, pr: 62000, hot: 1,
+  tags: '비스아미노프로필다이메티콘 양쪽말단 아미노실리콘 헤어 큐티클',
+  n: '양쪽 끝에 아미노기가 있어 손상 부위를 다리처럼 이어 붙인다. 아모다이메티콘보다 가볍고 빌드업이 적다.' },
+
+/* ── 방부 · 기타 ───────────────────────────────────────────────── */
+{ id: 'levul', ko: '소듐레불리네이트/소듐아니세이트', inci: 'Sodium Levulinate (and) Sodium Anisate', cat: 'presv', ph: 'C', sol: 'w', u: [0, 4, 2.5], d: 1.1,
+  tmax: 50, el: 2.2, pv: 6.0, pc: 0.5, pr: 34000, hot: 1,
+  tags: '레불리네이트 아니세이트 천연방부 코스모스인증 무방부',
+  n: '사탕수수·회향 유래. 천연 인증 처방의 방부 주력. pH 5.5 이하에서만 듣고, 염이라 전해질 부하가 크며 2~3%나 넣어야 해서 사용감에 영향을 준다.' },
+
+{ id: 'cymen', ko: 'o-사이멘-5-올', inci: 'o-Cymen-5-ol', cat: 'presv', ph: 'C', sol: 'wo', u: [0, 0.1, 0.05], d: 1.0,
+  tmax: 60, hlb: 6, pr: 90000,
+  tags: '사이멘올 이소프로필메틸페놀 ipmp 항균 트러블 데오드란트',
+  n: '강한 항균력을 가진 페놀계. 트러블·데오드란트 제품에 쓴다. 한도 0.1%.' },
+
+{ id: 'tocotri', ko: '토코트리에놀', inci: 'Tocotrienols', cat: 'misc', ph: 'B', sol: 'o', u: [0, 1, 0.2], d: 0.95, ri: 1.5,
+  rh: 6, ox: 0.3, lab: [86, 3, 38], tint: 1.4, pr: 180000, hot: 1,
+  tags: '토코트리에놀 비타민e 항산화 강력 팜',
+  n: '토코페롤보다 항산화력이 몇 배 강한 비타민 E 계열. 색이 진해 소량만 쓴다.' },
+
+{ id: 'ferulic', ko: '페룰릭애씨드', inci: 'Ferulic Acid', cat: 'misc', ph: 'C', sol: 'w', u: [0, 1, 0.5], d: 1.1, tmax: 50,
+  ox: 0.6, pv: 4.0, pc: 0.5, lab: [92, 1, 22], tint: 0.8, pr: 140000, hot: 1,
+  tags: '페룰릭애씨드 항산화 비타민c안정화 시너지',
+  n: '비타민 C + E 조합의 안정성과 효능을 함께 끌어올리는 고전 조합의 세 번째 축.' },
+
+{ id: 'panthenolo', ko: '판테닐트리아세테이트', inci: 'Panthenyl Triacetate', cat: 'humect', ph: 'B', sol: 'o', u: [0, 2, 0.5], d: 1.05,
+  rh: 8, ox: 0.2, pr: 120000,
+  tags: '판테닐트리아세테이트 유용성판테놀 b5 헤어',
+  n: '유용성 판테놀. 무수 제형과 헤어 오일에 B5 를 넣을 때 쓴다.' }
 ];
 /* ------------------------------------------------------------------ */
 

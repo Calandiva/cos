@@ -220,7 +220,7 @@ function renderIngList() {
     body.appendChild(el('div.irow' + (row ? '.on' : ''), null, [
       el('div.bar', { style: 'background:' + ING.catColor(g.cat) }),
       el('div.txt', { onclick: function () { showIng(g); } }, [
-        el('div.n1', { text: g.ko }),
+        el('div.n1', null, [g.ko, g.hot ? el('span.hotb', { text: '대세' }) : null]),
         el('div.n2', { text: g.inci }),
         el('div.n3', { text: g.n })
       ]),
@@ -260,7 +260,10 @@ function showIng(g) {
 
   var body = el('div', null, [
     el('div.rt', null, [
-      el('p', { html: '<b>' + K.esc(g.inci) + '</b>' }),
+      el('p', null, [
+        el('b', { text: g.inci }),
+        g.hot ? el('span.hotb', { text: '최근 대세' }) : null
+      ]),
       el('p', { text: g.n })
     ]),
     el('h3.sec', { text: '넣을 양' }),
@@ -324,6 +327,7 @@ function renderStrip() {
     el('small', { text: TYPEKO[m.type] + ' · ' + PROD.get(m.ch).ko +
       (done ? ' · 통과 ' + done.grade : ' · 필수 ' + m.must.length + '개') })
   ]));
+  n.appendChild(el('button', { text: '가이드', onclick: function () { openGuide(m); } }));
   n.appendChild(el('button', { text: '조건', onclick: function () { openMission(m); } }));
   n.appendChild(el('button', { text: '그만', onclick: function () {
     S.mission = null; renderAll(); persist(); K.toast('자유 모드로 돌아갔습니다');
@@ -648,6 +652,18 @@ function renderResult() {
     sn ? (r.ntu >= sn[0] && r.ntu <= sn[1] ? 'ok' : 'bad') : '',
     sn ? gauge(r.ntu, Math.max(sn[0], 0.5), Math.min(sn[1], 1e5), true) : null,
     sn ? (sn[1] >= 1e6 ? K.n0(sn[0]) + ' 이상' : K.n0(sn[1]) + ' 이하') : null));
+  if (r.uv) {
+    mets.appendChild(met('SPF', Math.round(r.uv.spf), '',
+      p.req && p.req.some(function (c) { return c.k === 'spf'; })
+        ? (r.uv.spf >= 30 ? 'ok' : 'bad') : ''));
+    mets.appendChild(met('UVA 차단', r.uv.pfa.toFixed(1), r.uv.pa,
+      p.req && p.req.some(function (c) { return c.k === 'pa'; })
+        ? (r.uv.pfa >= 8 ? 'ok' : 'bad') : ''));
+  }
+  if (r.foam > 1) mets.appendChild(met('거품력', Math.round(r.foam), '/100'));
+  if (r.hard > 0) mets.appendChild(met('경도', r.hard.toFixed(1), ''));
+  mets.appendChild(met('방부 지수', r.preserve.toFixed(2), '',
+    a0(p) ? (r.preserve >= 0.75 ? 'ok' : 'bad') : ''));
   mets.appendChild(met('원가', K.won(r.cost), '원/kg'));
   if (run) {
     mets.appendChild(met('수율', run.yieldPct.toFixed(1), '%',
@@ -674,9 +690,12 @@ function renderResult() {
       probs.forEach(function (i) { b.appendChild(noteNode(i)); });
     }));
 
-  /* ── 규격 ── */
-  if (judge.items.length) wrap.appendChild(acc('출하 규격', judge.items.filter(function (i) { return i.ok; }).length + '/' + judge.items.length,
-    judge.ok ? 'ok' : 'bad', false, function (b) {
+  /* ── 규격 + 필수 요건 ── */
+  var allChecks = judge.items.length + (judge.req || []).length;
+  var passed = judge.items.filter(function (i) { return i.ok; }).length +
+               (judge.req || []).filter(function (i) { return i.ok; }).length;
+  wrap.appendChild(acc('출하 규격과 필수 요건', passed + '/' + allChecks,
+    judge.ok ? 'ok' : 'bad', !judge.ok, function (b) {
       judge.items.forEach(function (i) {
         b.appendChild(el('div.goal' + (i.ok ? '.hit' : ''), null, [
           el('div.bx', { text: '✓' }),
@@ -686,6 +705,17 @@ function renderResult() {
           el('div.gv', { text: i.fmt ? i.val.toFixed(i.fmt) : K.n0(i.val) })
         ]));
       });
+      if ((judge.req || []).length) {
+        b.appendChild(el('h3.sec', { text: '제품이 되기 위한 필수 요건' }));
+        judge.req.forEach(function (i) {
+          b.appendChild(el('div.goal' + (i.ok ? '.hit' : ''), null, [
+            el('div.bx', { text: '✓' }),
+            el('div.gt', null, [i.ko,
+              i.ok ? null : el('div', { style: 'font-size:12.5px;color:var(--ink-3);margin-top:2px', text: i.why })]),
+            el('div.gv', { text: i.txt })
+          ]));
+        });
+      }
     }));
 
   /* ── 자세히 ── */
@@ -810,6 +840,90 @@ function renderResult() {
 }
 
 function fnum(v, d) { return d ? v.toFixed(d) : K.n0(v); }
+function a0(p) { return p.req && p.req.some(function (c) { return c.k === 'preserve'; }); }
+
+/* ── 용어집 ────────────────────────────────────────────────────── */
+function openGloss(q) {
+  var box = el('div');
+  var inp = el('input', { type: 'search', placeholder: '용어 검색', value: q || '',
+    oninput: function () { draw(inp.value); } });
+  var list = el('div', { style: 'margin-top:12px' });
+  function draw(query) {
+    K.clear(list);
+    var hits = G.GLOSS.search(query);
+    if (!hits.length) { list.appendChild(el('div.empty', { text: '해당하는 용어가 없습니다.' })); return; }
+    G.GLOSS.GROUPS.forEach(function (grp) {
+      var inG = hits.filter(function (t) { return t.g === grp.k; });
+      if (!inG.length) return;
+      list.appendChild(el('div.ggroup', { text: grp.ko }));
+      inG.forEach(function (t) { list.appendChild(termNode(t)); });
+    });
+  }
+  box.appendChild(inp); box.appendChild(list);
+  draw(q || '');
+  K.sheet('용어집 — ' + G.GLOSS.LIST.length + '개', box);
+}
+
+function termNode(t) {
+  return el('div.gterm', null, [
+    el('div.gt-h', null, [el('b', { text: t.ko }), el('em', { text: t.en })]),
+    el('div.gt-d', { text: t.d }),
+    el('div.gt-n', { text: t.n })
+  ]);
+}
+
+/* ── 과제 가이드 ───────────────────────────────────────────────── */
+function openGuide(m) {
+  var g = G.GUIDE.forMission(m);
+  var box = el('div');
+
+  if (g.intro) box.appendChild(el('div.rt', null, [el('p', { html: g.intro })]));
+  if (g.hook) box.appendChild(el('div', {
+    style: 'background:var(--acc-soft);border:1px solid var(--acc-line);border-radius:var(--r-sm);' +
+           'padding:11px 13px;font-size:14px;line-height:1.7;color:var(--ink);margin-bottom:14px',
+    text: g.hook }));
+
+  if (g.tips.length) {
+    box.appendChild(el('h3.sec', { text: '조건별로 무엇을 건드리는가' }));
+    g.tips.forEach(function (t) {
+      box.appendChild(el('div.tip', null, [
+        el('b', { text: t.ko }),
+        el('div', { html: t.msg })
+      ]));
+    });
+  }
+
+  if (g.skeleton.length) {
+    box.appendChild(el('h3.sec', { text: PROD.get(m.ch).ko + ' 처방 뼈대' }));
+    var tb = el('table.skel');
+    g.skeleton.forEach(function (r) {
+      tb.appendChild(el('tr', null, [
+        el('td', { text: r[0] }), el('td', { text: r[1] }), el('td', { text: r[2] })]));
+    });
+    box.appendChild(tb);
+  }
+
+  if (g.watch.length) {
+    box.appendChild(el('h3.sec', { text: '흔히 놓치는 것' }));
+    var ul = el('ul.wlist');
+    g.watch.forEach(function (w) { ul.appendChild(el('li', { text: w })); });
+    box.appendChild(ul);
+  }
+
+  if (m.hint) {
+    box.appendChild(el('h3.sec', { text: '이 과제의 힌트' }));
+    box.appendChild(el('div.note.s1', null, [el('div', { text: m.hint })]));
+  }
+
+  if (g.terms.length) {
+    box.appendChild(el('h3.sec', { text: '관련 용어' }));
+    g.terms.forEach(function (t) { box.appendChild(termNode(t)); });
+    box.appendChild(el('button.btn.sm', { text: '용어집 전체 보기',
+      onclick: function () { openGloss(''); } }));
+  }
+
+  K.sheet('가이드 — ' + m.ko, box);
+}
 
 /* 드래그 중에는 프레임당 한 번만 다시 계산한다 */
 var resPend = 0;
@@ -906,7 +1020,7 @@ function openMission(m) {
     ]),
     goals
   ]), [
-    el('button.btn', { text: '닫기', onclick: function () { sh.close(); } }),
+    el('button.btn', { text: '가이드 열어보기', onclick: function () { openGuide(m); } }),
     el('button.btn.pri', { style: 'flex:1', text: '이 과제 시작', onclick: function () { startMission(m); sh.close(); } })
   ]);
 }
@@ -957,6 +1071,7 @@ function missionCard(run) {
         });
       }
       b.appendChild(el('div', { style: 'display:flex;gap:7px;margin-top:12px;flex-wrap:wrap' }, [
+        el('button.btn.sm', { text: '가이드', onclick: function () { openGuide(m); } }),
         el('button.btn.sm', { text: '설명 다시 보기', onclick: function () { openMission(m); } }),
         el('button.btn.sm', { text: '과제 그만두기', onclick: function () {
           S.mission = null; renderAll(); K.toast('자유 모드로 돌아갔습니다'); } })
@@ -1028,6 +1143,7 @@ G.UI = {
   renderIngList: renderIngList, renderCats: renderCats,
   openPicker: openPicker, closePicker: closePicker,
   openLearn: openLearn, closeLearn: closeLearn, renderLearn: renderLearn,
+  openGloss: openGloss, openGuide: openGuide,
   renderStrip: renderStrip,
   go: go, run: runBatch, syncTop: syncTop, persist: persist,
   showIng: showIng, openMission: openMission, startMission: startMission,

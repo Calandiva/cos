@@ -311,6 +311,9 @@ function run(rows, opt) {
     '알란토인 ' + pctOf('allantoin').toFixed(2) + '% 는 상온 용해도(약 0.5%)를 넘는다. 식으면서 바늘 결정이 뜬다.', 450);
   pchk('cera', maxT < 72, 9, '미용해',
     '세라마이드는 75℃ 이상에서 녹여야 한다. 최고 온도가 ' + maxT.toFixed(0) + '℃ 라 알갱이가 남는다.', 380);
+  pchk('eht', maxT < 82, 9, '미용해',
+    '에틸헥실트라이아존은 분말이라 82℃ 이상에서 용제에 완전히 녹여야 한다. 최고 ' +
+    maxT.toFixed(0) + '℃ 로는 결정이 남아 SPF 가 나오지 않는다.', 280);
   pchk('bemt', maxT < 80, 9, '재결정',
     'BEMT(티노소브 S)는 80℃ 이상 완전 용해가 필요하다. 최고 ' + maxT.toFixed(0) + '℃ 에서는 식으며 결정이 자란다.', 300);
   pchk('sa', (pctOf('etoh') + pctOf('bg') + pctOf('pdo') + pctOf('dpg') + pctOf('penta')) < 5, 8, '미용해',
@@ -355,7 +358,9 @@ function run(rows, opt) {
   });
   if (maxTip < 1) maxTip = PROC.tipSpeed(rig.dAji, steps.reduce(function (a, s) { return Math.max(a, s.aji || 0); }, 60));
   var lastTip = maxTip, lastSec = Math.max(homoSec, 60);
+  var uvUndis = (byId['bemt'] && maxT < 80) || (byId['eht'] && maxT < 82);
   var res = CHEM.evaluate(finalRows, {
+    uvUndissolved: uvUndis,
     tip: lastTip, sec: lastSec,
     coolFactor: coolFactor, browning: browning,
     precipitate: precip, airPct: airPct,

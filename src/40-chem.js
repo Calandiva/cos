@@ -72,6 +72,8 @@ function composition(rows) {
     total: 0, water: 0, polyol: 0, oil: 0, wax: 0, powder: 0,
     emul: 0, emulHi: 0, emulLo: 0, surf: 0, surfActive: 0, cond: 0,
     lam: 0, salt: 0, saltAdd: 0, etoh: 0, nacl: 0, thickGel: 0,
+    uvOrg: 0, uvInorg: 0, spfRaw: 0, pfaRaw: 0, foamRaw: 0, hardRaw: 0,
+    extract: 0, filmer: 0, pigment: 0,
     oilVol: 0, watVol: 0, pwdVol: 0, totVol: 0,
     riOil: 0, riWat: 0, cost: 0, rhSum: 0, rhW: 0, hlbSum: 0, hlbW: 0,
     thickers: [], colors: [], byCat: {}, rows: []
@@ -135,6 +137,16 @@ function composition(rows) {
     if (g.cat === 'cond') a.cond += c;
     /* 계면활성제 자신의 대이온은 "추가 전해질"이 아니다 (솔트 커브용) */
     if (['surf', 'cond'].indexOf(g.cat) < 0) a.saltAdd += (g.el || 0) * c;
+    if (g.spf > 0 || g.pfa > 0) {
+      a.spfRaw += g.spf * c; a.pfaRaw += g.pfa * c;
+      if (g.cat === 'uv') { if (g.sol === 'd') a.uvInorg += c; else a.uvOrg += c; }
+    }
+    if (g.foam > 0) a.foamRaw += c * surfActivity(g.id) * g.foam;
+    if (g.hard > 0) a.hardRaw += g.hard * c;
+    if (g.ox >= 0.3 && (g.cat === 'active' || g.cat === 'cond') && g.sol === 'w') a.extract += c;
+    if (['isododec', 'undectri', 'c1315', 'd5', 'dce', 'dime5', 'dime350', 'dimecop',
+         'hpstarch', 'ps15', 'bos', 'inn'].indexOf(g.id) >= 0) a.filmer += c;
+    if (g.tint > 20) a.pigment += c;
     if (g.th) a.thickers.push({ g: g, c: c });
     if (g.tint > 0.05) a.colors.push({ g: g, c: c });
   });
@@ -371,6 +383,77 @@ function apparent(eta12, n, rpm) {
 }
 
 /* =====================================================================
+   4.5 자외선 차단 — SPF · UVA-PF · PA 등급
+   ---------------------------------------------------------------------
+   각 필터의 1% 당 기여를 더한 뒤, 실제로 SPF 를 깎아먹는 세 가지로 보정한다.
+     · 광불안정   아보벤존은 안정화제가 없으면 빛을 받아 스스로 부서진다
+     · 도포막     퍼짐이 나쁘거나 액적이 굵으면 막이 얼룩져 표시값이 안 나온다
+     · 미용해     결정이 남은 필터는 그만큼 일을 하지 않는다
+   ===================================================================== */
+function uvProtect(a, env) {
+  if (a.spfRaw < 1) return null;
+  var spf = a.spfRaw, pfa = a.pfaRaw;
+  var notes = [];
+
+  /* 광안정성 */
+  var avo = 0, stabilizer = 0;
+  a.rows.forEach(function (r) {
+    if (r.g.id === 'ubm') avo += r.c;
+    if (['octo', 'bemt', 'eht', 'ps15', 'dhhb', 'mbbt'].indexOf(r.g.id) >= 0) stabilizer += r.c;
+  });
+  var photo = 1;
+  if (avo > 0.2 && stabilizer < avo * 0.8) {
+    photo = 0.62;
+    notes.push({ sev: 12, ko: '광불안정',
+      msg: '아보벤존 ' + avo.toFixed(1) + '% 를 잡아줄 광안정화제가 ' + stabilizer.toFixed(1) +
+           '% 뿐이다. 햇빛 아래에서 스스로 분해되어 차단력이 시간에 따라 떨어진다. ' +
+           '옥토크릴렌이나 티노소브 계열을 아보벤존의 0.8배 이상 넣어라.' });
+  }
+
+  /* 도포막 균일성 */
+  var film = cl(0.70 + 0.30 * Math.min(1, a.filmer / 3), 0.70, 1.0);
+  var d = env.d32 || 0;
+  if (d > 3) film *= cl(1 - (d - 3) / 12, 0.7, 1);
+  if (a.uvInorg > 1 && a.emul < 0.8) {
+    film *= 0.82;
+    notes.push({ sev: 9, ko: '무기 분산 불량',
+      msg: '무기 차단제 ' + a.uvInorg.toFixed(1) + '% 에 비해 분산·유화제가 모자란다. ' +
+           '입자가 뭉치면 뭉친 만큼 빛이 새어 나가 표시 SPF 가 나오지 않는다.' });
+  }
+
+  /* 미용해 필터 */
+  var undis = env.uvUndissolved ? 0.7 : 1;
+
+  spf = 1 + (spf - 0) * photo * film * undis;
+  pfa = pfa * photo * film * undis;
+
+  var pa = pfa >= 16 ? 'PA++++' : pfa >= 8 ? 'PA+++' : pfa >= 4 ? 'PA++' : pfa >= 2 ? 'PA+' : '등급 없음';
+  var broad = pfa >= spf / 3;
+  if (pfa < spf / 4 && spf > 15)
+    notes.push({ sev: 10, ko: 'UVA 부족',
+      msg: 'UVA-PF ' + pfa.toFixed(1) + ' 은 SPF ' + Math.round(spf) + ' 에 비해 너무 낮다. ' +
+           'UVB 만 막는 제품이 되어 광노화를 막지 못한다. ' +
+           'UVA 필터(다이에틸아미노하이드록시벤조일헥실벤조에이트 · 티노소브 · 징크옥사이드)를 늘려라.' });
+
+  return { spf: Math.max(1, spf), pfa: pfa, pa: pa, broad: broad,
+           org: a.uvOrg, inorg: a.uvInorg, film: film, photo: photo, notes: notes };
+}
+
+/* =====================================================================
+   4.6 거품력 · 경도
+   ===================================================================== */
+function foaming(a) {
+  if (a.foamRaw <= 0.05) return 0;
+  var kill = a.oil + a.wax * 0.6 + a.pigment;      /* 오일·실리콘은 거품을 죽인다 */
+  return Math.min(100, 5.5 * a.foamRaw / (1 + 0.2 * kill));
+}
+
+function hardness(a) {
+  if (!a.anhydrous) return 0;
+  return a.hardRaw;
+}
+
+/* =====================================================================
    5. 탁도 (NTU)
    ===================================================================== */
 function turbidity(a, env) {
@@ -505,28 +588,46 @@ function stability(a, env) {
     bad(9, '가용화 실패', '향료·오일 ' + (a.oil + a.wax).toFixed(2) + '% 를 잡아줄 가용화제가 모자란다(비 ' +
       dp.rSol.toFixed(1) + ':1). 시간이 지나면 표면에 기름방울이 뜬다. 오일의 4~8배를 넣어라.');
 
-  /* 방부 */
-  var pres = 0, presPh = 1;
+  /* ── 방부 ──────────────────────────────────────────────────────
+     가진 방부력(have)을 필요한 방부력(need)으로 나눈다.
+     추출물·발효물·전분은 미생물의 먹이라 need 를 올리고,
+     높은 폴리올(낮은 수분활성도)과 알칼리 비누는 need 를 내린다.        */
+  var have = 0;
   a.rows.forEach(function (r) {
     if (r.g.cat !== 'presv') return;
     var e = r.c / Math.max(r.g.max, 0.01);
-    if (r.g.id === 'nabenz' || r.g.id === 'ksorb') e *= (1 - smooth(ph, 4.8, 6.2));
-    if (r.g.id === 'phenox' || r.g.id === 'pe9010') e *= (1 - smooth(ph, 7.2, 8.5));
-    pres += e;
+    if (['nabenz', 'ksorb', 'levul'].indexOf(r.g.id) >= 0) e *= (1 - smooth(ph, 4.8, 6.2));
+    if (['phenox', 'pe9010', 'benzalc'].indexOf(r.g.id) >= 0) e *= (1 - smooth(ph, 7.2, 8.6));
+    if (r.g.id === 'cymen') e *= 0.7;
+    have += e;
   });
   a.rows.forEach(function (r) {
-    if (['hex', 'penta', 'caprylyl', 'ehg'].indexOf(r.g.id) >= 0) pres += r.c * 0.28;
-    if (r.g.id === 'etoh' && r.c >= 15) pres += 0.5;
+    if (['hex', 'penta', 'caprylyl', 'ehg'].indexOf(r.g.id) >= 0) have += r.c * 0.28;
+    if (r.g.id === 'etoh' && r.c >= 15) have += 0.5;
+    if (r.g.id === 'propolis') have += r.c * 0.03;
   });
-  if (soap && ph > 9.3) pres += 0.9;             /* 비누 자체가 미생물을 막는다 */
-  if (a.polyol >= 20) pres += 0.3;               /* 높은 폴리올 = 낮은 수분활성도 */
+  if (soap && ph > 9.3) have += 1.0;        /* 알칼리 비누는 그 자체로 미생물을 막는다 */
+
+  var need = 1.0;
+  if (a.extract > 5) need += 0.25;
+  if (a.extract > 20) need += 0.2;
+  if ((a.byCat.powder || 0) > 3 || a.rows.some(function (r) { return r.g.id === 'starch' && r.c > 1; })) need += 0.2;
+  if (a.polyol >= 25) need -= 0.3;
+  else if (a.polyol >= 15) need -= 0.15;
+  if (a.water < 20) need -= 0.45;
+  need = Math.max(0.3, need);
+
+  var pres = have / need;
   env.preserve = pres;
+  env.presNeed = need;
   if (a.water > 12) {
-    if (pres < 0.35) bad(24, '방부 부족', '방부 지수 ' + pres.toFixed(2) + '. 수분이 ' + a.water.toFixed(0) + '% 인데 미생물을 막을 수단이 없다.');
-    else if (pres < 0.7) bad(9, '방부 여유 부족', '방부 지수 ' + pres.toFixed(2) + '. 챌린지 테스트를 통과하기 어렵다.');
+    if (pres < 0.35) bad(26, '방부 부족',
+      '방부 지수 ' + pres.toFixed(2) + '. 수분이 ' + a.water.toFixed(0) + '% 인데 미생물을 막을 수단이 사실상 없다. ' +
+      '한 달을 못 간다.');
+    else if (pres < 0.75) bad(11, '방부 여유 부족',
+      '방부 지수 ' + pres.toFixed(2) + (a.extract > 5 ? ' (추출물 ' + a.extract.toFixed(1) + '% 때문에 요구치가 ' + need.toFixed(2) + '로 올라갔다)' : '') +
+      '. 챌린지 테스트를 통과하기 어렵다.');
   }
-  if (a.byCat.powder > 3 && pres < 0.8 && a.water > 12)
-    bad(6, '분체 오염 경로', '파우더는 미생물을 함께 들여온다. 방부를 한 단계 더 두텁게.');
 
   /* 석출 */
   if (env.precipNotes) env.precipNotes.forEach(function (t) { bad(t.sev, t.ko, t.msg); });
@@ -561,9 +662,12 @@ function evaluate(rows, env) {
   var t = turbidity(a, { d32: d32, precipitate: env.precipitate || 0, airPct: env.airPct || 0 });
   var c = color(a, { ntu: t.ntu, browning: env.browning || 0 });
 
+  var uv = uvProtect(a, { d32: d32, uvUndissolved: env.uvUndissolved });
+
   var senv = {
     drop: dp, visc: v, pH: p, alpha: alpha,
-    precipNotes: env.precipNotes, lossNotes: env.lossNotes
+    precipNotes: (env.precipNotes || []).concat(uv ? uv.notes : []),
+    lossNotes: env.lossNotes
   };
   var st = stability(a, senv);
 
@@ -571,7 +675,9 @@ function evaluate(rows, env) {
     agg: a, pH: p, alpha: alpha, drop: dp, d32: d32,
     visc: v, eta: v.eta, nIdx: v.n,
     turb: t, ntu: t.ntu, color: c,
-    stability: st, cream: senv.creamMmDay || 0, preserve: senv.preserve || 0,
+    uv: uv, foam: foaming(a), hard: hardness(a),
+    stability: st, cream: senv.creamMmDay || 0,
+    preserve: senv.preserve || 0, presNeed: senv.presNeed || 1,
     cost: a.cost, total: a.total
   };
 }
@@ -581,6 +687,7 @@ G.CHEM = {
   neutralizerNeeded: neutralizerNeeded, dropletSize: dropletSize,
   viscosity: viscosity, apparent: apparent, turbidity: turbidity,
   color: color, stability: stability, evaluate: evaluate,
+  uvProtect: uvProtect, foaming: foaming, hardness: hardness,
   labToRgb: labToRgb, grade: grade, surfActivity: surfActivity, AB: AB, OILV: OILV,
   cl: cl, smooth: smooth
 };
