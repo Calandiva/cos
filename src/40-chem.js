@@ -83,9 +83,13 @@ function composition(rows) {
   });
   a.soap = alkali && rows.some(function (r) { return r.pct > 0 && FATTY.indexOf(r.id) >= 0; });
 
+  var rawTotal = rows.reduce(function (x, y) { return x + (+y.pct > 0 ? +y.pct : 0); }, 0);
+  var norm = rawTotal > 0 ? 100 / rawTotal : 1;
+  a.rawTotal = rawTotal;
+
   rows.forEach(function (r) {
     var g = ING.BY[r.id]; if (!g || !(r.pct > 0)) return;
-    var c = r.pct;
+    var c = r.pct * norm;                     /* 100% 기준으로 환산 */
     var saponified = a.soap && FATTY.indexOf(g.id) >= 0;
     a.total += c;
     a.cost += c / 100 * g.pr;
@@ -156,17 +160,20 @@ function surfActivity(id) {
 function pH(rows) {
   var A = 0, B = 0, pkaS = 0, pka0S = 0, nS = 0, w = 0;
   var pvS = 0, pcS = 0;
+  var rt = rows.reduce(function (x, y) { return x + (+y.pct > 0 ? +y.pct : 0); }, 0);
+  var nz = rt > 0 ? 100 / rt : 1;
   rows.forEach(function (r) {
     var g = ING.BY[r.id]; if (!g || !(r.pct > 0)) return;
+    var pct = r.pct * nz;
     var t = AB[r.id];
     if (t) {
       if (t.aeq) {
-        var m = t.aeq * r.pct;                 /* 100 g 기준 mmol */
+        var m = t.aeq * pct;                   /* 100 g 기준 mmol */
         A += m; pkaS += t.pka * m; pka0S += t.pka0 * m; nS += t.n * m; w += m;
       }
-      if (t.beq) B += t.beq * r.pct;
+      if (t.beq) B += t.beq * pct;
     }
-    if (g.pc > 0) { pvS += g.pv * g.pc * r.pct; pcS += g.pc * r.pct; }
+    if (g.pc > 0) { pvS += g.pv * g.pc * pct; pcS += g.pc * pct; }
   });
 
   var pHw = pcS > 0 ? pvS / pcS : 6.5;
@@ -199,10 +206,12 @@ function pH(rows) {
 /* 카보머 중화도(0~1) — 겔 활성 계산용 */
 function neutralDegree(rows) {
   var A = 0, B = 0;
+  var rt = rows.reduce(function (x, y) { return x + (+y.pct > 0 ? +y.pct : 0); }, 0);
+  var nz = rt > 0 ? 100 / rt : 1;
   rows.forEach(function (r) {
     var t = AB[r.id]; if (!t) return;
-    if (t.aeq && (r.id === 'carb940' || r.id === 'pemulen')) A += t.aeq * r.pct;
-    if (t.beq) B += t.beq * r.pct;
+    if (t.aeq && (r.id === 'carb940' || r.id === 'pemulen')) A += t.aeq * r.pct * nz;
+    if (t.beq) B += t.beq * r.pct * nz;
   });
   if (A <= 0) return 0;
   return cl(B / A, 0, 1.4);

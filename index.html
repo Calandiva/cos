@@ -9,368 +9,410 @@
 <title>포뮬라랩 — 화장품 제조 시뮬레이터</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --bg:#F2F4F6; --panel:#FFFFFF; --panel-2:#F7F9FB; --panel-3:#EDF1F5;
-  --line:#DCE3EA; --line-2:#C6D0DA;
-  --ink:#16202A; --ink-2:#4C5C6C; --ink-3:#8494A4;
-  --acc:#A8436B; --acc-soft:#FBE9F0; --acc-line:#E4A9C0; --acc-ink:#FFFFFF;
-  --ok:#2E8B57; --ok-soft:#E0F2E7;
-  --warn:#B4780F; --warn-soft:#FAEFD6;
-  --bad:#C43A3F; --bad-soft:#FBE2E3;
-  --info:#3963B4; --info-soft:#E3EAF9;
-  --shadow:0 1px 2px rgba(20,32,44,.05),0 8px 22px rgba(20,32,44,.07);
-  --shadow-sm:0 1px 2px rgba(20,32,44,.08);
-  --r:10px; --r-sm:7px;
+  --bg:#F1F3F6; --panel:#FFFFFF; --panel-2:#F6F8FA; --panel-3:#EAEEF3;
+  --line:#DCE2E9; --line-2:#C2CCD6;
+  --ink:#141E28; --ink-2:#4A5A6A; --ink-3:#8090A0;
+  --acc:#A8436B; --acc-soft:#FCE9F0; --acc-line:#E2A5BE; --acc-ink:#FFFFFF;
+  --ok:#237A4B; --ok-soft:#DFF2E7;
+  --warn:#A96E08; --warn-soft:#FAEDD2;
+  --bad:#C0353A; --bad-soft:#FBE0E1;
+  --info:#2F5AAE; --info-soft:#E1E9F8;
+  --shadow:0 1px 2px rgba(18,30,42,.05),0 10px 30px rgba(18,30,42,.10);
+  --shadow-sm:0 1px 3px rgba(18,30,42,.10);
+  --r:12px; --r-sm:9px;
   --sans:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
   --mono:"IBM Plex Mono","D2Coding",ui-monospace,Consolas,monospace;
-  --topH:52px; --navH:56px;
+  --topH:58px; --navH:62px; --tap:44px;
 }
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
-  --bg:#0D1117; --panel:#151B22; --panel-2:#1A2129; --panel-3:#212A34;
-  --line:#28323D; --line-2:#38444F;
-  --ink:#E4EAF0; --ink-2:#A2B0BD; --ink-3:#6E7E8D;
-  --acc:#E08BA9; --acc-soft:#2E1720; --acc-line:#6E3549; --acc-ink:#201116;
-  --ok:#4DBE7E; --ok-soft:#122619;
-  --warn:#DDA845; --warn-soft:#2C2210;
-  --bad:#EC6B70; --bad-soft:#2F1517;
-  --info:#7EA0EE; --info-soft:#151F33;
-  --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 26px rgba(0,0,0,.4);
-  --shadow-sm:0 1px 2px rgba(0,0,0,.5);
+  --bg:#0C1116; --panel:#151C23; --panel-2:#1B232B; --panel-3:#242E38;
+  --line:#2A343F; --line-2:#3B4854;
+  --ink:#E6ECF2; --ink-2:#A6B4C1; --ink-3:#71818F;
+  --acc:#E692AE; --acc-soft:#31171F; --acc-line:#71384C; --acc-ink:#1D1013;
+  --ok:#54C486; --ok-soft:#102A1B;
+  --warn:#E0AC4C; --warn-soft:#2E2411;
+  --bad:#EE7176; --bad-soft:#301618;
+  --info:#87A6F0; --info-soft:#161F34;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 12px 30px rgba(0,0,0,.45);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.55);
 }}
 :root[data-theme="dark"]{
-  --bg:#0D1117; --panel:#151B22; --panel-2:#1A2129; --panel-3:#212A34;
-  --line:#28323D; --line-2:#38444F;
-  --ink:#E4EAF0; --ink-2:#A2B0BD; --ink-3:#6E7E8D;
-  --acc:#E08BA9; --acc-soft:#2E1720; --acc-line:#6E3549; --acc-ink:#201116;
-  --ok:#4DBE7E; --ok-soft:#122619;
-  --warn:#DDA845; --warn-soft:#2C2210;
-  --bad:#EC6B70; --bad-soft:#2F1517;
-  --info:#7EA0EE; --info-soft:#151F33;
-  --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 26px rgba(0,0,0,.4);
-  --shadow-sm:0 1px 2px rgba(0,0,0,.5);
+  --bg:#0C1116; --panel:#151C23; --panel-2:#1B232B; --panel-3:#242E38;
+  --line:#2A343F; --line-2:#3B4854;
+  --ink:#E6ECF2; --ink-2:#A6B4C1; --ink-3:#71818F;
+  --acc:#E692AE; --acc-soft:#31171F; --acc-line:#71384C; --acc-ink:#1D1013;
+  --ok:#54C486; --ok-soft:#102A1B;
+  --warn:#E0AC4C; --warn-soft:#2E2411;
+  --bad:#EE7176; --bad-soft:#301618;
+  --info:#87A6F0; --info-soft:#161F34;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 12px 30px rgba(0,0,0,.45);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.55);
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
   margin:0;background:var(--bg);color:var(--ink);
-  font-family:var(--sans);font-size:14px;line-height:1.55;
+  font-family:var(--sans);font-size:15px;line-height:1.6;
   -webkit-font-smoothing:antialiased;overscroll-behavior-y:none;
 }
 button,input,select,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
-:focus-visible{outline:2px solid var(--acc);outline-offset:1px;border-radius:4px}
-::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:6px;border:3px solid transparent;background-clip:padding-box}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:6px}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:7px;border:3px solid transparent;background-clip:padding-box}
 ::-webkit-scrollbar-track{background:transparent}
-.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+[hidden]{display:none !important}
 
 /* ══ 셸 ══════════════════════════════════════════════════════════ */
 #app{display:flex;flex-direction:column;height:100dvh;min-height:0}
 
 #top{
-  display:flex;align-items:center;gap:8px;padding:0 10px;height:var(--topH);
+  display:flex;align-items:center;gap:9px;padding:0 12px;min-height:var(--topH);
   background:var(--panel);border-bottom:1px solid var(--line);
   flex:0 0 auto;z-index:40;box-shadow:var(--shadow-sm);
 }
-.brand{display:flex;align-items:baseline;gap:6px;user-select:none;flex:0 0 auto}
-.brand b{font-weight:700;font-size:15px;letter-spacing:-.3px}
-.brand i{font-style:normal;font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.08em}
+.brand{font-weight:700;font-size:17px;letter-spacing:-.4px;flex:0 0 auto;user-select:none}
 #top .grow{flex:1 1 auto;min-width:0}
-.topmid{display:flex;align-items:center;gap:7px;min-width:0}
-.topmid #selProd{max-width:158px;flex:0 1 auto}
-.batchbox{gap:2px;padding:0 6px 0 8px}
-.batchbox input{width:70px;height:26px;border:0;background:none;padding:0}
-.batchbox select{height:26px;border:0;background:none;padding:0 15px 0 0;font-size:12px}
-
-/* 좁은 화면 : 헤더를 두 줄로 */
-@media (max-width:660px){
-  #top{height:auto;flex-wrap:wrap;padding:6px 8px 8px;row-gap:7px;align-items:center}
-  .brand i{display:none}
-  .topmid{order:9;flex:1 0 100%;width:100%}
-  .topmid #selProd{flex:1 1 auto;max-width:none;min-width:0}
-  .batchbox{flex:0 0 auto}
-}
 
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:5px;
-  min-height:34px;padding:0 11px;background:var(--panel-2);
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-height:var(--tap);padding:0 15px;background:var(--panel-2);
   border:1px solid var(--line);border-radius:var(--r-sm);
-  font-size:13px;font-weight:500;white-space:nowrap;transition:.12s;
+  font-size:15px;font-weight:600;white-space:nowrap;transition:.12s;
 }
-.btn:hover{background:var(--panel-3);border-color:var(--line-2)}
-.btn:active{transform:translateY(1px)}
-.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:600}
+.btn:hover{background:var(--panel-3)}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
 .btn.pri:hover{filter:brightness(1.08)}
-.btn.sm{min-height:28px;padding:0 8px;font-size:12px}
-.btn.ico{padding:0;width:34px}
-.btn[disabled]{opacity:.45;pointer-events:none}
+.btn.sm{min-height:36px;padding:0 11px;font-size:13.5px;font-weight:500}
+.btn.ico{padding:0;width:var(--tap);font-size:20px}
+.btn.wide{width:100%}
+.btn[disabled]{opacity:.4;pointer-events:none}
 
-select,input[type=text],input[type=number],input[type=search]{
-  height:34px;padding:0 8px;background:var(--panel-2);
+select{
+  min-height:var(--tap);padding:0 30px 0 12px;background:var(--panel-2);
   border:1px solid var(--line);border-radius:var(--r-sm);
-  font-size:14px;max-width:100%;
-}
-select{padding-right:22px;appearance:none;
+  font-size:15px;font-weight:600;max-width:100%;appearance:none;
   background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);
-  background-position:calc(100% - 13px) 15px,calc(100% - 8px) 15px;
-  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
-input[type=number]{text-align:right;font-family:var(--mono)}
-input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-input[type=number]{-moz-appearance:textfield}
+  background-position:calc(100% - 17px) calc(50% + 2px),calc(100% - 12px) calc(50% + 2px);
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+}
+input[type=search],input[type=text]{
+  min-height:var(--tap);padding:0 12px;background:var(--panel-2);
+  border:1px solid var(--line);border-radius:var(--r-sm);font-size:16px;width:100%;
+}
 
 /* ══ 본문 ════════════════════════════════════════════════════════ */
 #main{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr;overflow:hidden}
-.pane{min-height:0;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.pane{min-height:0;min-width:0;display:none;flex-direction:column;overflow:hidden;background:var(--panel)}
+.pane.active{display:flex}
 .pane-hd{
-  display:flex;align-items:center;gap:6px;padding:8px 10px;flex:0 0 auto;
-  border-bottom:1px solid var(--line);background:var(--panel);
+  display:flex;align-items:center;gap:8px;padding:9px 12px;flex:0 0 auto;
+  border-bottom:1px solid var(--line);background:var(--panel);min-height:52px;
 }
-.pane-hd h2{margin:0;font-size:13px;font-weight:600;letter-spacing:-.2px}
-.pane-hd .sub{font-size:11px;color:var(--ink-3);font-family:var(--mono)}
+.pane-hd h2{margin:0;font-size:16px;font-weight:700;letter-spacing:-.3px}
 .pane-bd{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}
-.pane-ft{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel);padding:8px 10px}
+.pane-ft{flex:0 0 auto;border-top:1px solid var(--line);background:var(--panel);padding:10px 12px}
 
-/* ══ 하단 탭 (모바일) ════════════════════════════════════════════ */
+.seg{display:flex;gap:2px;background:var(--panel-3);padding:3px;border-radius:10px}
+.seg button{
+  padding:0 14px;min-height:34px;border-radius:8px;font-size:14px;font-weight:600;
+  color:var(--ink-2);transition:.12s;
+}
+.seg button[aria-selected=true]{background:var(--panel);color:var(--ink);box-shadow:var(--shadow-sm)}
+
+/* ══ 하단 탭 ═════════════════════════════════════════════════════ */
 #nav{
-  display:flex;flex:0 0 auto;height:var(--navH);background:var(--panel);
-  border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);
-  z-index:40;
+  display:flex;flex:0 0 auto;min-height:var(--navH);background:var(--panel);
+  border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:40;
 }
 #nav button{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  background:none;border:0;color:var(--ink-3);font-size:10px;font-weight:500;padding:0;
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  color:var(--ink-3);font-size:11.5px;font-weight:600;padding:6px 0;
 }
-#nav button .g{font-size:17px;line-height:1}
+#nav button .g{font-size:20px;line-height:1}
 #nav button[aria-selected=true]{color:var(--acc)}
-#nav .badge{
-  position:absolute;transform:translate(14px,-12px);min-width:15px;height:15px;padding:0 4px;
-  background:var(--acc);color:var(--acc-ink);border-radius:8px;
-  font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;
-}
-
-/* ══ 원료 검색 ═══════════════════════════════════════════════════ */
-.searchwrap{position:relative;flex:1 1 auto}
-.searchwrap input{width:100%;padding-left:28px}
-.searchwrap .mag{position:absolute;left:9px;top:8px;color:var(--ink-3);font-size:14px;pointer-events:none}
-.chips{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);background:var(--panel)}
-.chips::-webkit-scrollbar{display:none}
-.chip{
-  flex:0 0 auto;height:26px;padding:0 9px;border-radius:13px;border:1px solid var(--line);
-  background:var(--panel-2);font-size:12px;color:var(--ink-2);display:inline-flex;align-items:center;gap:4px;
-}
-.chip[aria-pressed=true]{background:var(--acc-soft);border-color:var(--acc-line);color:var(--acc);font-weight:600}
-.chip .dot{width:7px;height:7px;border-radius:50%}
-
-.ilist{padding:4px 0}
-.irow{
-  display:flex;align-items:center;gap:8px;padding:8px 10px;
-  border-bottom:1px solid var(--line);cursor:pointer;transition:background .1s;
-}
-.irow:hover{background:var(--panel-2)}
-.irow:active{background:var(--panel-3)}
-.irow .bar{width:3px;align-self:stretch;border-radius:2px;flex:0 0 auto;min-height:30px}
-.irow .txt{flex:1 1 auto;min-width:0}
-.irow .n1{font-size:13px;font-weight:500;line-height:1.35}
-.irow .n2{font-size:11px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--mono)}
-.irow .use{font-size:11px;color:var(--ink-2);font-family:var(--mono);text-align:right;flex:0 0 auto}
-.irow .add{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);
-  background:var(--panel-2);color:var(--ink-2);font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center}
-.irow.on .add{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
-.empty{padding:26px 16px;text-align:center;color:var(--ink-3);font-size:13px}
-
-/* 원료 상세 */
-.idetail{padding:10px 12px;background:var(--panel-2);border-bottom:1px solid var(--line);font-size:12.5px;color:var(--ink-2);line-height:1.65}
-.idetail b{color:var(--ink)}
-.kv{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:6px}
-.kv span{font-size:11px;font-family:var(--mono);color:var(--ink-3);background:var(--panel-3);padding:1px 6px;border-radius:4px}
 
 /* ══ 처방표 ══════════════════════════════════════════════════════ */
-.phase{margin:0}
 .phase-hd{
-  display:flex;align-items:center;gap:6px;padding:6px 10px;
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
   background:var(--panel-3);border-bottom:1px solid var(--line);
-  font-size:11px;font-weight:600;color:var(--ink-2);position:sticky;top:0;z-index:2;
+  font-size:13px;font-weight:700;color:var(--ink-2);position:sticky;top:0;z-index:3;
 }
-.phase-hd .pdot{width:8px;height:8px;border-radius:2px}
-.phase-hd .amt{margin-left:auto;font-family:var(--mono);font-weight:500;color:var(--ink-3)}
-.frow{display:flex;align-items:center;gap:7px;padding:6px 10px;border-bottom:1px solid var(--line)}
-.frow .nm{flex:1 1 auto;min-width:0}
-.frow .nm b{display:block;font-size:13px;font-weight:500;line-height:1.3;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.frow .nm small{font-size:10.5px;color:var(--ink-3);font-family:var(--mono)}
-.frow input{width:74px;height:30px;flex:0 0 auto}
-.frow .gval{width:70px;text-align:right;font-family:var(--mono);font-size:11px;color:var(--ink-3);flex:0 0 auto}
-.frow .del{width:26px;height:26px;flex:0 0 auto;border:0;background:none;color:var(--ink-3);font-size:15px;border-radius:5px}
-.frow .del:hover{background:var(--bad-soft);color:var(--bad)}
-.frow.over input{border-color:var(--bad);background:var(--bad-soft)}
+.phase-hd .pdot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.phase-hd .amt{margin-left:auto;font-family:var(--mono);font-weight:600;color:var(--ink-3);font-size:12.5px}
 
-.total{display:flex;align-items:center;gap:8px;font-size:13px}
-.total b{font-family:var(--mono);font-size:15px}
-.total .pill{margin-left:auto;padding:2px 8px;border-radius:11px;font-size:11px;font-weight:600}
-.pill.ok{background:var(--ok-soft);color:var(--ok)}
-.pill.bad{background:var(--bad-soft);color:var(--bad)}
-.pill.warn{background:var(--warn-soft);color:var(--warn)}
-.pill.info{background:var(--info-soft);color:var(--info)}
+.frow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.frow .nm{flex:1 1 auto;min-width:0;cursor:pointer}
+.frow .nm b{display:block;font-size:15px;font-weight:600;line-height:1.35;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frow .nm small{font-size:12px;color:var(--ink-3);font-family:var(--mono);
+  display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frow .nm .over{color:var(--warn);font-family:var(--sans);font-weight:600}
+.frow .gv{font-family:var(--mono);font-size:12px;color:var(--ink-3);
+  flex:0 0 auto;width:72px;text-align:right}
+.frow .del{width:36px;height:36px;flex:0 0 auto;color:var(--ink-3);font-size:18px;border-radius:8px}
+.frow .del:hover{background:var(--bad-soft);color:var(--bad)}
+
+/* ══ 휠 스테퍼 ═══════════════════════════════════════════════════ */
+.stp{
+  display:inline-flex;align-items:stretch;flex:0 0 auto;
+  border:1px solid var(--line);border-radius:10px;background:var(--panel-2);
+  overflow:hidden;user-select:none;
+}
+.stp button{
+  width:38px;flex:0 0 auto;font-size:21px;font-weight:400;color:var(--ink-2);
+  display:flex;align-items:center;justify-content:center;line-height:1;
+}
+.stp button:hover{background:var(--panel-3);color:var(--ink)}
+.stp button:active{background:var(--acc-soft);color:var(--acc)}
+.stp .v{
+  min-width:80px;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:2px;
+  background:var(--panel);border-left:1px solid var(--line);border-right:1px solid var(--line);
+  cursor:ns-resize;position:relative;touch-action:none;
+}
+.stp .v b{font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:-.3px}
+.stp .v em{font-style:normal;font-size:11px;color:var(--ink-3);font-weight:500}
+.stp .v input{
+  width:100%;border:0;background:none;text-align:center;font-family:var(--mono);
+  font-size:16px;font-weight:600;padding:0;min-height:0;height:100%;
+}
+.stp.drag .v{background:var(--acc-soft)}
+.stp.lg{border-radius:12px}
+.stp.lg button{width:54px;font-size:27px}
+.stp.lg .v{min-width:124px}
+.stp.lg .v b{font-size:25px}
+.stp.sm button{width:32px;font-size:18px}
+.stp.sm .v{min-width:64px}
+.stp.sm .v b{font-size:14px}
+
+/* ══ 원료 고르기 오버레이 ════════════════════════════════════════ */
+#picker{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;
+  background:rgba(14,22,30,.45);backdrop-filter:blur(3px)}
+#picker .box{
+  background:var(--panel);display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
+  box-shadow:var(--shadow);
+}
+#picker .phd{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border-bottom:1px solid var(--line);flex:0 0 auto}
+#picker .phd b{font-size:17px;font-weight:700;flex:0 0 auto}
+.srch{position:relative;flex:1 1 auto}
+.srch input{padding-left:38px;padding-right:40px}
+.srch .mag{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:var(--ink-3);font-size:17px;pointer-events:none}
+.srch .clr{position:absolute;right:5px;top:50%;transform:translateY(-50%);
+  width:34px;height:34px;border-radius:8px;color:var(--ink-3);font-size:16px}
+
+.chips{display:flex;gap:7px;padding:9px 12px;overflow-x:auto;scrollbar-width:none;
+  border-bottom:1px solid var(--line);flex:0 0 auto}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;min-height:36px;padding:0 13px;border-radius:18px;border:1px solid var(--line);
+  background:var(--panel-2);font-size:13.5px;font-weight:600;color:var(--ink-2);
+  display:inline-flex;align-items:center;gap:6px;
+}
+.chip[aria-pressed=true]{background:var(--acc-soft);border-color:var(--acc-line);color:var(--acc)}
+.chip .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+
+.ilist{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}
+.irow{display:flex;align-items:center;gap:11px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.irow.on{background:var(--acc-soft)}
+.irow .bar{width:4px;align-self:stretch;border-radius:2px;flex:0 0 auto;min-height:40px}
+.irow .txt{flex:1 1 auto;min-width:0;cursor:pointer}
+.irow .n1{font-size:15px;font-weight:600;line-height:1.35}
+.irow .n2{font-size:12px;color:var(--ink-3);font-family:var(--mono);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.irow .n3{font-size:12.5px;color:var(--ink-2);margin-top:2px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.irow .act{flex:0 0 auto;display:flex;align-items:center;gap:7px}
+.irow .addb{
+  min-height:38px;padding:0 14px;border-radius:9px;border:1px solid var(--acc-line);
+  background:var(--acc-soft);color:var(--acc);font-weight:700;font-size:13.5px;white-space:nowrap;
+}
+.irow .addb:hover{background:var(--acc);color:var(--acc-ink)}
+.irow .info{width:34px;height:34px;border-radius:8px;color:var(--ink-3);font-size:16px;flex:0 0 auto}
+.irow .info:hover{background:var(--panel-3);color:var(--ink)}
+
+.empty{padding:44px 20px;text-align:center;color:var(--ink-3);font-size:15px;line-height:1.9}
 
 /* ══ 공정 ════════════════════════════════════════════════════════ */
-.step{border-bottom:1px solid var(--line);padding:9px 10px}
-.step-hd{display:flex;align-items:center;gap:7px}
+.step{border-bottom:1px solid var(--line);padding:11px 12px}
+.step-hd{display:flex;align-items:center;gap:10px}
 .step-hd .no{
-  width:22px;height:22px;border-radius:50%;background:var(--panel-3);color:var(--ink-2);
-  font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:0 0 auto;
-  font-family:var(--mono);
+  width:28px;height:28px;border-radius:50%;background:var(--panel-3);color:var(--ink-2);
+  font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex:0 0 auto;font-family:var(--mono);
 }
-.step-hd .ttl{flex:1 1 auto;font-size:13px;font-weight:500;min-width:0}
-.step-hd .kind{font-size:10px;color:var(--ink-3);background:var(--panel-3);padding:1px 5px;border-radius:4px;flex:0 0 auto}
-.step-par{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.par{display:inline-flex;align-items:center;gap:3px;background:var(--panel-2);border:1px solid var(--line);
-  border-radius:6px;padding:2px 5px;font-size:11px;color:var(--ink-2)}
-.par input{width:52px;height:24px;padding:0 4px;font-size:12px;border:0;background:none;text-align:right}
-.par em{font-style:normal;color:var(--ink-3);font-size:10px}
-.step-add{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.tag{font-size:10.5px;padding:1px 6px;border-radius:10px;background:var(--panel-3);color:var(--ink-2);
-  white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.step-note{margin-top:6px;font-size:11.5px;color:var(--ink-3);line-height:1.6;
-  border-left:2px solid var(--line-2);padding-left:8px}
+.step-hd .ttl{flex:1 1 auto;font-size:15px;font-weight:600;min-width:0}
+.step-par{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px;align-items:center}
+.parlab{font-size:12px;color:var(--ink-3);font-weight:600}
+.step-add{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.tag{font-size:12px;padding:3px 9px;border-radius:12px;background:var(--panel-3);
+  color:var(--ink-2);font-weight:500}
+.step-note{margin-top:9px;font-size:13px;color:var(--ink-2);line-height:1.65;
+  border-left:3px solid var(--line-2);padding-left:10px}
 
 /* ══ 결과 ════════════════════════════════════════════════════════ */
-.res{padding:10px}
-.jar{display:flex;gap:12px;align-items:center;padding:2px 0 10px}
-.jarsvg{flex:0 0 auto}
-.jarinfo{flex:1 1 auto;min-width:0}
-.jarinfo .grade{font-size:30px;font-weight:700;line-height:1;letter-spacing:-1px}
-.jarinfo .gsub{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.res{padding:12px}
+.hero{
+  display:flex;gap:14px;align-items:center;padding:14px;margin-bottom:12px;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);
+}
+.hero .info{flex:1 1 auto;min-width:0}
+.hero .verdict{font-size:21px;font-weight:700;line-height:1.25;letter-spacing:-.5px}
+.hero .sub{font-size:13px;color:var(--ink-2);margin-top:3px}
+.hero .badge{display:inline-flex;align-items:center;gap:5px;margin-top:9px;
+  padding:5px 12px;border-radius:14px;font-size:12.5px;font-weight:700}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.info{background:var(--info-soft);color:var(--info)}
 
-.mets{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:7px}
-.met{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-sm);padding:7px 9px}
-.met .k{font-size:10.5px;color:var(--ink-3);display:flex;align-items:center;gap:4px}
-.met .v{font-family:var(--mono);font-size:16px;font-weight:600;line-height:1.25;letter-spacing:-.4px}
-.met .u{font-size:10px;color:var(--ink-3);font-weight:400;margin-left:2px}
-.met .d{font-size:10px;font-family:var(--mono)}
+.mets{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.met{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px}
+.met .k{font-size:12px;color:var(--ink-3);font-weight:600}
+.met .v{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1.25;letter-spacing:-.6px}
+.met .u{font-size:12px;color:var(--ink-3);font-weight:500;margin-left:3px}
+.met .r{font-size:11px;color:var(--ink-3);font-family:var(--mono);margin-top:1px}
 .met.ok{border-color:var(--ok);background:var(--ok-soft)}
 .met.bad{border-color:var(--bad);background:var(--bad-soft)}
+.gauge{height:6px;border-radius:3px;background:var(--panel-3);margin-top:7px;position:relative;overflow:hidden}
+.gauge .band{position:absolute;top:0;bottom:0;background:var(--ok);opacity:.3}
+.gauge .mark{position:absolute;top:-2px;width:3px;height:10px;border-radius:2px;background:var(--ink)}
 
-.gauge{height:5px;border-radius:3px;background:var(--panel-3);margin-top:5px;position:relative;overflow:hidden}
-.gauge .band{position:absolute;top:0;bottom:0;background:var(--ok-soft);border-left:1px solid var(--ok);border-right:1px solid var(--ok)}
-.gauge .mark{position:absolute;top:-2px;width:3px;height:9px;border-radius:2px;background:var(--ink)}
+.acc{border:1px solid var(--line);border-radius:var(--r-sm);margin-top:10px;overflow:hidden;background:var(--panel)}
+.acc>summary{
+  list-style:none;padding:12px 14px;display:flex;align-items:center;gap:9px;cursor:pointer;
+  font-size:14.5px;font-weight:600;background:var(--panel-2);
+}
+.acc>summary::-webkit-details-marker{display:none}
+.acc>summary::after{content:'⌄';margin-left:auto;color:var(--ink-3);font-size:17px;transition:.15s}
+.acc[open]>summary::after{transform:rotate(180deg)}
+.acc>summary .cnt{font-size:12px;font-weight:700;padding:2px 9px;border-radius:11px;
+  background:var(--panel-3);color:var(--ink-2)}
+.acc>summary .cnt.bad{background:var(--bad-soft);color:var(--bad)}
+.acc>summary .cnt.ok{background:var(--ok-soft);color:var(--ok)}
+.acc .body{padding:12px 14px;border-top:1px solid var(--line)}
 
-h3.sec{margin:16px 0 7px;font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase}
-h3.sec:first-child{margin-top:2px}
+.note{display:flex;gap:10px;padding:11px 12px;border-radius:var(--r-sm);margin-bottom:8px;
+  font-size:13.5px;line-height:1.65;border:1px solid transparent}
+.note:last-child{margin-bottom:0}
+.note .sv{font-family:var(--mono);font-size:12px;font-weight:700;flex:0 0 auto;padding-top:1px;min-width:26px}
+.note b{display:block;font-size:13.5px;margin-bottom:2px}
+.note.s3{background:var(--bad-soft);border-color:var(--bad)}
+.note.s2{background:var(--warn-soft);border-color:var(--warn)}
+.note.s1{background:var(--info-soft);border-color:var(--info)}
+.note.good{background:var(--ok-soft);border-color:var(--ok)}
 
-.note{display:flex;gap:8px;padding:8px 9px;border-radius:var(--r-sm);margin-bottom:6px;
-  font-size:12.5px;line-height:1.6;border:1px solid transparent}
-.note .sv{font-family:var(--mono);font-size:10px;font-weight:700;flex:0 0 auto;padding-top:2px}
-.note b{display:block;font-size:12px;margin-bottom:1px}
-.note.s3{background:var(--bad-soft);border-color:var(--bad);color:var(--ink)}
-.note.s2{background:var(--warn-soft);border-color:var(--warn);color:var(--ink)}
-.note.s1{background:var(--info-soft);border-color:var(--info);color:var(--ink)}
-.note.good{background:var(--ok-soft);border-color:var(--ok);color:var(--ink)}
+.kv{display:flex;flex-wrap:wrap;gap:7px}
+.kv span{font-size:12.5px;font-family:var(--mono);color:var(--ink-2);
+  background:var(--panel-2);border:1px solid var(--line);padding:4px 9px;border-radius:7px}
 
-table.rec{width:100%;border-collapse:collapse;font-size:11.5px;font-family:var(--mono)}
-table.rec th{text-align:right;font-weight:600;color:var(--ink-3);padding:4px 5px;border-bottom:1px solid var(--line-2);font-size:10.5px}
+table.rec{width:100%;border-collapse:collapse;font-size:13px;font-family:var(--mono)}
+table.rec th{text-align:right;font-weight:700;color:var(--ink-3);padding:6px 7px;
+  border-bottom:1px solid var(--line-2);font-size:11.5px}
 table.rec th:first-child{text-align:left}
-table.rec td{padding:4px 5px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.rec td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
 table.rec td:first-child{text-align:left;font-family:var(--sans);white-space:normal}
-table.rec td.hi{color:var(--bad);font-weight:600}
-.scroller{overflow-x:auto}
+table.rec td.hi{color:var(--bad);font-weight:700}
+.scroller{overflow-x:auto;-webkit-overflow-scrolling:touch}
 
-.tl{display:flex;flex-direction:column;gap:0;margin-top:4px}
-.tlrow{display:flex;align-items:center;gap:7px;font-size:11.5px;padding:3px 0}
-.tlrow .tt{width:46px;flex:0 0 auto;font-family:var(--mono);color:var(--ink-3);text-align:right}
-.tlbar{flex:1 1 auto;height:16px;border-radius:3px;background:var(--panel-3);position:relative;overflow:hidden}
-.tlbar i{position:absolute;top:0;bottom:0;border-radius:3px;opacity:.9}
-.tlrow .tn{width:96px;flex:0 0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
+.tlrow{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:4px 0}
+.tlrow .tt{width:52px;flex:0 0 auto;font-family:var(--mono);color:var(--ink-3);text-align:right}
+.tlbar{flex:1 1 auto;height:18px;border-radius:4px;background:var(--panel-3);position:relative;overflow:hidden}
+.tlbar i{position:absolute;top:0;bottom:0;border-radius:4px}
+.tlrow .tn{width:104px;flex:0 0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
 
 /* ══ 학습 ════════════════════════════════════════════════════════ */
 .chapter{border-bottom:1px solid var(--line)}
-.ch-hd{display:flex;align-items:center;gap:9px;padding:11px 12px;background:var(--panel);width:100%;border:0;text-align:left}
-.ch-hd .ic{font-size:19px;flex:0 0 auto}
+.ch-hd{display:flex;align-items:center;gap:12px;padding:14px 12px;width:100%;text-align:left}
+.ch-hd .ic{font-size:24px;flex:0 0 auto;line-height:1}
 .ch-hd .t{flex:1 1 auto;min-width:0}
-.ch-hd .t b{display:block;font-size:13.5px;font-weight:600}
-.ch-hd .t small{font-size:11px;color:var(--ink-3)}
-.ch-hd .pg{font-family:var(--mono);font-size:11px;color:var(--ink-3);flex:0 0 auto}
-.prog{height:3px;background:var(--panel-3);border-radius:2px;overflow:hidden;margin-top:4px}
+.ch-hd .t b{display:block;font-size:15.5px;font-weight:700}
+.ch-hd .t small{font-size:12.5px;color:var(--ink-3)}
+.ch-hd .pg{font-family:var(--mono);font-size:13px;color:var(--ink-3);flex:0 0 auto;font-weight:600}
+.prog{height:4px;background:var(--panel-3);border-radius:2px;overflow:hidden;margin-top:6px}
 .prog i{display:block;height:100%;background:var(--acc);border-radius:2px}
-.mrow{display:flex;align-items:center;gap:9px;padding:9px 12px 9px 34px;border-top:1px solid var(--line);
-  background:var(--panel-2);width:100%;border-left:0;border-right:0;border-bottom:0;text-align:left}
-.mrow .st{width:22px;height:22px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;background:var(--panel-3);color:var(--ink-3);font-family:var(--mono)}
+.mrow{display:flex;align-items:center;gap:11px;padding:12px 12px 12px 40px;
+  border-top:1px solid var(--line);background:var(--panel-2);width:100%;text-align:left}
+.mrow .st{width:28px;height:28px;border-radius:50%;flex:0 0 auto;display:flex;
+  align-items:center;justify-content:center;font-size:13px;font-weight:700;
+  background:var(--panel-3);color:var(--ink-3);font-family:var(--mono)}
 .mrow .st.done{background:var(--ok);color:#fff}
 .mrow .tx{flex:1 1 auto;min-width:0}
-.mrow .tx b{display:block;font-size:12.5px;font-weight:500}
-.mrow .tx small{font-size:11px;color:var(--ink-3);display:block;line-height:1.45}
-.mrow .gr{font-family:var(--mono);font-size:14px;font-weight:700;flex:0 0 auto}
+.mrow .tx b{display:block;font-size:14.5px;font-weight:600}
+.mrow .tx small{font-size:12.5px;color:var(--ink-3);display:block}
+.mrow .gr{font-family:var(--mono);font-size:17px;font-weight:700;flex:0 0 auto}
 
-.goal{display:flex;gap:7px;align-items:flex-start;padding:6px 0;font-size:12.5px;line-height:1.55}
-.goal .bx{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line-2);flex:0 0 auto;margin-top:2px;
-  display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent}
+.goal{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:14px;line-height:1.6}
+.goal .bx{width:20px;height:20px;border-radius:6px;border:2px solid var(--line-2);flex:0 0 auto;
+  margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent}
 .goal.hit .bx{background:var(--ok);border-color:var(--ok);color:#fff}
 .goal.opt .bx{border-style:dashed}
 .goal .gt{flex:1 1 auto}
-.goal .gv{font-family:var(--mono);font-size:11px;color:var(--ink-3);white-space:nowrap}
+.goal .gv{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);white-space:nowrap;font-weight:600}
 
-/* ══ 모달 ════════════════════════════════════════════════════════ */
-.mask{position:fixed;inset:0;background:rgba(12,18,24,.5);z-index:100;display:flex;
-  align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
-.sheet{background:var(--panel);width:100%;max-width:620px;max-height:88dvh;display:flex;flex-direction:column;
-  border-radius:14px 14px 0 0;box-shadow:var(--shadow);overflow:hidden}
-.sheet-hd{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);flex:0 0 auto}
-.sheet-hd b{flex:1 1 auto;font-size:15px}
-.sheet-bd{flex:1 1 auto;overflow:auto;padding:12px 14px}
-.sheet-ft{flex:0 0 auto;padding:10px 14px;border-top:1px solid var(--line);display:flex;gap:7px;
-  padding-bottom:calc(10px + env(safe-area-inset-bottom))}
-.grab{width:34px;height:4px;border-radius:2px;background:var(--line-2);margin:7px auto 0}
+/* ══ 시트 ════════════════════════════════════════════════════════ */
+.mask{position:fixed;inset:0;background:rgba(14,22,30,.5);z-index:130;display:flex;
+  align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+.sheet{background:var(--panel);width:100%;max-width:640px;max-height:90dvh;
+  display:flex;flex-direction:column;border-radius:16px 16px 0 0;box-shadow:var(--shadow);overflow:hidden}
+.sheet-hd{display:flex;align-items:center;gap:10px;padding:14px 16px;
+  border-bottom:1px solid var(--line);flex:0 0 auto}
+.sheet-hd b{flex:1 1 auto;font-size:17px;font-weight:700}
+.sheet-bd{flex:1 1 auto;overflow:auto;padding:14px 16px}
+.sheet-ft{flex:0 0 auto;padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:9px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+.grab{width:38px;height:5px;border-radius:3px;background:var(--line-2);margin:8px auto 0}
 
-.rt{font-size:13px;line-height:1.75;color:var(--ink-2)}
-.rt p{margin:0 0 9px}
-.rt b{color:var(--ink)}
-.rt ul{margin:0 0 9px;padding-left:17px}
-.rt li{margin:3px 0}
-.rt code{font-family:var(--mono);font-size:12px;background:var(--panel-3);padding:1px 4px;border-radius:4px}
+.rt{font-size:15px;line-height:1.8;color:var(--ink-2)}
+.rt p{margin:0 0 12px}
+.rt b{color:var(--ink);font-weight:600}
+.rt code{font-family:var(--mono);font-size:13.5px;background:var(--panel-3);padding:2px 6px;border-radius:5px}
+h3.sec{margin:18px 0 8px;font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.07em}
+h3.sec:first-child{margin-top:0}
 
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--navH) + 14px);
-  background:var(--ink);color:var(--bg);padding:9px 15px;border-radius:20px;font-size:12.5px;
-  z-index:200;box-shadow:var(--shadow);max-width:90vw;text-align:center;pointer-events:none;
-  animation:tin .22s ease}
-@keyframes tin{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--navH) + 18px);
+  background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:24px;font-size:14px;
+  font-weight:600;z-index:200;box-shadow:var(--shadow);max-width:88vw;text-align:center;
+  pointer-events:none;animation:tin .2s ease}
+@keyframes tin{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
 
-.spin{display:inline-block;width:13px;height:13px;border:2px solid var(--acc-line);
-  border-top-color:var(--acc);border-radius:50%;animation:sp .7s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-
-/* ══ 반응형 : 태블릿 / PC ════════════════════════════════════════ */
-.only-wide{display:none}
-@media (min-width:900px){
-  body{font-size:13.5px}
-  :root{--topH:54px}
+/* ══ 넓은 화면 ═══════════════════════════════════════════════════ */
+.wide-only{display:none}
+@media (min-width:980px){
   #nav{display:none}
-  .only-wide{display:flex}
-  .only-narrow{display:none !important}
-  #main{grid-template-columns:308px minmax(0,1fr) 372px}
-  #main > .pane{border-right:1px solid var(--line);background:var(--panel)}
-  #main > .pane:last-child{border-right:0}
+  .wide-only{display:flex}
+  .narrow-only{display:none !important}
+  #main{grid-template-columns:minmax(0,1fr) 408px}
   .pane{display:flex}
-  .pane[data-col="1"]{grid-column:1}
+  .pane[data-col="1"]{grid-column:1;border-right:1px solid var(--line)}
   .pane[data-col="2"]{grid-column:2}
-  .pane[data-col="3"]{grid-column:3}
   .mask{align-items:center}
-  .sheet{border-radius:14px;max-height:82dvh}
+  .sheet{border-radius:16px;max-height:84dvh}
   .grab{display:none}
-  .toast{bottom:22px}
-  .mets{grid-template-columns:repeat(2,1fr)}
+  .toast{bottom:26px}
+  #picker{padding:32px;align-items:center;justify-content:center}
+  #picker .box{max-width:780px;width:100%;max-height:84dvh;border-radius:16px;flex:0 1 auto}
+  .frow{padding:10px 14px}
+  .irow{padding:11px 14px}
 }
-@media (min-width:1500px){
-  #main{grid-template-columns:340px minmax(0,1fr) 420px}
-  .mets{grid-template-columns:repeat(3,1fr)}
+@media (min-width:1440px){
+  #main{grid-template-columns:minmax(0,1fr) 470px}
+  .res{padding:16px}
 }
-@media (max-width:899px){
-  .pane{display:none}
-  .pane.active{display:flex}
-  #main{grid-template-columns:1fr}
+@media (max-width:520px){
+  #top{flex-wrap:wrap;padding:7px 10px 9px;row-gap:8px}
+  .topmid{order:9;flex:1 0 100%;display:flex;gap:8px}
+  .topmid select{flex:1 1 auto;min-width:0}
+}
+@media (min-width:521px){
+  .topmid{display:flex;gap:8px;align-items:center;min-width:0}
+  .topmid select{max-width:170px}
 }
 </style>
 
@@ -379,59 +421,35 @@ table.rec td.hi{color:var(--bad);font-weight:600}
 <div id="app">
 
   <header id="top">
-    <div class="brand"><b>포뮬라랩</b><i>FORMULAB</i></div>
-
+    <div class="brand">포뮬라랩</div>
     <div class="topmid">
       <select id="selProd" title="제품군"></select>
-      <label class="btn batchbox" title="배치 규모">
-        <input id="inBatch" type="number" min="10" step="10" value="1000">
-        <select id="selUnit">
-          <option value="1">g</option><option value="1000" selected>kg</option>
-        </select>
-      </label>
+      <button id="btnBatch" class="btn" title="배치 규모">1 kg</button>
     </div>
-
     <div class="grow"></div>
-
-    <button id="btnRun" class="btn pri">제조 ▶</button>
-    <button id="btnMenu" class="btn ico" title="메뉴" aria-label="메뉴">≡</button>
+    <button id="btnRun" class="btn pri">제조</button>
+    <button id="btnMenu" class="btn ico" title="설정" aria-label="설정">≡</button>
   </header>
 
   <div id="main">
 
-    <!-- ── 원료 ─────────────────────────────────────────── -->
-    <section class="pane active" id="p-ing" data-col="1">
+    <!-- 처방 / 공정 / 학습 -->
+    <section class="pane active" id="p-mid" data-col="1">
       <div class="pane-hd">
-        <div class="searchwrap">
-          <span class="mag">⌕</span>
-          <input id="q" type="search" placeholder="원료 검색 — 한글 · INCI · 기능" autocomplete="off">
-        </div>
-      </div>
-      <div class="chips" id="cats"></div>
-      <div class="pane-bd" id="ilist"></div>
-      <div class="pane-ft" style="display:flex;align-items:center;gap:8px">
-        <span class="sub" id="icount" style="font-size:11px;color:var(--ink-3)"></span>
-        <button class="btn sm" id="btnBase" style="margin-left:auto">기준 처방 불러오기</button>
-      </div>
-    </section>
-
-    <!-- ── 처방 / 공정 / 학습 ───────────────────────────── -->
-    <section class="pane" id="p-mid" data-col="2">
-      <div class="pane-hd">
-        <div class="only-wide" style="display:none;gap:4px" id="midtabs"></div>
-        <h2 id="midTitle" class="only-narrow">처방</h2>
+        <div class="seg wide-only" id="midtabs"></div>
+        <h2 id="midTitle" class="narrow-only">처방</h2>
         <div class="grow" style="flex:1"></div>
-        <div id="midTools" style="display:flex;gap:5px"></div>
+        <div id="midTools" style="display:flex;gap:6px"></div>
       </div>
       <div class="pane-bd" id="midBody"></div>
       <div class="pane-ft" id="midFoot"></div>
     </section>
 
-    <!-- ── 결과 ─────────────────────────────────────────── -->
-    <section class="pane" id="p-res" data-col="3">
+    <!-- 결과 -->
+    <section class="pane" id="p-res" data-col="2">
       <div class="pane-hd">
         <h2>결과</h2>
-        <span class="sub" id="resSub"></span>
+        <span id="resSub" style="font-size:12.5px;color:var(--ink-3)"></span>
         <div class="grow" style="flex:1"></div>
         <button class="btn sm" id="btnRepeat" title="같은 조건으로 5배치를 돌려 편차를 본다">편차 ×5</button>
       </div>
@@ -441,13 +459,33 @@ table.rec td.hi{color:var(--bad);font-weight:600}
   </div>
 
   <nav id="nav">
-    <button data-go="ing"   aria-selected="true"><span class="g">⌕</span>원료</button>
-    <button data-go="form"  aria-selected="false"><span class="g">▤</span>처방</button>
+    <button data-go="form"  aria-selected="true"><span class="g">▤</span>처방</button>
     <button data-go="proc"  aria-selected="false"><span class="g">⚗</span>공정</button>
     <button data-go="res"   aria-selected="false"><span class="g">◐</span>결과</button>
     <button data-go="learn" aria-selected="false"><span class="g">✦</span>학습</button>
   </nav>
 
+</div>
+
+<!-- 원료 고르기 -->
+<div id="picker" hidden>
+  <div class="box">
+    <div class="phd">
+      <b class="wide-only">원료</b>
+      <div class="srch">
+        <span class="mag">⌕</span>
+        <input id="q" type="search" placeholder="원료 검색 — 한글 · INCI · 기능" autocomplete="off">
+        <button class="clr" id="qClear" aria-label="지우기" hidden>✕</button>
+      </div>
+      <button class="btn" id="pickDone">완료</button>
+    </div>
+    <div class="chips" id="cats"></div>
+    <div class="ilist" id="ilist"></div>
+    <div class="pane-ft" style="display:flex;align-items:center;gap:10px">
+      <span id="icount" style="font-size:12.5px;color:var(--ink-3)"></span>
+      <span id="ptotal" style="font-size:12.5px;color:var(--ink-3);margin-left:auto"></span>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -2098,9 +2136,13 @@ function composition(rows) {
   });
   a.soap = alkali && rows.some(function (r) { return r.pct > 0 && FATTY.indexOf(r.id) >= 0; });
 
+  var rawTotal = rows.reduce(function (x, y) { return x + (+y.pct > 0 ? +y.pct : 0); }, 0);
+  var norm = rawTotal > 0 ? 100 / rawTotal : 1;
+  a.rawTotal = rawTotal;
+
   rows.forEach(function (r) {
     var g = ING.BY[r.id]; if (!g || !(r.pct > 0)) return;
-    var c = r.pct;
+    var c = r.pct * norm;                     /* 100% 기준으로 환산 */
     var saponified = a.soap && FATTY.indexOf(g.id) >= 0;
     a.total += c;
     a.cost += c / 100 * g.pr;
@@ -2171,17 +2213,20 @@ function surfActivity(id) {
 function pH(rows) {
   var A = 0, B = 0, pkaS = 0, pka0S = 0, nS = 0, w = 0;
   var pvS = 0, pcS = 0;
+  var rt = rows.reduce(function (x, y) { return x + (+y.pct > 0 ? +y.pct : 0); }, 0);
+  var nz = rt > 0 ? 100 / rt : 1;
   rows.forEach(function (r) {
     var g = ING.BY[r.id]; if (!g || !(r.pct > 0)) return;
+    var pct = r.pct * nz;
     var t = AB[r.id];
     if (t) {
       if (t.aeq) {
-        var m = t.aeq * r.pct;                 /* 100 g 기준 mmol */
+        var m = t.aeq * pct;                   /* 100 g 기준 mmol */
         A += m; pkaS += t.pka * m; pka0S += t.pka0 * m; nS += t.n * m; w += m;
       }
-      if (t.beq) B += t.beq * r.pct;
+      if (t.beq) B += t.beq * pct;
     }
-    if (g.pc > 0) { pvS += g.pv * g.pc * r.pct; pcS += g.pc * r.pct; }
+    if (g.pc > 0) { pvS += g.pv * g.pc * pct; pcS += g.pc * pct; }
   });
 
   var pHw = pcS > 0 ? pvS / pcS : 6.5;
@@ -2214,10 +2259,12 @@ function pH(rows) {
 /* 카보머 중화도(0~1) — 겔 활성 계산용 */
 function neutralDegree(rows) {
   var A = 0, B = 0;
+  var rt = rows.reduce(function (x, y) { return x + (+y.pct > 0 ? +y.pct : 0); }, 0);
+  var nz = rt > 0 ? 100 / rt : 1;
   rows.forEach(function (r) {
     var t = AB[r.id]; if (!t) return;
-    if (t.aeq && (r.id === 'carb940' || r.id === 'pemulen')) A += t.aeq * r.pct;
-    if (t.beq) B += t.beq * r.pct;
+    if (t.aeq && (r.id === 'carb940' || r.id === 'pemulen')) A += t.aeq * r.pct * nz;
+    if (t.beq) B += t.beq * r.pct * nz;
   });
   if (A <= 0) return 0;
   return cl(B / A, 0, 1.4);
@@ -2648,6 +2695,14 @@ function run(rows, opt) {
 
   var log = [], warn = [];
   function W(sev, ko, msg) { warn.push({ sev: sev, ko: ko, msg: msg }); }
+
+  /* 처방 합계가 100% 가 아니면 비율대로 환산해 칭량한다.
+     그래야 "1 kg 배치" 가 실제로 1 kg 이 되고 수율이 뜻을 갖는다. */
+  var rawTotal = rows.reduce(function (x, y) { return x + (+y.pct > 0 ? +y.pct : 0); }, 0);
+  if (rawTotal > 0 && Math.abs(rawTotal - 100) > 0.001) {
+    var k = 100 / rawTotal;
+    rows = rows.map(function (r) { return { id: r.id, pct: (+r.pct || 0) * k }; });
+  }
 
   /* ── 1. 칭량 ─────────────────────────────────────────────────── */
   var items = [], weighSum = 0, worst = null;
@@ -3803,7 +3858,155 @@ G.MISS = {
 var K = G.CORE, S = K.S, el = K.el, $ = K.$, clear = K.clear;
 var ING = G.ING, PROD = G.PROD, PROC = G.PROC, CHEM = G.CHEM, SIM = G.SIM, MISS = G.MISS;
 
-/* ══ 원료 패널 ═══════════════════════════════════════════════════ */
+/* =====================================================================
+   휠 스테퍼 — 버튼 · 마우스 휠 · 위아래 드래그 · 직접 입력
+   ===================================================================== */
+function smartStep(v, kind) {
+  var a = Math.abs(v);
+  if (kind === 'pct') {
+    if (a < 0.05) return 0.001;
+    if (a < 0.5)  return 0.01;
+    if (a < 5)    return 0.1;
+    if (a < 30)   return 0.5;
+    return 1;
+  }
+  if (kind === 'rpm')  return a < 400 ? 50 : a < 2000 ? 100 : 250;
+  if (kind === 'min')  return a < 10 ? 1 : 5;
+  if (kind === 'temp') return 1;
+  if (kind === 'g')    return a < 500 ? 50 : a < 5000 ? 500 : a < 100000 ? 5000 : 50000;
+  return 1;
+}
+function decOf(step) {
+  return step >= 1 ? 0 : step >= 0.1 ? 1 : step >= 0.01 ? 2 : 3;
+}
+function snap(v, step) {
+  var d = decOf(step);
+  return +(Math.round(v / step) * step).toFixed(d);
+}
+
+/* opt : {kind, unit, min, max, cls, fmt, onChange} */
+function stepper(value, opt) {
+  opt = opt || {};
+  var kind = opt.kind || 'pct',
+      min = opt.min != null ? opt.min : 0,
+      max = opt.max != null ? opt.max : 1e9;
+  var val = value;
+
+  var vb = el('b'), vu = opt.unit ? el('em', { text: opt.unit }) : null;
+  var vbox = el('div.v', { title: '드래그하거나 휠을 굴려 조절 · 눌러서 직접 입력' }, [vb, vu]);
+  var minus = el('button', { type: 'button', text: '−', 'aria-label': '줄이기' });
+  var plus  = el('button', { type: 'button', text: '+', 'aria-label': '늘리기' });
+  var box = el('div.stp' + (opt.cls ? '.' + opt.cls : ''), null, [minus, vbox, plus]);
+
+  function show() {
+    vb.textContent = opt.fmt ? opt.fmt(val) : String(val);
+  }
+  function commit(nv, silent) {
+    nv = Math.max(min, Math.min(max, nv));
+    var st = smartStep(nv, kind);
+    nv = snap(nv, st);
+    if (nv === val) { show(); return; }
+    val = nv; show();
+    if (!silent && opt.onChange) opt.onChange(val);
+  }
+  function bump(dir) {
+    var st = smartStep(val + (dir > 0 ? 1e-9 : -1e-9), kind);
+    /* 경계에서 단계가 바뀔 때 자연스럽게 */
+    var nv = snap(val + dir * st, st);
+    if (nv === val) nv = val + dir * st;
+    commit(nv);
+  }
+  show();
+
+  /* 버튼 — 길게 누르면 반복 */
+  function hold(btn, dir) {
+    var t1 = null, t2 = null;
+    function stop() { clearTimeout(t1); clearInterval(t2); t1 = t2 = null; }
+    btn.addEventListener('pointerdown', function (e) {
+      e.preventDefault(); bump(dir);
+      t1 = setTimeout(function () { t2 = setInterval(function () { bump(dir); }, 70); }, 420);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) {
+      btn.addEventListener(ev, stop);
+    });
+  }
+  hold(minus, -1); hold(plus, 1);
+
+  /* 마우스 휠 */
+  box.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    bump(e.deltaY < 0 ? 1 : -1);
+  }, { passive: false });
+
+  /* 위아래 드래그 */
+  var dragging = false, startY = 0, startV = 0, moved = 0;
+  vbox.addEventListener('pointerdown', function (e) {
+    if (vbox.querySelector('input')) return;
+    dragging = true; moved = 0; startY = e.clientY; startV = val;
+    vbox.setPointerCapture(e.pointerId);
+    box.classList.add('drag');
+  });
+  vbox.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    var dy = startY - e.clientY;
+    if (Math.abs(dy) > moved) moved = Math.abs(dy);
+    var steps = Math.round(dy / 7);
+    if (!steps) return;
+    var st = smartStep(startV, kind);
+    commit(startV + steps * st);
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false; box.classList.remove('drag');
+    try { vbox.releasePointerCapture(e.pointerId); } catch (err) {}
+    if (moved < 4) edit();                 /* 움직이지 않았으면 = 탭 → 직접 입력 */
+  }
+  vbox.addEventListener('pointerup', endDrag);
+  vbox.addEventListener('pointercancel', endDrag);
+
+  /* 직접 입력 */
+  function edit() {
+    if (vbox.querySelector('input')) return;
+    var inp = el('input', { type: 'text', inputmode: 'decimal', value: String(val) });
+    clear(vbox); vbox.appendChild(inp);
+    inp.focus(); inp.select();
+    function done(save) {
+      var nv = parseFloat(inp.value);
+      clear(vbox); vbox.appendChild(vb); if (vu) vbox.appendChild(vu);
+      if (save && isFinite(nv)) commit(nv); else show();
+    }
+    inp.addEventListener('blur', function () { done(true); });
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
+      if (e.key === 'Escape') { e.preventDefault(); done(false); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); inp.value = String(val); bump(1); inp.value = String(val); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); inp.value = String(val); bump(-1); inp.value = String(val); }
+    });
+  }
+
+  box.setValue = function (v) { val = v; show(); };
+  return box;
+}
+
+/* 퍼센트 표시 */
+function pctText(v) {
+  return v >= 10 ? v.toFixed(v % 1 ? 2 : 0) : v >= 1 ? v.toFixed(2) : v.toFixed(v < 0.1 ? 3 : 2);
+}
+
+/* =====================================================================
+   원료 고르기 오버레이
+   ===================================================================== */
+function openPicker(q) {
+  if (q != null) { S.q = q; $('#q').value = q; }
+  $('#picker').hidden = false;
+  renderCats(); renderIngList();
+  setTimeout(function () { if (window.innerWidth >= 980) $('#q').focus(); }, 30);
+}
+function closePicker() {
+  $('#picker').hidden = true;
+  renderMid(); renderResult();
+}
+
 function renderCats() {
   var box = clear($('#cats'));
   box.appendChild(el('button.chip', {
@@ -3818,83 +4021,138 @@ function renderCats() {
   });
 }
 
+function pickerFoot() {
+  var t = K.total();
+  $('#ptotal').textContent = '처방 합계 ' + t.toFixed(2) + '% · ' + S.rows.length + '종';
+  $('#ptotal').style.color = Math.abs(t - 100) < 0.02 ? 'var(--ok)' : 'var(--ink-3)';
+}
+
 function renderIngList() {
   var body = clear($('#ilist'));
   var list = ING.search(S.q, S.cat);
   $('#icount').textContent = list.length + ' / ' + ING.LIST.length + ' 종';
-  if (!list.length) { body.appendChild(el('div.empty', { text: '검색 결과가 없습니다.' })); return; }
+  $('#qClear').hidden = !S.q;
+  pickerFoot();
 
-  var wrap = el('div.ilist');
-  list.slice(0, 400).forEach(function (g) {
-    var on = K.has(g.id);
-    var row = el('div.irow' + (on ? '.on' : ''), {
-      onclick: function (e) {
-        if (e.target.classList.contains('n2') || e.target.classList.contains('n1')) { showIng(g); return; }
-        if (K.has(g.id)) { K.delRow(g.id); K.toast(g.ko + ' 제거'); }
-        else if (K.addRow(g.id)) K.toast(g.ko + ' 추가 — ' + g.typ + '%');
-        renderIngList(); renderMid(); renderResult();
-      }
-    }, [
+  if (!list.length) {
+    body.appendChild(el('div.empty', { html: '찾는 원료가 없습니다.<br>기능(보습 · 점증 · 유화)이나 제품명(샴푸 · 선크림)으로도 찾을 수 있습니다.' }));
+    return;
+  }
+
+  list.slice(0, 300).forEach(function (g) {
+    var row = S.rows.filter(function (r) { return r.id === g.id; })[0];
+    var act = el('div.act');
+
+    if (row) {
+      act.appendChild(stepper(row.pct, {
+        kind: 'pct', unit: '%', min: 0, max: 100, cls: 'sm', fmt: pctText,
+        onChange: function (v) { row.pct = v; S.result = null; S.spread = null; pickerFoot(); }
+      }));
+      act.appendChild(el('button.info', {
+        text: '✕', title: '빼기', 'aria-label': '빼기',
+        onclick: function () { K.delRow(g.id); renderIngList(); K.toast(g.ko + ' 뺐습니다'); }
+      }));
+    } else {
+      act.appendChild(el('button.addb', {
+        text: '＋ ' + pctText(g.typ) + '%',
+        title: '권장량으로 담기 — 담은 뒤 양을 자유롭게 바꿀 수 있습니다',
+        onclick: function () {
+          K.addRow(g.id, g.typ);
+          renderIngList();
+          K.toast(g.ko + ' ' + pctText(g.typ) + '% — 담은 뒤 조절하세요');
+        }
+      }));
+      act.appendChild(el('button.info', {
+        text: 'ⓘ', title: '설명', 'aria-label': '설명',
+        onclick: function () { showIng(g); }
+      }));
+    }
+
+    body.appendChild(el('div.irow' + (row ? '.on' : ''), null, [
       el('div.bar', { style: 'background:' + ING.catColor(g.cat) }),
-      el('div.txt', null, [
+      el('div.txt', { onclick: function () { showIng(g); } }, [
         el('div.n1', { text: g.ko }),
-        el('div.n2', { text: g.inci })
+        el('div.n2', { text: g.inci }),
+        el('div.n3', { text: g.n })
       ]),
-      el('div.use', { text: g.typ + '%' }),
-      el('button.add', { text: on ? '−' : '+', 'aria-label': on ? '제거' : '추가' })
-    ]);
-    row.addEventListener('contextmenu', function (e) { e.preventDefault(); showIng(g); });
-    wrap.appendChild(row);
+      act
+    ]));
   });
-  if (list.length > 400) wrap.appendChild(el('div.empty', { text: '…외 ' + (list.length - 400) + '종. 검색어를 좁혀 주세요.' }));
-  body.appendChild(wrap);
+  if (list.length > 300)
+    body.appendChild(el('div.empty', { text: '…외 ' + (list.length - 300) + '종. 검색어를 좁혀 주세요.' }));
 }
 
 function showIng(g) {
   var kv = el('div.kv');
   function add(t) { kv.appendChild(el('span', { text: t })); }
   add(ING.catName(g.cat));
-  add('권장 ' + g.min + '~' + g.max + '% (통상 ' + g.typ + '%)');
-  add('밀도 ' + g.d + ' g/mL');
+  add('보통 ' + g.typ + '% (' + g.min + '~' + g.max + '%)');
+  add('투입 ' + (ING.PHASES[g.ph] || {}).ko);
+  add('밀도 ' + g.d);
   add('굴절률 ' + g.ri.toFixed(3));
   if (g.hlb) add('HLB ' + g.hlb);
   if (g.rh) add('요구 HLB ' + g.rh);
-  if (g.th) add('점증 K=' + g.th[0].toLocaleString('ko-KR') + ', n=' + g.th[1]);
-  if (g.lam) add('라멜라 계수 ' + g.lam);
+  if (g.th) add('점증 K=' + K.n0(g.th[0]) + ' n=' + g.th[1]);
+  if (g.lam) add('라멜라 ' + g.lam);
   if (g.tmax) add('투입 ' + g.tmax + '℃ 이하');
-  if (g.pv) add('pH ' + g.pv + ' 쪽 (완충 ' + g.pc + ')');
-  if (g.el) add('전해질 지수 ' + g.el);
+  if (g.el) add('전해질 ' + g.el);
   if (g.vol) add('휘발 ' + g.vol);
-  if (g.ox) add('산화·열분해 민감도 ' + g.ox);
-  add('단가 ' + K.n0(g.pr) + ' 원/kg');
-  add('상 ' + (ING.PHASES[g.ph] || {}).ko);
+  if (g.ox) add('산화 민감 ' + g.ox);
+  add(K.n0(g.pr) + ' 원/kg');
 
-  var body = el('div.rt', null, [
-    el('p', { html: '<b>' + K.esc(g.inci) + '</b>' }),
-    el('p', { text: g.n }),
+  var cur = S.rows.filter(function (r) { return r.id === g.id; })[0];
+  var amtBox = el('div', { style: 'display:flex;align-items:center;gap:12px;justify-content:center;margin:6px 0 14px' });
+  var start = cur ? cur.pct : g.typ;
+  var stp = stepper(start, {
+    kind: 'pct', unit: '%', min: 0, max: 100, cls: 'lg', fmt: pctText,
+    onChange: function (v) { start = v; }
+  });
+  amtBox.appendChild(stp);
+
+  var body = el('div', null, [
+    el('div.rt', null, [
+      el('p', { html: '<b>' + K.esc(g.inci) + '</b>' }),
+      el('p', { text: g.n })
+    ]),
+    el('h3.sec', { text: '넣을 양' }),
+    amtBox,
+    el('div', { style: 'display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:6px' },
+      [0.5, 1, 2, 4].map(function (m) {
+        var v = +(g.typ * m).toFixed(3);
+        return el('button.chip', { text: pctText(v) + '%', onclick: function () { start = v; stp.setValue(v); } });
+      }).concat([
+        el('button.chip', { text: '권장 상한 ' + g.max + '%', onclick: function () { start = g.max; stp.setValue(g.max); } })
+      ])),
+    el('div', { style: 'font-size:12.5px;color:var(--ink-3);text-align:center' },
+      '권장 범위는 참고값입니다. 그 이상도 넣을 수 있고, 결과로 무슨 일이 생기는지 보여줍니다.'),
+    el('h3.sec', { text: '물성' }),
     kv
   ]);
-  K.sheet(g.ko, body, [
-    el('button.btn.pri', {
-      text: K.has(g.id) ? '처방에서 빼기' : '처방에 넣기 (' + g.typ + '%)',
-      onclick: function (e) {
-        if (K.has(g.id)) K.delRow(g.id); else K.addRow(g.id);
-        e.target.closest('.mask').remove();
-        renderIngList(); renderMid(); renderResult();
-      }
-    })
-  ]);
+
+  var sh = K.sheet(g.ko, body, [
+    cur ? el('button.btn', { text: '빼기', onclick: function () {
+      K.delRow(g.id); sh.close(); renderIngList(); renderMid(); renderResult();
+    } }) : null,
+    el('button.btn.pri', { style: 'flex:1', text: cur ? '양 바꾸기' : '처방에 담기', onclick: function () {
+      if (cur) cur.pct = start; else K.addRow(g.id, start);
+      S.result = null;
+      sh.close(); renderIngList(); renderMid(); renderResult();
+      K.toast(g.ko + ' ' + pctText(start) + '%');
+    } })
+  ].filter(Boolean));
 }
 
-/* ══ 중간 패널 (처방 / 공정 / 학습) ══════════════════════════════ */
+/* =====================================================================
+   중간 패널
+   ===================================================================== */
 var MIDS = [{ k: 'form', ko: '처방' }, { k: 'proc', ko: '공정' }, { k: 'learn', ko: '학습' }];
 
 function renderMid() {
   var tabs = clear($('#midtabs'));
   MIDS.forEach(function (m) {
-    tabs.appendChild(el('button.btn.sm', {
-      text: m.ko, style: S.mid === m.k ? 'background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:600' : '',
-      onclick: function () { S.mid = m.k; renderMid(); }
+    tabs.appendChild(el('button', {
+      text: m.ko, 'aria-selected': S.mid === m.k,
+      onclick: function () { S.mid = m.k; S.view = m.k; renderMid(); syncNav(); }
     }));
   });
   $('#midTitle').textContent = (MIDS.filter(function (m) { return m.k === S.mid; })[0] || {}).ko || '';
@@ -3905,92 +4163,104 @@ function renderMid() {
   else renderLearn(body);
 }
 
-/* ── 처방표 ────────────────────────────────────────────────────── */
+/* ── 처방 ──────────────────────────────────────────────────────── */
 function renderFormula(body) {
-  var tools = $('#midTools');
-  tools.appendChild(el('button.btn.sm', { text: '물로 맞추기', title: '정제수로 합계를 100% 로', onclick: function () {
-    if (!K.balance()) K.toast('다른 원료 합이 이미 100% 를 넘습니다');
-    renderMid(); renderResult();
-  } }));
-  tools.appendChild(el('button.btn.sm', { text: '100%', title: '전체를 비율대로 100% 로 환산', onclick: function () {
-    K.normalize(); renderMid(); renderResult();
-  } }));
+  $('#midTools').appendChild(el('button.btn.sm', {
+    text: '기준 처방', title: '이 제품군의 표준 처방을 불러온다',
+    onclick: function () {
+      if (S.rows.length > 1 && !confirm('현재 처방을 " ' + PROD.get(S.prod).ko + ' 기준 처방" 으로 바꿉니다.')) return;
+      K.setRows(PROD.get(S.prod).base); S.mission = null;
+      renderAll(); persist(); K.toast('기준 처방을 불러왔습니다');
+    }
+  }));
 
-  if (!S.rows.length) {
-    body.appendChild(el('div.empty', { html: '왼쪽 <b>원료</b> 에서 골라 넣으세요.<br><br>' +
-      '아래 <b>기준 처방 불러오기</b> 로 시작해도 됩니다.' }));
+  var real = S.rows.filter(function (r) { return r.pct > 0; });
+  if (!real.length) {
+    body.appendChild(el('div.empty', { html:
+      '처방이 비어 있습니다.<br><br>아래 <b>＋ 원료 추가</b> 로 시작하거나,<br>위 <b>기준 처방</b> 을 불러오세요.' }));
   }
 
-  var order = ['A', 'E', 'B', 'D', 'C'];
-  order.forEach(function (ph) {
+  ['A', 'E', 'B', 'D', 'C'].forEach(function (ph) {
     var rows = S.rows.filter(function (r) { var g = ING.BY[r.id]; return g && g.ph === ph; });
     if (!rows.length) return;
     var info = ING.PHASES[ph];
     var sum = rows.reduce(function (a, b) { return a + (+b.pct || 0); }, 0);
-    var sec = el('div.phase');
-    sec.appendChild(el('div.phase-hd', null, [
+    body.appendChild(el('div.phase-hd', null, [
       el('span.pdot', { style: 'background:' + info.c }),
       ph + '상 · ' + info.ko,
       el('span.amt', { text: sum.toFixed(2) + '%  ·  ' + K.mass(S.batchG * sum / 100) })
     ]));
     rows.forEach(function (r) {
       var g = ING.BY[r.id];
-      var inp = el('input', { type: 'number', step: '0.01', min: '0', value: r.pct,
-        onchange: function () { r.pct = Math.max(0, +inp.value || 0); S.result = null; renderMid(); renderResult(); },
-        oninput: function () { r.pct = Math.max(0, +inp.value || 0); S.result = null; refreshTotal(); }
-      });
+      var gv = el('div.gv', { text: K.mass(S.batchG * r.pct / 100) });
       var over = r.pct > g.max * 1.001;
-      sec.appendChild(el('div.frow' + (over ? '.over' : ''), null, [
+      body.appendChild(el('div.frow', null, [
         el('div.nm', { onclick: function () { showIng(g); } }, [
           el('b', { text: g.ko }),
-          el('small', { text: g.inci + (over ? '  ⚠ 권장 상한 ' + g.max + '%' : '') })
+          over ? el('small', null, [el('span.over', { text: '권장 상한 ' + g.max + '% 초과' })])
+               : el('small', { text: g.inci })
         ]),
-        inp,
-        el('div.gval', { text: K.mass(S.batchG * r.pct / 100) }),
+        stepper(r.pct, {
+          kind: 'pct', unit: '%', min: 0, max: 100, fmt: pctText,
+          onChange: function (v) {
+            r.pct = v; S.result = null; S.spread = null;
+            gv.textContent = K.mass(S.batchG * v / 100);
+            refreshTotal(); scheduleResult();
+          }
+        }),
+        gv,
         el('button.del', { text: '✕', 'aria-label': '삭제', onclick: function () {
-          K.delRow(r.id); renderMid(); renderIngList(); renderResult();
+          K.delRow(r.id); renderMid(); renderResult();
         } })
       ]));
     });
-    body.appendChild(sec);
   });
 
   /* 카보머 중화 도우미 */
-  var carb = S.rows.filter(function (r) { return r.id === 'carb940' || r.id === 'pemulen'; });
-  if (carb.length) {
-    var box = el('div.idetail');
-    var need = {};
-    ['arginine', 'tromet', 'tea', 'naoh'].forEach(function (a) {
-      need[a] = CHEM.neutralizerNeeded(S.rows, a, 6.3);
-    });
-    box.appendChild(el('div', { html: '<b>중화 계산기</b> — pH 6.3 을 목표로 할 때 필요한 양' }));
+  if (S.rows.some(function (r) { return (r.id === 'carb940' || r.id === 'pemulen') && r.pct > 0; })) {
+    var wrap = el('div', { style: 'padding:12px' });
+    wrap.appendChild(el('h3.sec', { text: '중화 계산기 — pH 6.3 목표' }));
     var line = el('div.kv');
     ['arginine', 'tromet', 'tea', 'naoh'].forEach(function (a) {
-      line.appendChild(el('button.chip', { style: 'height:24px',
-        text: ING.BY[a].ko + ' ' + need[a].toFixed(3) + '%',
+      var need = CHEM.neutralizerNeeded(S.rows, a, 6.3);
+      line.appendChild(el('button.chip', {
+        text: ING.BY[a].ko + ' ' + need.toFixed(3) + '%',
         onclick: function () {
           var ex = S.rows.filter(function (r) { return r.id === a; })[0];
-          if (ex) ex.pct = need[a]; else S.rows.push({ id: a, pct: need[a] });
-          S.result = null; renderMid(); renderIngList(); renderResult();
-          K.toast(ING.BY[a].ko + ' ' + need[a].toFixed(3) + '% 적용');
-        } }));
+          if (ex) ex.pct = need; else S.rows.push({ id: a, pct: need });
+          S.result = null; renderMid(); renderResult();
+          K.toast(ING.BY[a].ko + ' ' + need.toFixed(3) + '% 적용');
+        }
+      }));
     });
-    box.appendChild(line);
-    body.appendChild(box);
+    wrap.appendChild(line);
+    body.appendChild(wrap);
   }
 
+  var f = $('#midFoot');
+  f.appendChild(el('div', { style: 'display:flex;gap:8px' }, [
+    el('button.btn.pri', { style: 'flex:1', text: '＋ 원료 추가', onclick: function () { openPicker(); } }),
+    el('button.btn', { text: '물로 맞추기', title: '정제수로 합계를 100% 로', onclick: function () {
+      if (!K.balance()) { K.toast('다른 원료 합이 이미 100% 를 넘습니다'); return; }
+      renderMid(); renderResult();
+    } })
+  ]));
+  f.appendChild(el('div', { id: 'totline', style: 'margin-top:8px' }));
   refreshTotal();
 }
 
 function refreshTotal() {
-  var f = clear($('#midFoot'));
-  if (S.mid !== 'form') return;
+  var n = $('#totline'); if (!n) return;
+  clear(n);
   var t = K.total();
   var ok = Math.abs(t - 100) < 0.02;
-  f.appendChild(el('div.total', null, [
-    '합계 ', el('b', { text: t.toFixed(2) + '%' }),
-    el('span', { style: 'color:var(--ink-3);font-size:11px', text: '· ' + S.rows.length + '종 · ' + K.mass(S.batchG) }),
-    el('span.pill' + (ok ? '.ok' : t > 100 ? '.bad' : '.warn'), {
+  n.appendChild(el('div', { style: 'display:flex;align-items:center;gap:9px;font-size:13.5px' }, [
+    el('span', { style: 'color:var(--ink-3)', text: '합계' }),
+    el('b', { class: 'num', style: 'font-size:17px', text: t.toFixed(2) + '%' }),
+    el('span', { style: 'color:var(--ink-3);font-size:12.5px',
+      text: '· ' + S.rows.length + '종 · ' + K.mass(S.batchG) }),
+    el('span.badge.' + (ok ? 'ok' : 'bad'), {
+      style: 'margin:0 0 0 auto;padding:3px 10px',
       text: ok ? '정상' : t > 100 ? '초과 ' + (t - 100).toFixed(2) + '%' : '부족 ' + (100 - t).toFixed(2) + '%'
     })
   ]));
@@ -4008,19 +4278,18 @@ function materialize() {
 function renderProcess(body) {
   var rig = K.rig();
   $('#midTools').appendChild(el('button.btn.sm', {
-    text: '표준 공정 재생성', onclick: function () {
-      S.steps = null; S.result = null; renderMid(); K.toast('처방에 맞는 표준 공정을 다시 짰습니다');
-    } }));
+    text: '표준 공정', title: '처방에 맞는 표준 제조 순서를 다시 짠다',
+    onclick: function () { S.steps = null; S.result = null; renderMid(); K.toast('표준 공정으로 되돌렸습니다'); }
+  }));
 
   var st = K.steps();
-  body.appendChild(el('div.idetail', null, [
-    el('div', { html: '<b>' + rig.icon + ' ' + rig.ko + '</b> · 배치 ' + K.mass(S.batchG) }),
-    el('div', { style: 'margin-top:3px', text: rig.n }),
-    el('div.kv', null, [
-      el('span', { text: '호모 지름 ' + (rig.dHomo * 1000) + ' mm / 최대 ' + K.n0(rig.maxHomo) + ' rpm' }),
-      el('span', { text: '아지 지름 ' + (rig.dAji * 1000) + ' mm' }),
-      el('span', { text: rig.vacuum ? '진공 가능' : '개방 (진공 없음)' }),
-      el('span', { text: '자켓 ' + (rig.tj[0] ? rig.tj[0] + '℃ / ' : '') + rig.tj[1] + '℃' })
+  body.appendChild(el('div', { style: 'padding:12px;background:var(--panel-2);border-bottom:1px solid var(--line)' }, [
+    el('div', { style: 'font-size:15px;font-weight:600', text: rig.icon + ' ' + rig.ko + ' · ' + K.mass(S.batchG) }),
+    el('div', { style: 'font-size:13px;color:var(--ink-2);margin-top:4px', text: rig.n }),
+    el('div.kv', { style: 'margin-top:8px' }, [
+      el('span', { text: '호모 Ø' + (rig.dHomo * 1000) + 'mm / 최대 ' + K.n0(rig.maxHomo) + 'rpm' }),
+      el('span', { text: '아지 Ø' + (rig.dAji * 1000) + 'mm' }),
+      el('span', { text: rig.vacuum ? '진공 가능' : '개방 · 진공 없음' })
     ])
   ]));
 
@@ -4028,35 +4297,40 @@ function renderProcess(body) {
     var node = el('div.step');
     node.appendChild(el('div.step-hd', null, [
       el('div.no', { text: i + 1 }),
-      el('div.ttl', { text: s.ko || PROC.STEPKO[s.t] }),
-      el('div.kind', { text: PROC.STEPKO[s.t] || s.t })
+      el('div.ttl', { text: s.ko || PROC.STEPKO[s.t] })
     ]));
 
     var par = el('div.step-par');
-    function pnum(lbl, key, unit, max) {
-      var inp = el('input', { type: 'number', value: s[key], min: '0', max: max || '',
-        onchange: function () {
-          materialize()[i][key] = Math.max(0, +inp.value || 0);
-          S.result = null; renderMid(); renderResult();
-        } });
-      par.appendChild(el('div.par', null, [el('em', { text: lbl }), inp, el('em', { text: unit })]));
+    function add(lab, key, kind, unit, max) {
+      par.appendChild(el('span.parlab', { text: lab }));
+      par.appendChild(stepper(s[key], {
+        kind: kind, unit: unit, min: 0, max: max, cls: 'sm',
+        fmt: function (v) { return String(v); },
+        onChange: function (v) {
+          materialize()[i][key] = v; S.result = null; S.spread = null; renderResult();
+        }
+      }));
     }
-    pnum('온도', 'temp', '℃', 120);
-    pnum('아지', 'aji', 'rpm', rig.maxAji);
-    if (['emulsify', 'homo', 'grind', 'neutralize'].indexOf(s.t) >= 0 || s.homo > 0) pnum('호모', 'homo', 'rpm', rig.maxHomo);
-    pnum('시간', 'min', '분', 300);
+    add('온도', 'temp', 'temp', '℃', 120);
+    add('시간', 'min', 'min', '분', 300);
+    if (s.aji > 0 || s.t !== 'weigh') add('아지', 'aji', 'rpm', 'rpm', rig.maxAji);
+    if (['emulsify', 'homo', 'grind', 'neutralize'].indexOf(s.t) >= 0 || s.homo > 0)
+      add('호모', 'homo', 'rpm', 'rpm', rig.maxHomo);
     par.appendChild(el('button.chip', {
-      style: 'height:26px', 'aria-pressed': !!s.vac, text: s.vac ? '진공 ON' : '진공 OFF',
+      'aria-pressed': !!s.vac, text: s.vac ? '진공 ON' : '진공 OFF',
       onclick: function () {
         if (!rig.vacuum) { K.toast('이 설비에는 진공이 없습니다'); return; }
         materialize()[i].vac = !s.vac; S.result = null; renderMid(); renderResult();
-      } }));
+      }
+    }));
     node.appendChild(par);
 
     if (s.homo > 0) {
       var tip = PROC.tipSpeed(rig.dHomo, s.homo);
       node.appendChild(el('div.step-add', null, [
-        el('span.tag', { style: tip > 18 ? 'background:var(--bad-soft);color:var(--bad)' : tip < 3 ? 'background:var(--warn-soft);color:var(--warn)' : '',
+        el('span.tag', {
+          style: tip > 18 ? 'background:var(--bad-soft);color:var(--bad)'
+               : tip < 3  ? 'background:var(--warn-soft);color:var(--warn)' : '',
           text: '팁속도 ' + tip.toFixed(1) + ' m/s' })
       ]));
     }
@@ -4066,7 +4340,7 @@ function renderProcess(body) {
         var g = ING.BY[id]; if (!g) return;
         var hot = g.tmax && s.temp > g.tmax;
         tags.appendChild(el('span.tag', {
-          style: hot ? 'background:var(--bad-soft);color:var(--bad)' : 'background:' + ING.catColor(g.cat) + '22',
+          style: hot ? 'background:var(--bad-soft);color:var(--bad);font-weight:600' : '',
           text: g.ko + (hot ? ' ⚠' + g.tmax + '℃' : '')
         }));
       });
@@ -4076,48 +4350,46 @@ function renderProcess(body) {
     body.appendChild(node);
   });
 
-  var foot = $('#midFoot');
-  foot.appendChild(el('div.total', null, [
-    '스텝 ', el('b', { text: st.length + '' }),
-    el('span', { style: 'color:var(--ink-3);font-size:11px',
-      text: '· 지시 시간 합 ' + Math.round(st.reduce(function (a, b) { return a + b.min; }, 0)) + '분' }),
-    el('span.pill.info', { text: S.steps ? '수정됨' : '표준' })
+  $('#midFoot').appendChild(el('div', { style: 'display:flex;align-items:center;gap:9px;font-size:13.5px' }, [
+    el('span', { style: 'color:var(--ink-3)', text: '스텝' }),
+    el('b', { class: 'num', style: 'font-size:17px', text: String(st.length) }),
+    el('span', { style: 'color:var(--ink-3);font-size:12.5px',
+      text: '· 지시 시간 ' + Math.round(st.reduce(function (a, b) { return a + b.min; }, 0)) + '분' }),
+    el('span.badge.info', { style: 'margin:0 0 0 auto;padding:3px 10px', text: S.steps ? '수정됨' : '표준' })
   ]));
 }
 
-/* ══ 결과 ════════════════════════════════════════════════════════ */
+/* =====================================================================
+   결과
+   ===================================================================== */
 function jarSvg(hex, ntu, eta, fill) {
   var alpha = 0.16 + 0.84 * Math.min(1, Math.pow(Math.max(ntu, 0.5) / 700, 0.55));
-  var lvl = 88 - Math.max(20, Math.min(70, (fill == null ? 72 : fill) * 0.68));
-  var dome = Math.min(7, 1.2 + Math.log(Math.max(eta, 1)) / Math.LN10 * 1.25);
-  var id = 'j' + Math.random().toString(36).slice(2, 7);
-  var s =
-  '<svg class="jarsvg" width="74" height="92" viewBox="0 0 74 92" aria-hidden="true">' +
-  '<defs>' +
-  '<linearGradient id="g' + id + '" x1="0" y1="0" x2="1" y2="0">' +
-  '<stop offset="0" stop-color="#000" stop-opacity=".13"/><stop offset=".28" stop-color="#fff" stop-opacity=".30"/>' +
-  '<stop offset=".62" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".16"/>' +
-  '</linearGradient>' +
-  '<clipPath id="c' + id + '"><path d="M12 8 h50 v62 a11 11 0 0 1 -11 11 h-28 a11 11 0 0 1 -11 -11 z"/></clipPath>' +
-  '</defs>' +
-  '<path d="M12 8 h50 v62 a11 11 0 0 1 -11 11 h-28 a11 11 0 0 1 -11 -11 z" fill="var(--panel-3)"/>' +
-  '<g clip-path="url(#c' + id + ')">' +
-  '<rect x="12" y="' + lvl + '" width="50" height="90" fill="' + hex + '" opacity="' + alpha.toFixed(3) + '"/>' +
-  '<ellipse cx="37" cy="' + lvl + '" rx="25" ry="' + dome.toFixed(1) + '" fill="' + hex + '" opacity="' + (alpha * 0.85).toFixed(3) + '"/>' +
-  '<ellipse cx="37" cy="' + lvl + '" rx="25" ry="' + dome.toFixed(1) + '" fill="#fff" opacity=".18"/>' +
-  '<rect x="12" y="0" width="50" height="92" fill="url(#g' + id + ')"/>' +
-  '</g>' +
-  '<path d="M12 8 h50 v62 a11 11 0 0 1 -11 11 h-28 a11 11 0 0 1 -11 -11 z" fill="none" stroke="var(--line-2)" stroke-width="1.4"/>' +
-  '<rect x="9" y="3" width="56" height="6" rx="2.5" fill="var(--panel-3)" stroke="var(--line-2)" stroke-width="1.2"/>' +
-  '</svg>';
+  var lvl = 92 - Math.max(22, Math.min(74, (fill == null ? 74 : fill) * 0.72));
+  var dome = Math.min(8, 1.4 + Math.log(Math.max(eta, 1)) / Math.LN10 * 1.4);
+  var id = 'j' + Math.floor(Math.random() * 1e6);
   var d = document.createElement('div');
-  d.innerHTML = s;
+  d.innerHTML =
+  '<svg width="82" height="98" viewBox="0 0 82 98" aria-hidden="true" style="flex:0 0 auto">' +
+  '<defs><linearGradient id="g' + id + '" x1="0" y1="0" x2="1" y2="0">' +
+  '<stop offset="0" stop-color="#000" stop-opacity=".14"/><stop offset=".28" stop-color="#fff" stop-opacity=".32"/>' +
+  '<stop offset=".62" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".17"/>' +
+  '</linearGradient>' +
+  '<clipPath id="c' + id + '"><path d="M13 9 h56 v66 a12 12 0 0 1 -12 12 h-32 a12 12 0 0 1 -12 -12 z"/></clipPath></defs>' +
+  '<path d="M13 9 h56 v66 a12 12 0 0 1 -12 12 h-32 a12 12 0 0 1 -12 -12 z" fill="var(--panel-3)"/>' +
+  '<g clip-path="url(#c' + id + ')">' +
+  '<rect x="13" y="' + lvl + '" width="56" height="98" fill="' + hex + '" opacity="' + alpha.toFixed(3) + '"/>' +
+  '<ellipse cx="41" cy="' + lvl + '" rx="28" ry="' + dome.toFixed(1) + '" fill="' + hex + '" opacity="' + (alpha * 0.85).toFixed(3) + '"/>' +
+  '<ellipse cx="41" cy="' + lvl + '" rx="28" ry="' + dome.toFixed(1) + '" fill="#fff" opacity=".2"/>' +
+  '<rect x="13" y="0" width="56" height="98" fill="url(#g' + id + ')"/></g>' +
+  '<path d="M13 9 h56 v66 a12 12 0 0 1 -12 12 h-32 a12 12 0 0 1 -12 -12 z" fill="none" stroke="var(--line-2)" stroke-width="1.5"/>' +
+  '<rect x="10" y="3" width="62" height="7" rx="3" fill="var(--panel-3)" stroke="var(--line-2)" stroke-width="1.3"/>' +
+  '</svg>';
   return d.firstChild;
 }
 
 function gauge(v, lo, hi, log) {
   var f = log ? function (x) { return Math.log(Math.max(x, 0.4)); } : function (x) { return x; };
-  var pad = (f(hi) - f(lo)) * 1.1 + 0.001;
+  var pad = (f(hi) - f(lo)) * 1.15 + 0.001;
   var a = f(lo) - pad, b = f(hi) + pad;
   var pc = function (x) { return Math.max(0, Math.min(100, (f(x) - a) / (b - a) * 100)); };
   return el('div.gauge', null, [
@@ -4126,13 +4398,32 @@ function gauge(v, lo, hi, log) {
   ]);
 }
 
-function fnum(v, d) { return d ? v.toFixed(d) : K.n0(v); }
-
-function met(k, v, u, cls, extra) {
+function met(k, v, u, cls, extra, rangeText) {
   return el('div.met' + (cls ? '.' + cls : ''), null, [
     el('div.k', { text: k }),
     el('div.v', null, [String(v), u ? el('span.u', { text: u }) : null]),
+    rangeText ? el('div.r', { text: rangeText }) : null,
     extra || null
+  ]);
+}
+
+function acc(title, count, countCls, open, buildBody) {
+  var d = el('details.acc', open ? { open: true } : null);
+  var sum = el('summary', null, [title]);
+  if (count != null) sum.appendChild(el('span.cnt' + (countCls ? '.' + countCls : ''), { text: String(count) }));
+  d.appendChild(sum);
+  var b = el('div.body');
+  d.appendChild(b);
+  var built = false;
+  function fill() { if (built) return; built = true; buildBody(b); }
+  if (open) fill(); else d.addEventListener('toggle', function () { if (d.open) fill(); });
+  return d;
+}
+
+function noteNode(i) {
+  return el('div.note.s' + (i.sev >= 14 ? 3 : i.sev >= 7 ? 2 : 1), null, [
+    el('div.sv', { text: '−' + i.sev }),
+    el('div', null, [el('b', { text: i.ko }), i.msg])
   ]);
 }
 
@@ -4140,260 +4431,247 @@ function renderResult() {
   var body = clear($('#resBody'));
   $('#resSub').textContent = '';
 
-  if (!S.rows.length) {
-    body.appendChild(el('div.empty', { html: '처방을 만들고 <b>제조 ▶</b> 를 누르세요.' }));
+  if (!S.rows.filter(function (r) { return r.pct > 0; }).length) {
+    body.appendChild(el('div.empty', { html: '처방을 만들고 <b>제조</b> 를 누르세요.' }));
     return;
   }
 
-  /* 실행 전이면 이론값 미리보기 */
   var run = S.result;
-  var live = run ? run.res : CHEM.evaluate(S.rows, { tip: 6.3, sec: 300 });
+  var r = run ? run.res : CHEM.evaluate(S.rows, { tip: 6.3, sec: 300 });
   var p = PROD.get(S.prod);
-  var judge = PROD.judge(S.prod, live);
+  var judge = PROD.judge(S.prod, r);
   var wrap = el('div.res');
+  $('#resSub').textContent = run ? '실측' : '미리보기';
 
-  /* 미리보기 / 실측 배지 */
-  $('#resSub').textContent = run ? '실측 · seed ' + run.seed : '이론 미리보기';
-
-  wrap.appendChild(el('div.jar', null, [
-    jarSvg(live.color.hex, live.ntu, live.eta, run ? run.yieldPct : 72),
-    el('div.jarinfo', null, [
-      el('div.grade', { style: 'color:' + (live.stability.score >= 85 ? 'var(--ok)' : live.stability.score >= 62 ? 'var(--warn)' : 'var(--bad)'),
-        text: live.stability.grade + ' ' + live.stability.score }),
-      el('div.gsub', { text: '안정도 · ' + live.turb.grade + ' · ' + live.color.hex }),
-      el('div.gsub', { style: 'margin-top:4px' }, [
-        el('span.pill' + (judge.ok ? '.ok' : '.bad'), { text: judge.ok ? '규격 통과' : '규격 미달' }),
-        ' ', el('span', { style: 'font-size:11px;color:var(--ink-3)', text: p.ko + ' · ' + p.tag })
+  /* ── 한눈에 ── */
+  var st = r.stability;
+  var verdict = judge.ok
+    ? (st.score >= 85 ? '규격 통과 · 안정' : st.score >= 62 ? '규격 통과 · 불안 요소 있음' : '규격은 맞지만 불안정')
+    : '규격 미달';
+  wrap.appendChild(el('div.hero', null, [
+    jarSvg(r.color.hex, r.ntu, r.eta, run ? run.yieldPct : 74),
+    el('div.info', null, [
+      el('div.verdict', {
+        style: 'color:' + (judge.ok && st.score >= 62 ? 'var(--ok)' : judge.ok ? 'var(--warn)' : 'var(--bad)'),
+        text: verdict }),
+      el('div.sub', { text: p.icon + ' ' + p.ko + ' · ' + r.turb.grade + ' · ' + r.color.hex }),
+      el('div', null, [
+        el('span.badge.' + (judge.ok ? 'ok' : 'bad'), { text: judge.ok ? '규격 ✓' : '규격 ✗' }),
+        ' ',
+        el('span.badge.info', { text: '안정도 ' + st.score + ' (' + st.grade + ')' })
       ])
     ])
   ]));
 
-  /* 핵심 수치 */
+  /* ── 과제 채점 ── */
+  if (S.mission && run) wrap.appendChild(missionCard(run));
+
+  /* ── 핵심 수치 ── */
   var mets = el('div.mets');
   var sv = p.spec.visc, sp = p.spec.ph, sn = p.spec.ntu;
-  mets.appendChild(met('점도 (12 rpm)', K.eng(live.eta), 'cP',
-    sv ? (live.eta >= sv[0] && live.eta <= sv[1] ? 'ok' : 'bad') : '',
-    sv ? gauge(live.eta, sv[0], sv[1], true) : null));
-  mets.appendChild(met('pH', live.pH.toFixed(2), '',
-    sp ? (live.pH >= sp[0] && live.pH <= sp[1] ? 'ok' : 'bad') : '',
-    sp ? gauge(live.pH, sp[0], sp[1]) : null));
-  mets.appendChild(met('탁도', K.eng(live.ntu), 'NTU',
-    sn ? (live.ntu >= sn[0] && live.ntu <= sn[1] ? 'ok' : 'bad') : '',
-    sn ? gauge(live.ntu, Math.max(sn[0], 0.5), Math.min(sn[1], 1e5), true) : null));
-  mets.appendChild(met('평균 액적 d₃₂',
-    live.d32 && !(live.drop && live.drop.minor) ? live.d32.toFixed(2) : '—', 'µm'));
-  mets.appendChild(met('전단감점 지수 n', live.nIdx.toFixed(2), ''));
-  mets.appendChild(met('원가', K.won(live.cost), '원/kg'));
+  mets.appendChild(met('점도', K.eng(r.eta), 'cP',
+    sv ? (r.eta >= sv[0] && r.eta <= sv[1] ? 'ok' : 'bad') : '',
+    sv ? gauge(r.eta, sv[0], sv[1], true) : null,
+    sv ? K.n0(sv[0]) + ' ~ ' + K.n0(sv[1]) : null));
+  mets.appendChild(met('pH', r.pH.toFixed(2), '',
+    sp ? (r.pH >= sp[0] && r.pH <= sp[1] ? 'ok' : 'bad') : '',
+    sp ? gauge(r.pH, sp[0], sp[1]) : null,
+    sp ? sp[0].toFixed(1) + ' ~ ' + sp[1].toFixed(1) : null));
+  mets.appendChild(met('탁도', K.eng(r.ntu), 'NTU',
+    sn ? (r.ntu >= sn[0] && r.ntu <= sn[1] ? 'ok' : 'bad') : '',
+    sn ? gauge(r.ntu, Math.max(sn[0], 0.5), Math.min(sn[1], 1e5), true) : null,
+    sn ? (sn[1] >= 1e6 ? K.n0(sn[0]) + ' 이상' : K.n0(sn[1]) + ' 이하') : null));
+  mets.appendChild(met('원가', K.won(r.cost), '원/kg'));
   if (run) {
-    mets.appendChild(met('수율', run.yieldPct.toFixed(1), '%', run.yieldPct >= 95 ? 'ok' : run.yieldPct < 85 ? 'bad' : ''));
+    mets.appendChild(met('수율', run.yieldPct.toFixed(1), '%',
+      run.yieldPct >= 95 ? 'ok' : run.yieldPct < 85 ? 'bad' : ''));
     mets.appendChild(met('제조 시간', Math.round(run.minutes), '분'));
   }
   wrap.appendChild(mets);
 
-  /* 규격 상세 */
-  if (judge.items.length) {
-    wrap.appendChild(el('h3.sec', { text: '출하 규격' }));
-    judge.items.forEach(function (i) {
-      wrap.appendChild(el('div.goal' + (i.ok ? '.hit' : ''), null, [
-        el('div.bx', { text: '✓' }),
-        el('div.gt', { text: i.ko + '  ' + (i.range[1] >= 1e6 ? fnum(i.range[0], i.fmt) + ' 이상'
-            : fnum(i.range[0], i.fmt) + ' ~ ' + fnum(i.range[1], i.fmt)) + (i.unit ? ' ' + i.unit : '') }),
-        el('div.gv', { text: i.fmt ? i.val.toFixed(i.fmt) : K.n0(i.val) })
-      ]));
-    });
-  }
-
-  /* 안정성 진단 */
-  wrap.appendChild(el('h3.sec', { text: '안정성 진단' }));
-  if (!live.stability.items.length) {
-    wrap.appendChild(el('div.note.good', null, [el('div', null, [
-      el('b', { text: '문제 없음' }), '처방상 불안정 요인이 발견되지 않았습니다.'])]));
-  }
-  live.stability.items.forEach(function (i) {
-    wrap.appendChild(el('div.note.s' + (i.sev >= 16 ? 3 : i.sev >= 8 ? 2 : 1), null, [
-      el('div.sv', { text: '−' + i.sev }),
-      el('div', null, [el('b', { text: i.ko }), i.msg])
-    ]));
+  /* ── 문제 ── */
+  var probs = st.items.slice();
+  if (run) run.warn.forEach(function (w) {
+    if (!probs.some(function (x) { return x.ko === w.ko && x.msg === w.msg; })) probs.push(w);
   });
+  probs.sort(function (a, b) { return b.sev - a.sev; });
 
-  /* 유화 진단 */
-  if (live.drop && !live.drop.minor) {
-    var d = live.drop;
-    wrap.appendChild(el('h3.sec', { text: '유화 진단' }));
-    wrap.appendChild(el('div.idetail', { style: 'border:1px solid var(--line);border-radius:var(--r-sm)' }, [
-      el('div.kv', null, [
+  wrap.appendChild(acc(probs.length ? '무엇이 문제인가' : '문제 없음',
+    probs.length, probs.length ? (probs[0].sev >= 14 ? 'bad' : '') : 'ok',
+    probs.length > 0, function (b) {
+      if (!probs.length) {
+        b.appendChild(el('div.note.good', null, [el('div', null, [
+          el('b', { text: '지적 사항 없음' }), '처방과 공정 모두 문제가 발견되지 않았습니다.'])]));
+        return;
+      }
+      probs.forEach(function (i) { b.appendChild(noteNode(i)); });
+    }));
+
+  /* ── 규격 ── */
+  if (judge.items.length) wrap.appendChild(acc('출하 규격', judge.items.filter(function (i) { return i.ok; }).length + '/' + judge.items.length,
+    judge.ok ? 'ok' : 'bad', false, function (b) {
+      judge.items.forEach(function (i) {
+        b.appendChild(el('div.goal' + (i.ok ? '.hit' : ''), null, [
+          el('div.bx', { text: '✓' }),
+          el('div.gt', { text: i.ko + ' ' + (i.range[1] >= 1e6
+            ? fnum(i.range[0], i.fmt) + ' 이상'
+            : fnum(i.range[0], i.fmt) + ' ~ ' + fnum(i.range[1], i.fmt)) + (i.unit ? ' ' + i.unit : '') }),
+          el('div.gv', { text: i.fmt ? i.val.toFixed(i.fmt) : K.n0(i.val) })
+        ]));
+      });
+    }));
+
+  /* ── 자세히 ── */
+  wrap.appendChild(acc('점도와 유화 자세히', null, null, false, function (b) {
+    var v = r.visc, kv = el('div.kv');
+    if (v.gel > 1) kv.appendChild(el('span', { text: '점증제 겔 ' + K.eng(v.gel) + ' cP' }));
+    if (v.lam > 1) kv.appendChild(el('span', { text: '라멜라 겔망 ' + K.eng(v.lam) + ' cP' }));
+    if (v.surfV > 1) kv.appendChild(el('span', { text: '미셀 ' + K.eng(v.surfV) + ' cP' }));
+    kv.appendChild(el('span', { text: '내상 효과 ×' + v.KD.toFixed(2) }));
+    kv.appendChild(el('span', { text: '전단감점 n ' + r.nIdx.toFixed(2) }));
+    if (v.yieldStress > 0.1) kv.appendChild(el('span', { text: '항복응력 ' + v.yieldStress.toFixed(1) + ' Pa' }));
+    b.appendChild(kv);
+    var d = r.drop;
+    if (d && !d.minor) {
+      b.appendChild(el('h3.sec', { text: '유화' }));
+      b.appendChild(el('div.kv', null, [
+        el('span', { text: '평균 액적 ' + r.d32.toFixed(2) + ' µm' }),
         el('span', { text: '오일 요구 HLB ' + d.rh.toFixed(1) }),
-        el('span', { text: '유화제 혼합 HLB ' + d.bh.toFixed(1) }),
-        el('span', { text: '차이 ' + Math.abs(d.bh - d.rh).toFixed(1) }),
+        el('span', { text: '유화제 HLB ' + d.bh.toFixed(1) }),
         el('span', { text: '계면장력 ' + d.sigma.toFixed(1) + ' mN/m' }),
         el('span', { text: '전단 한계 ' + d.dShear.toFixed(2) + ' µm' }),
         el('span', { text: '피복 한계 ' + (d.dCover > 100 ? '—' : d.dCover.toFixed(2) + ' µm') }),
-        el('span', { text: '내상 부피분율 ' + (live.agg.phi * 100).toFixed(1) + '%' }),
-        el('span', { text: '굴절률 차 ' + live.agg.dn.toFixed(3) }),
-        el('span', { text: '크리밍 ' + (live.cream ? live.cream.toFixed(2) + ' mm/일' : '정지(항복응력)') })
-      ])
-    ]));
-  }
-
-  /* 점도 구성 */
-  wrap.appendChild(el('h3.sec', { text: '점도가 어디서 나오는가' }));
-  var v = live.visc, comp = [];
-  if (v.gel > 1) comp.push(['점증제 겔', v.gel]);
-  if (v.lam > 1) comp.push(['라멜라 겔망', v.lam]);
-  if (v.surfV > 1) comp.push(['계면활성제 미셀', v.surfV]);
-  comp.push(['내상 부피분율 배수', null]);
-  var cbox = el('div.kv');
-  comp.forEach(function (c) {
-    cbox.appendChild(el('span', { text: c[1] == null ? '내상 효과 ×' + v.KD.toFixed(2) : c[0] + ' ' + K.eng(c[1]) + ' cP' }));
-  });
-  if (v.yieldStress > 0.1) cbox.appendChild(el('span', { text: '항복응력 ' + v.yieldStress.toFixed(1) + ' Pa' }));
-  wrap.appendChild(cbox);
-
-  /* 실행 결과 */
-  if (run) {
-    wrap.appendChild(el('h3.sec', { text: '배치 결과 — 이론 대비' }));
-    var cmp = el('table.rec');
-    cmp.appendChild(el('thead', null, [el('tr', null, [
-      el('th', { text: '항목' }), el('th', { text: '이론' }), el('th', { text: '실측' }), el('th', { text: '차이' })])]));
-    var tb = el('tbody');
-    function cr(ko, a, b, fmt) {
-      var dv = a ? (b - a) / a * 100 : 0;
-      tb.appendChild(el('tr', null, [
-        el('td', { text: ko }),
-        el('td', { text: fmt(a) }), el('td', { text: fmt(b) }),
-        el('td', { class: Math.abs(dv) > 12 ? 'hi' : '', text: (dv >= 0 ? '+' : '') + dv.toFixed(1) + '%' })
+        el('span', { text: '내상 ' + (r.agg.phi * 100).toFixed(1) + '%' }),
+        el('span', { text: '굴절률 차 ' + r.agg.dn.toFixed(3) }),
+        el('span', { text: '크리밍 ' + (r.cream ? r.cream.toFixed(2) + ' mm/일' : '정지') })
       ]));
     }
-    cr('점도 cP', run.ideal.eta, run.res.eta, K.eng);
-    cr('pH', run.ideal.pH, run.res.pH, function (x) { return x.toFixed(2); });
-    cr('탁도 NTU', run.ideal.ntu, run.res.ntu, K.eng);
-    if (run.res.d32) cr('액적 µm', run.ideal.d32 || run.res.d32, run.res.d32, function (x) { return x.toFixed(2); });
-    cmp.appendChild(tb);
-    wrap.appendChild(el('div.scroller', null, [cmp]));
+  }));
 
-    wrap.appendChild(el('h3.sec', { text: '스케일이 만든 차이' }));
-    var sk = el('div.kv');
-    [['설비', run.rig.icon + ' ' + run.rig.ko],
-     ['용기 지름', (run.geo.D * 100).toFixed(1) + ' cm'],
-     ['표면적/부피', run.geo.svRatio.toFixed(1) + ' /m'],
-     ['증발 손실', run.evapPct.toFixed(2) + '%'],
-     ['벽면 잔류', K.mass(run.holdG)],
-     ['수율', run.yieldPct.toFixed(1) + '%'],
-     ['최고 온도', run.maxT.toFixed(0) + '℃'],
-     ['열이력 지수', run.thermalDose.toFixed(0)],
-     ['냉각 속도', run.coolRate.toFixed(2) + ' ℃/분'],
-     ['라멜라 냉각계수', '×' + run.coolFactor.toFixed(2)],
-     ['혼합 균질도', run.homog.toFixed(0) + '%'],
-     ['95% 혼합 시간', (run.theta / 60).toFixed(1) + '분'],
-     ['혼입 기포', run.airPct.toFixed(2) + '%'],
-     ['갈변 지수', run.browning.toFixed(1)]
-    ].forEach(function (r) { sk.appendChild(el('span', { text: r[0] + ' ' + r[1] })); });
-    wrap.appendChild(sk);
+  if (run) {
+    wrap.appendChild(acc('스케일이 만든 차이', null, null, false, function (b) {
+      var t = el('table.rec');
+      t.appendChild(el('thead', null, [el('tr', null, [
+        el('th', { text: '항목' }), el('th', { text: '이론' }), el('th', { text: '실측' }), el('th', { text: '차이' })])]));
+      var tb = el('tbody');
+      function cr(ko, a, c, fmt) {
+        var dv = a ? (c - a) / a * 100 : 0;
+        tb.appendChild(el('tr', null, [
+          el('td', { text: ko }), el('td', { text: fmt(a) }), el('td', { text: fmt(c) }),
+          el('td', { class: Math.abs(dv) > 12 ? 'hi' : '', text: (dv >= 0 ? '+' : '') + dv.toFixed(1) + '%' })]));
+      }
+      cr('점도 cP', run.ideal.eta, run.res.eta, K.eng);
+      cr('pH', run.ideal.pH, run.res.pH, function (x) { return x.toFixed(2); });
+      cr('탁도 NTU', run.ideal.ntu, run.res.ntu, K.eng);
+      t.appendChild(tb);
+      b.appendChild(el('div.scroller', null, [t]));
+      b.appendChild(el('h3.sec', { text: '이 배치의 조건' }));
+      b.appendChild(el('div.kv', null,
+        [['설비', run.rig.icon + ' ' + run.rig.ko],
+         ['용기 지름', (run.geo.D * 100).toFixed(1) + ' cm'],
+         ['표면적/부피', run.geo.svRatio.toFixed(1) + ' /m'],
+         ['증발 손실', run.evapPct.toFixed(2) + '%'],
+         ['벽면 잔류', K.mass(run.holdG)],
+         ['최고 온도', run.maxT.toFixed(0) + '℃'],
+         ['열이력', run.thermalDose.toFixed(0)],
+         ['냉각 속도', run.coolRate.toFixed(2) + ' ℃/분'],
+         ['라멜라 계수', '×' + run.coolFactor.toFixed(2)],
+         ['혼합 균질도', run.homog.toFixed(0) + '%'],
+         ['95% 혼합', (run.theta / 60).toFixed(1) + '분'],
+         ['혼입 기포', run.airPct.toFixed(2) + '%']
+        ].map(function (x) { return el('span', { text: x[0] + ' ' + x[1] }); })));
+    }));
 
-    /* 공정 경고 */
-    if (run.warn.length) {
-      wrap.appendChild(el('h3.sec', { text: '공정 경고 (' + run.warn.length + '건)' }));
-      run.warn.forEach(function (w) {
-        wrap.appendChild(el('div.note.s' + (w.sev >= 12 ? 3 : w.sev >= 7 ? 2 : 1), null, [
-          el('div.sv', { text: '−' + w.sev }),
-          el('div', null, [el('b', { text: w.ko }), w.msg])
+    wrap.appendChild(acc('공정 타임라인', Math.round(run.minutes) + '분', null, false, function (b) {
+      var tmax = Math.max(run.minutes, 1), acc2 = 0;
+      run.trace.forEach(function (t) {
+        var w = t.min / tmax * 100, x = acc2 / tmax * 100; acc2 += t.min;
+        var hot = Math.max(0, Math.min(1, (t.temp - 25) / 65));
+        b.appendChild(el('div.tlrow', null, [
+          el('div.tt', { text: t.min >= 1 ? Math.round(t.min) + '분' : '<1분' }),
+          el('div.tlbar', null, [el('i', { style: 'left:' + x + '%;width:' + Math.max(w, 1.5) +
+            '%;background:hsl(' + Math.round(210 - hot * 205) + ' 62% ' + (52 - hot * 6) + '%)' })]),
+          el('div.tn', { text: t.ko })
         ]));
       });
-    } else {
-      wrap.appendChild(el('h3.sec', { text: '공정 경고' }));
-      wrap.appendChild(el('div.note.good', null, [el('div', null, [el('b', { text: '무결점' }), '공정상 지적 사항이 없습니다.'])]));
-    }
+      b.appendChild(el('div', { style: 'font-size:12px;color:var(--ink-3);margin-top:6px',
+        text: '막대 색 = 그 스텝의 도달 온도 (파랑 25℃ → 빨강 90℃)' }));
+    }));
 
-    /* 타임라인 */
-    wrap.appendChild(el('h3.sec', { text: '공정 타임라인' }));
-    var tl = el('div.tl'), tmax = Math.max(run.minutes, 1), acc = 0;
-    run.trace.forEach(function (t) {
-      var w = t.min / tmax * 100, x = acc / tmax * 100; acc += t.min;
-      var hot = Math.max(0, Math.min(1, (t.temp - 25) / 65));
-      var col = 'hsl(' + Math.round(210 - hot * 205) + ' 62% ' + (52 - hot * 6) + '%)';
-      tl.appendChild(el('div.tlrow', null, [
-        el('div.tt', { text: t.min >= 1 ? Math.round(t.min) + '분' : '<1분' }),
-        el('div.tlbar', null, [el('i', { style: 'left:' + x + '%;width:' + Math.max(w, 1.2) + '%;background:' + col })]),
-        el('div.tn', { text: t.ko })
-      ]));
-    });
-    wrap.appendChild(tl);
-    wrap.appendChild(el('div.kv', null, [el('span', { text: '막대 색 = 그 스텝의 도달 온도 (파랑 25℃ → 빨강 90℃)' })]));
-
-    /* 칭량 기록 */
-    wrap.appendChild(el('h3.sec', { text: '칭량 기록' }));
-    var rec = el('table.rec');
-    rec.appendChild(el('thead', null, [el('tr', null, [
-      el('th', { text: '원료' }), el('th', { text: '%' }), el('th', { text: '목표' }),
-      el('th', { text: '실제' }), el('th', { text: '오차' }), el('th', { text: '저울' })])]));
-    var tbody = el('tbody');
-    run.items.slice().sort(function (a, b) { return Math.abs(b.rel) - Math.abs(a.rel); }).forEach(function (i) {
-      tbody.appendChild(el('tr', null, [
-        el('td', { text: i.g.ko }),
-        el('td', { text: i.pct.toFixed(3) }),
-        el('td', { text: K.mass(i.target) }),
-        el('td', { text: K.mass(i.actual) }),
-        el('td', { class: Math.abs(i.rel) > 0.05 ? 'hi' : '', text: (i.rel * 100).toFixed(2) + '%' }),
-        el('td', { text: i.scale.d + ' g' })
-      ]));
-    });
-    rec.appendChild(tbody);
-    wrap.appendChild(el('div.scroller', null, [rec]));
+    wrap.appendChild(acc('칭량 기록', run.items.length + '종', null, false, function (b) {
+      var t = el('table.rec');
+      t.appendChild(el('thead', null, [el('tr', null, [
+        el('th', { text: '원료' }), el('th', { text: '%' }), el('th', { text: '목표' }),
+        el('th', { text: '실제' }), el('th', { text: '오차' }), el('th', { text: '저울' })])]));
+      var tb = el('tbody');
+      run.items.slice().sort(function (a, c) { return Math.abs(c.rel) - Math.abs(a.rel); }).forEach(function (i) {
+        tb.appendChild(el('tr', null, [
+          el('td', { text: i.g.ko }), el('td', { text: i.pct.toFixed(3) }),
+          el('td', { text: K.mass(i.target) }), el('td', { text: K.mass(i.actual) }),
+          el('td', { class: Math.abs(i.rel) > 0.05 ? 'hi' : '', text: (i.rel * 100).toFixed(2) + '%' }),
+          el('td', { text: i.scale.d + ' g' })]));
+      });
+      t.appendChild(tb);
+      b.appendChild(el('div.scroller', null, [t]));
+    }));
   }
 
-  /* 반복 배치 */
   if (S.spread) {
     var sp2 = S.spread;
-    wrap.appendChild(el('h3.sec', { text: '배치 간 편차 (5배치)' }));
-    var t2 = el('table.rec');
-    t2.appendChild(el('thead', null, [el('tr', null, [
-      el('th', { text: '항목' }), el('th', { text: '평균' }), el('th', { text: '최소' }),
-      el('th', { text: '최대' }), el('th', { text: 'CV' })])]));
-    var tb2 = el('tbody');
-    function sr(ko, s2, f) {
-      tb2.appendChild(el('tr', null, [
-        el('td', { text: ko }), el('td', { text: f(s2.mean) }), el('td', { text: f(s2.min) }),
-        el('td', { text: f(s2.max) }), el('td', { class: s2.cv > 5 ? 'hi' : '', text: s2.cv.toFixed(2) + '%' })]));
-    }
-    sr('점도 cP', sp2.eta, K.eng);
-    sr('pH', sp2.pH, function (x) { return x.toFixed(2); });
-    sr('탁도 NTU', sp2.ntu, K.eng);
-    sr('수율 %', sp2.yieldPct, function (x) { return x.toFixed(1); });
-    if (sp2.d32.mean > 0) sr('액적 µm', sp2.d32, function (x) { return x.toFixed(2); });
-    t2.appendChild(tb2);
-    wrap.appendChild(el('div.scroller', null, [t2]));
+    wrap.appendChild(acc('배치 간 편차 (5배치)', null, null, true, function (b) {
+      var t = el('table.rec');
+      t.appendChild(el('thead', null, [el('tr', null, [
+        el('th', { text: '항목' }), el('th', { text: '평균' }), el('th', { text: '최소' }),
+        el('th', { text: '최대' }), el('th', { text: 'CV' })])]));
+      var tb = el('tbody');
+      function sr(ko, s2, f) {
+        tb.appendChild(el('tr', null, [
+          el('td', { text: ko }), el('td', { text: f(s2.mean) }), el('td', { text: f(s2.min) }),
+          el('td', { text: f(s2.max) }), el('td', { class: s2.cv > 5 ? 'hi' : '', text: s2.cv.toFixed(2) + '%' })]));
+      }
+      sr('점도 cP', sp2.eta, K.eng);
+      sr('pH', sp2.pH, function (x) { return x.toFixed(2); });
+      sr('탁도 NTU', sp2.ntu, K.eng);
+      sr('수율 %', sp2.yieldPct, function (x) { return x.toFixed(1); });
+      if (sp2.d32.mean > 0) sr('액적 µm', sp2.d32, function (x) { return x.toFixed(2); });
+      t.appendChild(tb);
+      b.appendChild(el('div.scroller', null, [t]));
+    }));
   }
-
-  /* 과제 채점 */
-  if (S.mission && run) wrap.appendChild(missionCard(run));
 
   body.appendChild(wrap);
 }
 
-/* ══ 학습 ════════════════════════════════════════════════════════ */
-function chProgress(ch) {
-  var done = ch.list.filter(function (m) { return S.progress[m.id]; }).length;
-  return { done: done, total: ch.list.length };
+function fnum(v, d) { return d ? v.toFixed(d) : K.n0(v); }
+
+/* 드래그 중에는 프레임당 한 번만 다시 계산한다 */
+var resPend = 0;
+function scheduleResult() {
+  if (resPend) return;
+  resPend = requestAnimationFrame(function () { resPend = 0; renderResult(); });
+}
+
+/* =====================================================================
+   학습
+   ===================================================================== */
+var TYPEKO = { build: '설계', fix: '고장 수리', process: '공정 개선', scale: '스케일업' };
+function gradeColor(g) {
+  return g === 'S' ? 'var(--acc)' : g === 'A' ? 'var(--ok)' : g === 'B' ? 'var(--info)' : 'var(--warn)';
 }
 
 function renderLearn(body) {
   var tot = MISS.LIST.length;
   var done = MISS.LIST.filter(function (m) { return S.progress[m.id]; }).length;
-  $('#midTools').appendChild(el('span.pill.info', { text: done + ' / ' + tot }));
-  if (done) $('#midTools').appendChild(el('button.btn.sm', { text: '초기화', onclick: function () {
-    if (!confirm('학습 진행 상황을 모두 지웁니다.')) return;
-    S.progress = {}; persist(); renderMid(); K.toast('진행 상황 초기화');
-  } }));
+  $('#midTools').appendChild(el('span.badge.info', { style: 'padding:5px 11px', text: done + ' / ' + tot }));
 
-  body.appendChild(el('div.idetail', null, [
-    el('div', { html: '<b>17개 제품군 · ' + tot + '개 과제.</b> 제품군마다 만드는 법이 다르다.' }),
-    el('div', { style: 'margin-top:4px',
-      text: '과제를 고르면 시작 처방과 조건이 세팅된다. 조건은 제조할 때마다 채점된다. ' +
-            '필수 조건을 모두 채우면 통과, 추가 조건까지 채우면 만점이다.' })
+  body.appendChild(el('div', { style: 'padding:12px;background:var(--panel-2);border-bottom:1px solid var(--line)' }, [
+    el('div', { style: 'font-size:15px;font-weight:600', text: '17개 제품군 · ' + tot + '개 과제' }),
+    el('div', { style: 'font-size:13.5px;color:var(--ink-2);margin-top:4px',
+      text: '과제를 고르면 시작 처방과 조건이 세팅됩니다. 제조할 때마다 채점되고, 필수 조건을 다 채우면 통과입니다.' })
   ]));
 
   MISS.CHAPTERS.forEach(function (ch, ci) {
-    var pg = chProgress(ch);
+    var d = ch.list.filter(function (m) { return S.progress[m.id]; }).length;
     var open = S.openCh === ch.key;
     var sec = el('div.chapter');
     sec.appendChild(el('button.ch-hd', {
@@ -4403,35 +4681,31 @@ function renderLearn(body) {
       el('div.t', null, [
         el('b', { text: (ci + 1) + '. ' + ch.ko }),
         el('small', { text: ch.tag }),
-        el('div.prog', null, [el('i', { style: 'width:' + (pg.total ? pg.done / pg.total * 100 : 0) + '%' })])
+        el('div.prog', null, [el('i', { style: 'width:' + (ch.list.length ? d / ch.list.length * 100 : 0) + '%' })])
       ]),
-      el('div.pg', { text: pg.done + '/' + pg.total })
+      el('div.pg', { text: d + '/' + ch.list.length })
     ]));
     if (open) {
-      sec.appendChild(el('div.idetail', null, [
-        el('div', { text: ch.n }),
-        el('div.kv', null, ch.key3.map(function (t) { return el('span', { text: '· ' + t }); }))
+      sec.appendChild(el('div', { style: 'padding:12px;background:var(--panel-2);border-top:1px solid var(--line)' }, [
+        el('div', { style: 'font-size:13.5px;color:var(--ink-2);line-height:1.7', text: ch.n }),
+        el('div.kv', { style: 'margin-top:8px' }, ch.key3.map(function (t) {
+          return el('span', { style: 'font-family:var(--sans)', text: '· ' + t }); }))
       ]));
       ch.list.forEach(function (m) {
-        var p = S.progress[m.id];
+        var pr = S.progress[m.id];
         sec.appendChild(el('button.mrow', { onclick: function () { openMission(m); } }, [
-          el('div.st' + (p ? '.done' : ''), { text: p ? '✓' : m.no }),
+          el('div.st' + (pr ? '.done' : ''), { text: pr ? '✓' : String(m.no) }),
           el('div.tx', null, [
             el('b', { text: m.ko }),
-            el('small', { text: TYPEKO[m.type] + ' · ' + m.must.length + '개 필수' +
+            el('small', { text: TYPEKO[m.type] + ' · 필수 ' + m.must.length + '개' +
               (m.batchG ? ' · ' + K.mass(m.batchG) : '') })
           ]),
-          el('div.gr', { style: 'color:' + (p ? gradeColor(p.grade) : 'var(--ink-3)'), text: p ? p.grade : '' })
+          el('div.gr', { style: 'color:' + (pr ? gradeColor(pr.grade) : 'var(--ink-3)'), text: pr ? pr.grade : '' })
         ]));
       });
     }
     body.appendChild(sec);
   });
-}
-
-var TYPEKO = { build: '설계', fix: '고장 수리', process: '공정 개선', scale: '스케일업' };
-function gradeColor(g) {
-  return g === 'S' ? 'var(--acc)' : g === 'A' ? 'var(--ok)' : g === 'B' ? 'var(--info)' : 'var(--warn)';
 }
 
 function openMission(m) {
@@ -4441,25 +4715,22 @@ function openMission(m) {
     goals.appendChild(el('div.goal', null, [el('div.bx', { text: '✓' }), el('div.gt', { text: MISS.label(c, m.ch) })]));
   });
   if (m.bonus.length) {
-    goals.appendChild(el('h3.sec', { text: '추가 조건 (만점용)' }));
+    goals.appendChild(el('h3.sec', { text: '추가 조건 — 만점용' }));
     m.bonus.forEach(function (c) {
       goals.appendChild(el('div.goal.opt', null, [el('div.bx', { text: '✓' }), el('div.gt', { text: MISS.label(c, m.ch) })]));
     });
   }
-  var body = el('div', null, [
+  var sh = K.sheet(m.ko, el('div', null, [
     el('div.rt', null, [
       el('p', { html: '<b>' + TYPEKO[m.type] + '</b> · ' + PROD.get(m.ch).ko +
         (m.batchG ? ' · 배치 ' + K.mass(m.batchG) : '') }),
       el('p', { text: m.brief }),
-      m.hint ? el('p', { style: 'color:var(--ink-3);font-size:12px', text: '힌트 — ' + m.hint }) : null
+      m.hint ? el('p', { style: 'color:var(--ink-3);font-size:13.5px', text: '힌트 — ' + m.hint }) : null
     ]),
     goals
-  ]);
-  var sh = K.sheet(m.ko, body, [
+  ]), [
     el('button.btn', { text: '닫기', onclick: function () { sh.close(); } }),
-    el('button.btn.pri', { style: 'flex:1', text: '이 과제 시작', onclick: function () {
-      startMission(m); sh.close();
-    } })
+    el('button.btn.pri', { style: 'flex:1', text: '이 과제 시작', onclick: function () { startMission(m); sh.close(); } })
   ]);
 }
 
@@ -4470,7 +4741,6 @@ function startMission(m) {
   if (m.batchG) S.batchG = m.batchG;
   S.rigKey = m.rigKey || null;
   S.steps = null; S.result = null; S.spread = null;
-  /* 과제가 "고장난 공정" 을 지정했으면 표준 공정에 적용한다 */
   if (m.pm && m.pm.length) {
     var st = materialize();
     m.pm.forEach(function (mu) {
@@ -4479,52 +4749,55 @@ function startMission(m) {
       });
     });
   }
-  syncTop();
-  S.mid = 'form';
-  go('form');
-  renderAll();
+  S.mid = 'form'; S.view = 'form';
+  syncTop(); renderAll(); go('form');
   K.toast('과제 시작 — ' + m.ko);
 }
 
 function missionCard(run) {
   var m = S.mission;
   var g = MISS.grade(m, run, S);
-  var box = el('div');
-  box.appendChild(el('h3.sec', { text: '과제 채점 — ' + m.ko }));
-  box.appendChild(el('div.note.' + (g.ok ? 'good' : 's2'), null, [
+  var box = el('div', { style: 'margin-bottom:12px' });
+  box.appendChild(el('div.note.' + (g.ok ? 'good' : 's2'), { style: 'margin-bottom:8px' }, [
     el('div', null, [
-      el('b', { text: g.ok ? '통과 · ' + g.grade + ' 등급 (' + g.score + '점)' : '아직 미달' }),
+      el('b', { text: (g.ok ? '통과 · ' + g.grade + ' 등급 ' + g.score + '점' : '아직 미달') + '  —  ' + m.ko }),
       g.ok ? ('추가 조건 ' + g.bHit + '/' + m.bonus.length + ' 달성.')
            : ('필수 ' + g.must.filter(function (x) { return x.ok; }).length + '/' + g.must.length + ' 충족.')
     ])
   ]));
-  g.must.forEach(function (x) {
-    box.appendChild(el('div.goal' + (x.ok ? '.hit' : ''), null, [
-      el('div.bx', { text: '✓' }), el('div.gt', { text: x.t }), el('div.gv', { text: x.v })]));
-  });
-  g.bonus.forEach(function (x) {
-    box.appendChild(el('div.goal.opt' + (x.ok ? '.hit' : ''), null, [
-      el('div.bx', { text: '✓' }), el('div.gt', { text: x.t }), el('div.gv', { text: x.v })]));
-  });
+  var det = acc('과제 조건', g.must.filter(function (x) { return x.ok; }).length + '/' + g.must.length,
+    g.ok ? 'ok' : 'bad', !g.ok, function (b) {
+      g.must.forEach(function (x) {
+        b.appendChild(el('div.goal' + (x.ok ? '.hit' : ''), null, [
+          el('div.bx', { text: '✓' }), el('div.gt', { text: x.t }), el('div.gv', { text: x.v })]));
+      });
+      if (g.bonus.length) {
+        b.appendChild(el('h3.sec', { text: '추가 조건' }));
+        g.bonus.forEach(function (x) {
+          b.appendChild(el('div.goal.opt' + (x.ok ? '.hit' : ''), null, [
+            el('div.bx', { text: '✓' }), el('div.gt', { text: x.t }), el('div.gv', { text: x.v })]));
+        });
+      }
+      b.appendChild(el('div', { style: 'display:flex;gap:7px;margin-top:12px;flex-wrap:wrap' }, [
+        el('button.btn.sm', { text: '설명 다시 보기', onclick: function () { openMission(m); } }),
+        el('button.btn.sm', { text: '과제 그만두기', onclick: function () {
+          S.mission = null; renderAll(); K.toast('자유 모드로 돌아갔습니다'); } })
+      ]));
+    });
+  det.style.marginTop = '0';
+  box.appendChild(det);
   if (g.ok) {
     var prev = S.progress[m.id];
-    if (!prev || prev.score < g.score) {
-      S.progress[m.id] = { score: g.score, grade: g.grade };
-      persist();
-    }
+    if (!prev || prev.score < g.score) { S.progress[m.id] = { score: g.score, grade: g.grade }; persist(); }
   }
-  box.appendChild(el('div', { style: 'display:flex;gap:6px;margin-top:10px' }, [
-    el('button.btn.sm', { text: '과제 설명 다시 보기', onclick: function () { openMission(m); } }),
-    el('button.btn.sm', { text: '과제 그만두기', onclick: function () {
-      S.mission = null; renderAll(); K.toast('자유 모드로 돌아갔습니다');
-    } })
-  ]));
   return box;
 }
 
-/* ══ 실행 ════════════════════════════════════════════════════════ */
+/* =====================================================================
+   실행 · 내비게이션
+   ===================================================================== */
 function runBatch(spread) {
-  if (!S.rows.length) { K.toast('처방이 비어 있습니다'); return; }
+  if (!S.rows.filter(function (r) { return r.pct > 0; }).length) { K.toast('처방이 비어 있습니다'); return; }
   var t = K.total();
   if (Math.abs(t - 100) > 0.02) K.toast('합계가 ' + t.toFixed(2) + '% 입니다 — 비율대로 환산해 제조합니다');
   var p = PROD.get(S.prod);
@@ -4537,30 +4810,28 @@ function runBatch(spread) {
     if (window.console) console.error(e);
     return;
   }
-  go('res');
-  renderResult();
-  persist();
+  go('res'); renderResult(); persist();
 }
 
-/* ══ 내비게이션 ══════════════════════════════════════════════════ */
+function syncNav() {
+  K.$$('#nav button').forEach(function (b) { b.setAttribute('aria-selected', b.dataset.go === S.view); });
+}
+
 function go(v) {
   S.view = v;
   if (v === 'form' || v === 'proc' || v === 'learn') S.mid = v;
-  var map = { ing: 'p-ing', form: 'p-mid', proc: 'p-mid', learn: 'p-mid', res: 'p-res' };
+  var map = { form: 'p-mid', proc: 'p-mid', learn: 'p-mid', res: 'p-res' };
   K.$$('.pane').forEach(function (n) { n.classList.toggle('active', n.id === map[v]); });
-  K.$$('#nav button').forEach(function (b) { b.setAttribute('aria-selected', b.dataset.go === v); });
+  syncNav();
   renderMid();
 }
 
 function syncTop() {
-  $('#inBatch').value = S.batchG >= 1000 ? +(S.batchG / 1000).toFixed(3) : S.batchG;
-  $('#selUnit').value = S.batchG >= 1000 ? '1000' : '1';
   $('#selProd').value = S.prod;
+  $('#btnBatch').textContent = K.mass(S.batchG);
 }
 
-function renderAll() {
-  renderCats(); renderIngList(); renderMid(); renderResult(); syncTop();
-}
+function renderAll() { syncTop(); renderMid(); renderResult(); }
 
 function persist() {
   K.save({
@@ -4572,9 +4843,11 @@ function persist() {
 G.UI = {
   renderAll: renderAll, renderMid: renderMid, renderResult: renderResult,
   renderIngList: renderIngList, renderCats: renderCats,
+  openPicker: openPicker, closePicker: closePicker,
   go: go, run: runBatch, syncTop: syncTop, persist: persist,
   showIng: showIng, openMission: openMission, startMission: startMission,
-  materialize: materialize, gradeColor: gradeColor, TYPEKO: TYPEKO
+  materialize: materialize, stepper: stepper, pctText: pctText,
+  gradeColor: gradeColor, TYPEKO: TYPEKO
 };
 })(window);
 
@@ -4587,7 +4860,6 @@ G.UI = {
 var K = G.CORE, S = K.S, el = K.el, $ = K.$;
 var ING = G.ING, PROD = G.PROD, PROC = G.PROC, MISS = G.MISS, UI = G.UI;
 
-/* ── 상단 ──────────────────────────────────────────────────────── */
 function fillProducts() {
   var s = K.clear($('#selProd'));
   PROD.LIST.forEach(function (p) {
@@ -4596,37 +4868,96 @@ function fillProducts() {
   s.value = S.prod;
 }
 
-function readBatch() {
-  var v = parseFloat($('#inBatch').value) || 0;
-  var u = parseFloat($('#selUnit').value) || 1;
-  S.batchG = Math.max(10, v * u);
-  S.result = null; S.spread = null;
-  UI.renderMid(); UI.renderResult(); UI.persist();
+/* ── 배치 규모 ─────────────────────────────────────────────────── */
+var PRESETS = [
+  { g: 100,     ko: '100 g',  n: '실험실 비커 — 손으로 만드는 크기' },
+  { g: 1000,    ko: '1 kg',   n: '비커 · 랩 시제품' },
+  { g: 20000,   ko: '20 kg',  n: '소형 진공 유화기' },
+  { g: 200000,  ko: '200 kg', n: '파일럿 유화기' },
+  { g: 1000000, ko: '1 t',    n: '생산 진공 유화기' }
+];
+
+function openBatch() {
+  var body = el('div');
+  var wrap = el('div', { style: 'display:flex;justify-content:center;margin:4px 0 16px' });
+  var kg = S.batchG >= 1000;
+  var val = kg ? +(S.batchG / 1000).toFixed(3) : S.batchG;
+  var stp;
+
+  function rebuild() {
+    K.clear(wrap);
+    stp = UI.stepper(val, {
+      kind: 'g', unit: kg ? 'kg' : 'g', min: kg ? 0.02 : 20, max: kg ? 3000 : 3000, cls: 'lg',
+      fmt: function (v) { return v >= 100 ? K.n0(v) : String(v); },
+      onChange: function (v) { val = v; apply(); }
+    });
+    wrap.appendChild(stp);
+  }
+  function apply() {
+    S.batchG = Math.max(20, kg ? val * 1000 : val);
+    S.result = null; S.spread = null;
+    UI.syncTop(); UI.renderMid(); UI.renderResult(); UI.persist();
+    info.textContent = K.rig().icon + ' ' + K.rig().ko + ' — ' + K.rig().n;
+  }
+  rebuild();
+
+  var unit = el('div.seg', { style: 'margin:0 auto 14px;width:fit-content' }, [
+    el('button', { text: 'g', 'aria-selected': !kg, onclick: function () {
+      if (!kg) return; kg = false; val = Math.round(S.batchG); unit.children[0].setAttribute('aria-selected', true);
+      unit.children[1].setAttribute('aria-selected', false); rebuild(); apply();
+    } }),
+    el('button', { text: 'kg', 'aria-selected': kg, onclick: function () {
+      if (kg) return; kg = true; val = +(S.batchG / 1000).toFixed(3); unit.children[0].setAttribute('aria-selected', false);
+      unit.children[1].setAttribute('aria-selected', true); rebuild(); apply();
+    } })
+  ]);
+
+  var info = el('div', { style: 'font-size:13px;color:var(--ink-2);text-align:center;margin-bottom:14px',
+    text: K.rig().icon + ' ' + K.rig().ko + ' — ' + K.rig().n });
+
+  var chips = el('div', { style: 'display:flex;gap:8px;flex-wrap:wrap;justify-content:center' },
+    PRESETS.map(function (p) {
+      return el('button.chip', { text: p.ko, title: p.n, onclick: function () {
+        S.batchG = p.g; kg = p.g >= 1000; val = kg ? p.g / 1000 : p.g;
+        unit.children[0].setAttribute('aria-selected', !kg);
+        unit.children[1].setAttribute('aria-selected', kg);
+        rebuild(); apply();
+      } });
+    }));
+
+  var rigSel = el('select', { style: 'width:100%', onchange: function () {
+    S.rigKey = rigSel.value || null; S.steps = null; S.result = null;
+    UI.renderMid(); UI.renderResult(); UI.persist();
+    info.textContent = K.rig().icon + ' ' + K.rig().ko + ' — ' + K.rig().n;
+  } }, [el('option', { value: '', text: '배치 규모에 맞춰 자동' })].concat(
+    PROC.RIGS.map(function (r) {
+      return el('option', { value: r.key, text: r.icon + ' ' + r.ko }); })));
+  rigSel.value = S.rigKey || '';
+
+  body.appendChild(wrap);
+  body.appendChild(unit);
+  body.appendChild(info);
+  body.appendChild(chips);
+  body.appendChild(el('h3.sec', { text: '설비' }));
+  body.appendChild(rigSel);
+  body.appendChild(el('div', { style: 'font-size:12.5px;color:var(--ink-3);margin-top:8px;line-height:1.7',
+    text: '같은 처방도 배치 규모에 따라 다른 물건이 나옵니다. 100 g 과 1 t 로 각각 제조해 결과를 비교해 보세요.' }));
+
+  var sh = K.sheet('배치 규모', body, [
+    el('button.btn.pri.wide', { text: '확인', onclick: function () { sh.close(); } })
+  ]);
 }
 
 /* ── 메뉴 ──────────────────────────────────────────────────────── */
 function openMenu() {
-  var rigSel = el('select', { onchange: function () {
-    S.rigKey = rigSel.value || null; S.steps = null; S.result = null;
-    UI.renderMid(); UI.renderResult(); UI.persist();
-  } }, [el('option', { value: '', text: '배치 규모에 맞춰 자동' })].concat(
-    PROC.RIGS.map(function (r) {
-      return el('option', { value: r.key, text: r.icon + ' ' + r.ko + ' (' + K.mass(r.range[0]) + '~' + K.mass(r.range[1]) + ')' });
-    })));
-  rigSel.value = S.rigKey || '';
-
   var code = K.pack(S);
   var codeIn = el('input', { type: 'text', value: location.origin + location.pathname + '#' + code,
-    style: 'width:100%', onclick: function () { codeIn.select(); } });
+    onclick: function () { codeIn.select(); } });
 
   var body = el('div', null, [
-    el('h3.sec', { text: '설비' }),
-    rigSel,
-    el('div', { style: 'font-size:12px;color:var(--ink-3);margin-top:6px', text: K.rig().n }),
-
     el('h3.sec', { text: '공유 · 저장' }),
     codeIn,
-    el('div', { style: 'display:flex;gap:6px;margin-top:7px;flex-wrap:wrap' }, [
+    el('div', { style: 'display:flex;gap:8px;margin-top:9px;flex-wrap:wrap' }, [
       el('button.btn.sm', { text: '링크 복사', onclick: function () {
         codeIn.select();
         try { navigator.clipboard ? navigator.clipboard.writeText(codeIn.value) : document.execCommand('copy'); } catch (e) {}
@@ -4637,19 +4968,28 @@ function openMenu() {
     ]),
 
     el('h3.sec', { text: '화면' }),
-    el('div', { style: 'display:flex;gap:6px' }, [
-      el('button.btn.sm', { text: '밝게', onclick: function () { theme('light'); } }),
-      el('button.btn.sm', { text: '어둡게', onclick: function () { theme('dark'); } }),
-      el('button.btn.sm', { text: '시스템', onclick: function () { theme(''); } })
+    el('div.seg', { style: 'width:fit-content' }, [
+      el('button', { text: '밝게', onclick: function () { theme('light'); } }),
+      el('button', { text: '어둡게', onclick: function () { theme('dark'); } }),
+      el('button', { text: '시스템', onclick: function () { theme(''); } })
     ]),
 
-    el('h3.sec', { text: '기타' }),
-    el('div', { style: 'display:flex;gap:6px;flex-wrap:wrap' }, [
-      el('button.btn.sm', { text: '사용 설명', onclick: function () { help(); } }),
-      el('button.btn.sm', { text: '계산 근거', onclick: function () { about(); } }),
+    el('h3.sec', { text: '도움말' }),
+    el('div', { style: 'display:flex;gap:8px;flex-wrap:wrap' }, [
+      el('button.btn.sm', { text: '사용 설명', onclick: help }),
+      el('button.btn.sm', { text: '계산 근거', onclick: about })
+    ]),
+
+    el('h3.sec', { text: '초기화' }),
+    el('div', { style: 'display:flex;gap:8px;flex-wrap:wrap' }, [
       el('button.btn.sm', { text: '처방 비우기', onclick: function () {
         if (!confirm('현재 처방을 비웁니다.')) return;
-        K.setRows([{ id: 'aqua', pct: 100 }]); UI.renderAll(); UI.persist();
+        K.setRows([{ id: 'aqua', pct: 100 }]); S.mission = null;
+        UI.renderAll(); UI.persist(); K.toast('비웠습니다');
+      } }),
+      el('button.btn.sm', { text: '학습 진행 초기화', onclick: function () {
+        if (!confirm('학습 진행 상황을 모두 지웁니다.')) return;
+        S.progress = {}; UI.persist(); UI.renderMid(); K.toast('초기화했습니다');
       } })
     ])
   ]);
@@ -4686,8 +5026,7 @@ function loadJson() {
         S.rigKey = o.rigKey || null;
         K.setRows(o.rows || []);
         S.steps = o.steps || null;
-        UI.syncTop(); UI.renderAll(); UI.persist();
-        K.toast('불러왔습니다');
+        UI.renderAll(); UI.persist(); K.toast('불러왔습니다');
       } catch (e) { K.toast('파일을 읽지 못했습니다'); }
       inp.remove();
     };
@@ -4698,20 +5037,21 @@ function loadJson() {
 
 function help() {
   K.sheet('사용 설명', el('div.rt', null, [
-    el('p', { html: '<b>1. 제품군을 고른다.</b> 스킨·로션·크림·샴푸·린스·선크림·립밤 등 17가지. ' +
-      '제품군마다 출하 규격(점도·pH·탁도)과 표준 공정이 다르다.' }),
-    el('p', { html: '<b>2. 처방을 짠다.</b> 왼쪽에서 원료를 검색해 넣고 %를 조정한다. ' +
-      '합계는 100.00% 여야 한다 — <code>물로 맞추기</code> 버튼이 정제수로 나머지를 채운다.' }),
+    el('p', { html: '<b>1. 제품군을 고른다.</b> 스킨 · 로션 · 크림 · 샴푸 · 린스 · 선크림 · 립밤 등 17가지. ' +
+      '제품군마다 출하 규격(점도 · pH · 탁도)과 표준 공정이 다르다.' }),
+    el('p', { html: '<b>2. 처방을 짠다.</b> <code>＋ 원료 추가</code> 로 원료를 담고, 옆의 <b>− 숫자 +</b> 로 양을 조절한다. ' +
+      '숫자는 <b>휠을 굴리거나 위아래로 끌어도</b> 되고, 눌러서 직접 입력해도 된다.' }),
+    el('p', { html: '표시된 권장량은 <b>상한이 아니라 출발점</b>이다. 1.5% 라고 적혀 있어도 3% 든 10% 든 넣을 수 있고, ' +
+      '그 결과로 무슨 일이 생기는지 결과 화면이 알려준다.' }),
     el('p', { html: '<b>3. 공정을 확인한다.</b> 처방을 읽어 표준 제조 순서가 자동으로 짜인다. ' +
-      '온도·교반 rpm·시간·진공을 직접 바꿀 수 있다.' }),
-    el('p', { html: '<b>4. 제조한다.</b> 배치 규모를 정하고 <code>제조 ▶</code>. ' +
+      '온도 · 교반 · 시간 · 진공을 직접 바꿀 수 있다.' }),
+    el('p', { html: '<b>4. 제조한다.</b> 배치 규모를 정하고 <code>제조</code>. ' +
       '칭량 오차, 증발, 벽면 잔류, 열이력, 전단, 혼합 불균일까지 계산해 실제로 나올 물건을 보여준다.' }),
     el('p', { html: '<b>같은 처방도 배치 규모에 따라 다른 물건이 나온다.</b> ' +
-      '100 g 비커와 1톤 탱크로 각각 제조해 결과를 비교해 보라. ' +
-      '점도·수율·색까지 달라지는 이유가 결과 화면의 <b>스케일이 만든 차이</b> 에 전부 적혀 있다.' }),
-    el('p', { html: '<b>학습</b> 탭에는 17개 제품군 × 6과제, 모두 ' + MISS.count + '개의 과제가 있다. ' +
-      '빈 처방에서 규격을 맞추는 것부터, 고장난 처방을 넘겨받아 고치는 것, 랩 처방을 1톤으로 옮기는 것까지.' }),
-    el('p', { style: 'color:var(--ink-3)', html: '단축키 — <code>Ctrl+Enter</code> 제조 · <code>/</code> 검색' })
+      '100 g 과 1 t 으로 각각 제조해 비교해 보라. 이유는 결과 화면의 ' +
+      '<b>스케일이 만든 차이</b> 에 전부 적혀 있다.' }),
+    el('p', { html: '<b>학습</b> 탭에는 제품군 × 6과제, 모두 ' + MISS.count + '개의 과제가 있다.' }),
+    el('p', { style: 'color:var(--ink-3)', html: '단축키 — <code>Ctrl+Enter</code> 제조 · <code>/</code> 원료 검색' })
   ]));
 }
 
@@ -4719,22 +5059,22 @@ function about() {
   K.sheet('계산 근거', el('div.rt', null, [
     el('p', { html: '실제 제형 이론을 축약한 모델이다. 절대값은 근사지만, ' +
       '<b>무엇을 바꾸면 어느 쪽으로 얼마나 움직이는가</b> 는 실제와 같다.' }),
-    el('p', { html: '<b>점도</b> — 점증제 겔(η = K·c<sup>n</sup>, pH·전해질·알코올로 보정), ' +
+    el('p', { html: '<b>점도</b> — 점증제 겔(η = K·c<sup>n</sup>, pH · 전해질 · 알코올 보정), ' +
       '라멜라 겔망(지방알코올 × 유화제), 계면활성제 미셀(솔트 커브), ' +
       '내상 부피분율(Krieger–Dougherty)을 합산한다.' }),
-    el('p', { html: '<b>pH</b> — 산·염기 당량을 세어 Henderson–Hasselbalch 로 적정한다. ' +
-      '카보머는 폴리전해질 지수 n≈2 를 써서 완만한 중화 곡선을 만든다.' }),
-    el('p', { html: '<b>액적 크기</b> — 전단 한계(계면장력<sup>0.6</sup> × 팁속도<sup>−1.2</sup>)와 ' +
-      '유화제 피복 한계(Γ·6φ/d) 중 큰 값. 가용화제가 오일보다 많으면 자발적으로 미셀이 생긴다.' }),
-    el('p', { html: '<b>탁도</b> — 액적의 Mie 산란(부피분율 × 굴절률 차² × 크기 함수), ' +
+    el('p', { html: '<b>pH</b> — 산 · 염기 당량을 세어 Henderson–Hasselbalch 로 적정한다. ' +
+      '카보머는 폴리전해질 지수 n≈2, 지방산은 비누화 후 겉보기 pKa 8.3 을 쓴다.' }),
+    el('p', { html: '<b>액적 크기</b> — 전단 한계(σ<sup>0.6</sup> × 팁속도<sup>−1.2</sup>)와 ' +
+      '유화제 피복 한계(Γ·6φ/d) 중 큰 값. 가용화제가 오일보다 충분히 많으면 자발적으로 미셀이 생긴다.' }),
+    el('p', { html: '<b>탁도</b> — 액적의 Mie 산란(부피분율 × 굴절률 차<sup>2</sup> × 크기 함수), ' +
       '무기 입자, 석출 결정, 혼입 기포의 합.' }),
-    el('p', { html: '<b>색상</b> — 원료 고유색을 색력으로 가중 평균한 뒤, ' +
-      '산란에 의한 백색과 열이력·산화에 의한 갈변을 더해 CIE L*a*b* 로 계산하고 sRGB 로 변환한다.' }),
+    el('p', { html: '<b>색상</b> — 원료 고유색을 색력으로 가중 평균한 뒤 산란 백색과 열이력 갈변을 더해 ' +
+      'CIE L*a*b* 로 계산하고 sRGB 로 변환한다.' }),
     el('p', { html: '<b>스케일</b> — 액체를 H=D 원통으로 보고 지름 D ∝ V<sup>1/3</sup>. ' +
-      '증발과 벽면 잔류는 표면적/부피(∝ V<sup>−1/3</sup>)에 비례하고, ' +
-      '냉각 시간은 V<sup>1/3</sup> 에 비례한다. 저울은 목표 중량을 담을 수 있는 가장 정밀한 것이 선택된다.' }),
-    el('p', { style: 'color:var(--ink-3)', text:
-      '교육·설계 검토용 도구다. 실제 제조·안전성·인허가 판단의 근거로 삼지 말 것.' })
+      '증발과 벽면 잔류는 표면적/부피(∝ V<sup>−1/3</sup>)에, 냉각 시간은 V<sup>1/3</sup> 에 비례한다. ' +
+      '저울은 목표 중량을 담을 수 있는 가장 정밀한 것이 자동 선택된다.' }),
+    el('p', { style: 'color:var(--ink-3)',
+      text: '교육 · 설계 검토용 도구다. 실제 제조 · 안전성 · 인허가 판단의 근거로 삼지 말 것.' })
   ]));
 }
 
@@ -4747,11 +5087,9 @@ function boot() {
 
   fillProducts();
 
-  /* 저장된 상태 */
   var saved = K.load();
   if (saved.progress) S.progress = saved.progress;
 
-  /* URL 해시 우선 */
   var fromHash = K.unpack((location.hash || '').replace(/^#/, ''));
   if (fromHash && fromHash.rows && fromHash.rows.length) {
     S.prod = fromHash.prod || S.prod;
@@ -4770,49 +5108,43 @@ function boot() {
     K.setRows(PROD.get(S.prod).base);
   }
 
-  /* 이벤트 */
   $('#selProd').addEventListener('change', function () {
     S.prod = $('#selProd').value;
     S.mission = null; S.result = null; S.spread = null; S.steps = null;
     UI.renderMid(); UI.renderResult(); UI.persist();
     K.toast(PROD.get(S.prod).ko + ' 규격으로 전환');
   });
-  $('#inBatch').addEventListener('change', readBatch);
-  $('#selUnit').addEventListener('change', readBatch);
+  $('#btnBatch').addEventListener('click', openBatch);
   $('#btnRun').addEventListener('click', function () { UI.run(false); });
   $('#btnRepeat').addEventListener('click', function () { UI.run(true); });
   $('#btnMenu').addEventListener('click', openMenu);
-  $('#btnBase').addEventListener('click', function () {
-    K.setRows(PROD.get(S.prod).base);
-    S.mission = null;
-    UI.renderAll(); UI.persist();
-    K.toast(PROD.get(S.prod).ko + ' 기준 처방을 불러왔습니다');
-  });
 
   var q = $('#q');
   q.addEventListener('input', function () { S.q = q.value; UI.renderIngList(); });
+  $('#qClear').addEventListener('click', function () { S.q = ''; q.value = ''; q.focus(); UI.renderIngList(); });
+  $('#pickDone').addEventListener('click', UI.closePicker);
+  $('#picker').addEventListener('click', function (e) { if (e.target.id === 'picker') UI.closePicker(); });
 
   K.$$('#nav button').forEach(function (b) {
     b.addEventListener('click', function () { UI.go(b.dataset.go); });
   });
 
   document.addEventListener('keydown', function (e) {
+    var typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName);
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); UI.run(false); }
-    if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
-      e.preventDefault(); UI.go('ing'); q.focus(); q.select();
-    }
+    if (e.key === 'Escape' && !$('#picker').hidden) { e.preventDefault(); UI.closePicker(); }
+    if (e.key === '/' && !typing) { e.preventDefault(); UI.openPicker(); }
   });
 
   window.addEventListener('beforeunload', function () {
     try { history.replaceState(null, '', '#' + K.pack(S)); } catch (e) {}
   });
 
-  UI.syncTop();
-  UI.go(window.innerWidth >= 900 ? 'form' : 'form');
+  UI.go('form');
   UI.renderAll();
 }
 
-G.APP = { boot: boot, help: help, about: about, openMenu: openMenu, theme: theme };
+G.APP = { boot: boot, help: help, about: about, openMenu: openMenu, openBatch: openBatch, theme: theme };
 })(window);
 
 /* 포뮬라랩 — 부팅 */

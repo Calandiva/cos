@@ -55,6 +55,14 @@ function run(rows, opt) {
   var log = [], warn = [];
   function W(sev, ko, msg) { warn.push({ sev: sev, ko: ko, msg: msg }); }
 
+  /* 처방 합계가 100% 가 아니면 비율대로 환산해 칭량한다.
+     그래야 "1 kg 배치" 가 실제로 1 kg 이 되고 수율이 뜻을 갖는다. */
+  var rawTotal = rows.reduce(function (x, y) { return x + (+y.pct > 0 ? +y.pct : 0); }, 0);
+  if (rawTotal > 0 && Math.abs(rawTotal - 100) > 0.001) {
+    var k = 100 / rawTotal;
+    rows = rows.map(function (r) { return { id: r.id, pct: (+r.pct || 0) * k }; });
+  }
+
   /* ── 1. 칭량 ─────────────────────────────────────────────────── */
   var items = [], weighSum = 0, worst = null;
   rows.forEach(function (row) {
