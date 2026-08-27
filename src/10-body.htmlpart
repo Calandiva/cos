@@ -1,0 +1,73 @@
+<div id="app">
+
+  <header id="top">
+    <div class="brand"><b>포뮬라랩</b><i>FORMULAB</i></div>
+
+    <div class="topmid">
+      <select id="selProd" title="제품군"></select>
+      <label class="btn batchbox" title="배치 규모">
+        <input id="inBatch" type="number" min="10" step="10" value="1000">
+        <select id="selUnit">
+          <option value="1">g</option><option value="1000" selected>kg</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="grow"></div>
+
+    <button id="btnRun" class="btn pri">제조 ▶</button>
+    <button id="btnMenu" class="btn ico" title="메뉴" aria-label="메뉴">≡</button>
+  </header>
+
+  <div id="main">
+
+    <!-- ── 원료 ─────────────────────────────────────────── -->
+    <section class="pane active" id="p-ing" data-col="1">
+      <div class="pane-hd">
+        <div class="searchwrap">
+          <span class="mag">⌕</span>
+          <input id="q" type="search" placeholder="원료 검색 — 한글 · INCI · 기능" autocomplete="off">
+        </div>
+      </div>
+      <div class="chips" id="cats"></div>
+      <div class="pane-bd" id="ilist"></div>
+      <div class="pane-ft" style="display:flex;align-items:center;gap:8px">
+        <span class="sub" id="icount" style="font-size:11px;color:var(--ink-3)"></span>
+        <button class="btn sm" id="btnBase" style="margin-left:auto">기준 처방 불러오기</button>
+      </div>
+    </section>
+
+    <!-- ── 처방 / 공정 / 학습 ───────────────────────────── -->
+    <section class="pane" id="p-mid" data-col="2">
+      <div class="pane-hd">
+        <div class="only-wide" style="display:none;gap:4px" id="midtabs"></div>
+        <h2 id="midTitle" class="only-narrow">처방</h2>
+        <div class="grow" style="flex:1"></div>
+        <div id="midTools" style="display:flex;gap:5px"></div>
+      </div>
+      <div class="pane-bd" id="midBody"></div>
+      <div class="pane-ft" id="midFoot"></div>
+    </section>
+
+    <!-- ── 결과 ─────────────────────────────────────────── -->
+    <section class="pane" id="p-res" data-col="3">
+      <div class="pane-hd">
+        <h2>결과</h2>
+        <span class="sub" id="resSub"></span>
+        <div class="grow" style="flex:1"></div>
+        <button class="btn sm" id="btnRepeat" title="같은 조건으로 5배치를 돌려 편차를 본다">편차 ×5</button>
+      </div>
+      <div class="pane-bd" id="resBody"></div>
+    </section>
+
+  </div>
+
+  <nav id="nav">
+    <button data-go="ing"   aria-selected="true"><span class="g">⌕</span>원료</button>
+    <button data-go="form"  aria-selected="false"><span class="g">▤</span>처방</button>
+    <button data-go="proc"  aria-selected="false"><span class="g">⚗</span>공정</button>
+    <button data-go="res"   aria-selected="false"><span class="g">◐</span>결과</button>
+    <button data-go="learn" aria-selected="false"><span class="g">✦</span>학습</button>
+  </nav>
+
+</div>
